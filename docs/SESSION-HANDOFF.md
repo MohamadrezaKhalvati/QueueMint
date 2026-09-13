@@ -1,0 +1,135 @@
+# QueueMint session handoff
+
+Use this file when starting a new ChatGPT, coding-agent, or developer session. Read it before proposing new architecture or product phases.
+
+## Current state
+
+Current release: **v0.24.1**.
+
+The architecture refactor is complete. The strict 300-line production code limit has no exceptions. `App.tsx` and `Popup.tsx` are orchestration/composition layers rather than monoliths.
+
+Capture Pro is complete. The current release completes **v0.24 Smart Assistant**, including optional AI-backed drafting with explicit data boundaries, while retaining local Smart Draft and manual review.
+
+## Product definition
+
+QueueMint is a Jira companion and power layer. It is not intended to become another Jira.
+
+Primary jobs:
+
+1. Capture a bug from the page being tested and turn it into a useful Jira issue quickly.
+2. Make repetitive or multi-step Jira actions faster and safer.
+3. Provide reusable personal macros, commands, and local productivity shortcuts.
+4. Add intelligence where it reduces typing/searching while keeping the user in control.
+
+Before adding a feature, check whether Jira already solves it well. Do not rebuild native Jira reporting, sprint planning, release management, workflow administration, project administration, permissions, or a full automation engine.
+
+## What has already been built
+
+- Jira browser-session connection and bridge.
+- Quick Issue and bulk issue creation.
+- Review before create.
+- Dynamic Jira metadata and fields.
+- visible/full-page Capture.
+- screenshot annotation and redaction.
+- multiple screenshot evidence session.
+- full-screen Capture workspace.
+- short WebM screen/window/tab recording with optional microphone.
+- evidence file attachments.
+- opt-in page diagnostics without debugger permission.
+- local Smart Draft.
+- duplicate detection.
+- Workspace project/board context.
+- Manage Jira filters and Saved Views.
+- Issue Detail.
+- clone helper and native move flow.
+- bulk edit preview and short-lived undo/history.
+- Saved Actions.
+- Command Palette.
+- safe preview-first Automation rules/macros.
+- persistent compact activity history.
+- smart assignee suggestions.
+- optional Smart Assistant with structured issue drafting and semantic duplicate suggestions.
+- English/Persian and light/dark appearance.
+
+For exact current detail, read `docs/CAPABILITIES.md`.
+
+## v0.23 Capture Pro implementation notes
+
+- Screen recording intentionally runs in the full-screen Capture workspace because popup lifetime is not reliable for long media operations.
+- Recording uses `navigator.mediaDevices.getDisplayMedia` and the browser's native picker.
+- Microphone is optional through `getUserMedia`.
+- Recording currently caps itself around 60 seconds and rejects evidence clips above 12 MB.
+- Capture diagnostics observe runtime/resource errors after collector installation and read recent Resource Timing data.
+- QueueMint does not request `chrome.debugger` for diagnostics.
+- Diagnostics are opt-in when the issue is created.
+- Evidence uploads occur after issue creation. Attachment failure should warn rather than pretend issue creation failed.
+- Capture sessions are durable across popup closure. `src/lib/capture-draft.ts` stores the active session in IndexedDB and keeps an active-session pointer in `chrome.storage.local`.
+- Every Capture session remains linked to its original source tab. Full-screen evidence capture must target that source tab, not `popup.html`. Source linkage is stored independently from screenshot evidence so deleting the last screenshot does not lose the source.
+- If the browser-action popup is reopened while a session is active, it resumes the same evidence and create-bug draft instead of starting over.
+- Screenshot annotation state is stored per evidence shot. Switching shots may flatten the previous active edit into its PNG, while the active shot keeps editable state for recovery.
+- The create-bug form draft is persisted with the Capture session.
+- The Capture header contains an explicit reset action. In full-screen Capture, reset returns focus to the source tab and closes the editor tab when possible.
+- Retake replaces the active evidence screenshot rather than adding another item.
+- The last screenshot can be deleted. The session remains active in an empty-evidence state so the user can capture again without losing the session.
+- If the stored source tab no longer exists, opening QueueMint from the toolbar on the intended normal page allows the session to rebind to that page on the next capture.
+- Quick Issue context must reflect the actual selected assignee and current project. Do not use the connected Jira account name as a substitute for issue ownership.
+
+
+## v0.24 Smart Assistant implementation notes
+
+- AI is off by default. `src/lib/smart-assistant.ts` owns provider settings, request shaping, structured output parsing, image downscaling, and description formatting.
+- `src/features/intelligence/useSmartAssistant.ts` owns request state and optional recent-Jira-issue retrieval for semantic duplicate comparison.
+- `SmartAssistantPanel.tsx` is the user-visible privacy boundary. Do not bypass its per-request data switches.
+- The OpenAI API key is stored only in `chrome.storage.local` under the Smart Assistant settings key. Never hard-code or commit it.
+- OpenAI calls request the specific optional host permission at the moment the user clicks Generate.
+- Requests use `store: false` and structured JSON output.
+- AI output never writes to Jira directly. It can only populate form fields after the user clicks Apply, and normal QueueMint Create/Review flows remain authoritative.
+- Local Smart Draft and local duplicate detection remain available without AI.
+- Quick Issue now exposes a Project selector directly in the form. Existing project-change lifecycle cleanup must remain in place so assignee, epic, and sprint context cannot leak across projects.
+
+## Architecture rules
+
+- No production code file over 300 lines.
+- Run `npm run check:architecture` before claiming a phase is complete.
+- Split by responsibility, not by arbitrary line slicing.
+- Feature state belongs in hooks/controllers.
+- Visual components receive data/callbacks.
+- Jira/browser transport does not belong in deeply nested visual components.
+- Reuse existing QueueMint mutation paths. Do not create parallel hidden mutation engines.
+
+## Validation commands
+
+```bash
+npm install
+npm run check:architecture
+npm run typecheck
+npm run build
+```
+
+A phase should not be considered complete until these pass on a normal development machine.
+
+## Agreed future direction
+
+Next planned phases:
+
+- **v0.25 Jira Power Tools**: faster safe macros and cleanup operations for high-friction Jira tasks, not Jira feature clones.
+- **v0.26 Command Layer**: deeper natural/command-style actions over selected Jira context using existing feature APIs.
+- **v0.27 Productivity & Polish**: recents/favorites, stronger draft recovery, local backup/restore, accessibility, performance, small shareable summaries.
+- **v1.0 Public Release**: Jira compatibility matrix, least-privilege permission audit, privacy policy, onboarding, automated critical-path tests, store assets, CI/release process.
+
+Read `docs/ROADMAP.md` for the full reasoning and non-goals.
+
+## If a new agent proposes a large new feature
+
+Ask:
+
+- Does Jira already do this well?
+- Does the feature reduce steps or improve safety?
+- Can the feature use an existing QueueMint flow instead of creating a parallel system?
+- Does it keep Jira as the source of truth?
+- What new browser/Jira permissions does it require?
+- Will it keep all production files within 300 lines?
+
+## Git/release state
+
+The repository contains GitHub CI configuration, contribution guidance, release guidance, changelog, product direction, capabilities, architecture, and roadmap documentation. `dist/` and `node_modules/` remain ignored and should not be committed.

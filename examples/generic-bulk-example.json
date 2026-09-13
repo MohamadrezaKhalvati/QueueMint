@@ -1,0 +1,32 @@
+{
+  "project": "PROJECT_KEY",
+  "defaults": {
+    "priority": "Medium",
+    "sprint": null,
+    "labels": [
+      "example"
+    ],
+    "estimate": "3h"
+  },
+  "issues": [
+    {
+      "ref": "feature-foundation",
+      "type": "Task",
+      "summary": "Implement feature foundation",
+      "description": "Create the smallest end-to-end implementation slice.",
+      "labels": [
+        "implementation"
+      ]
+    },
+    {
+      "ref": "validation-error-handling",
+      "type": "Task",
+      "summary": "Add validation and error handling",
+      "description": "Cover expected validation and recoverable failures.",
+      "labels": [
+        "quality"
+      ],
+      "estimate": "2d"
+    }
+  ]
+}

@@ -1,0 +1,204 @@
+@import "./features/popup/popup-fields.css";
+@import "./features/popup/popup-workspace.css";
+
+html:has(body.qm-popup-page),
+body.qm-popup-page,
+body.qm-popup-page #root {
+  width: 420px;
+  min-width: 420px;
+  height: 600px;
+  min-height: 600px;
+  overflow: hidden;
+}
+
+body.qm-popup-page {
+  background: var(--background);
+}
+
+.qm-popup-shell {
+  display: flex;
+  height: 600px;
+  flex-direction: column;
+  background: var(--background);
+  color: var(--foreground);
+}
+
+.qm-popup-header {
+  display: flex;
+  min-height: 58px;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  border-bottom: 1px solid var(--border);
+  background: color-mix(in oklab, var(--card) 94%, transparent);
+  padding: 10px 12px;
+  backdrop-filter: blur(14px);
+}
+
+.qm-popup-body {
+  min-height: 0;
+  flex: 1 1 auto;
+  overflow-y: auto;
+  padding: 12px;
+}
+
+.qm-popup-status {
+  display: inline-flex;
+  height: 27px;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--muted);
+  padding-inline: 9px;
+  color: var(--muted-foreground);
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.qm-popup-status.is-connected {
+  border-color: color-mix(in oklab, var(--primary) 28%, var(--border));
+  background: color-mix(in oklab, var(--primary) 8%, var(--card));
+  color: var(--primary);
+}
+
+
+.qm-popup-header-actions {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 5px;
+}
+
+.qm-popup-header-icon {
+  color: var(--muted-foreground);
+}
+
+.qm-popup-header-icon:hover {
+  color: var(--foreground);
+}
+
+.qm-popup-page-card,
+.qm-popup-action-card {
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: var(--card);
+  padding: 12px;
+  box-shadow: 0 1px 0 rgb(15 23 42 / 0.025);
+}
+
+.qm-popup-action-card {
+  display: flex;
+  min-height: 86px;
+  align-items: center;
+  gap: 12px;
+  color: var(--foreground);
+  text-align: start;
+  transition: border-color 160ms ease, background-color 160ms ease, transform 160ms ease;
+}
+
+.qm-popup-action-card:hover {
+  border-color: color-mix(in oklab, var(--primary) 24%, var(--border));
+  background: color-mix(in oklab, var(--primary) 3%, var(--card));
+}
+
+.qm-popup-action-card:active {
+  transform: translateY(1px);
+}
+
+.qm-popup-action-card:disabled {
+  cursor: wait;
+  opacity: 0.7;
+}
+
+.qm-popup-action-icon {
+  display: grid;
+  width: 40px;
+  height: 40px;
+  flex: 0 0 40px;
+  place-items: center;
+  border-radius: 12px;
+  background: var(--accent);
+  color: var(--primary);
+}
+
+.qm-popup-field {
+  display: grid;
+  gap: 6px;
+}
+
+.qm-popup-field > span {
+  color: var(--muted-foreground);
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.capture-canvas-shell {
+  position: relative;
+  display: grid;
+  max-height: 330px;
+  min-height: 180px;
+  place-items: center;
+  overflow: auto;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background-image:
+    linear-gradient(45deg, color-mix(in oklab, var(--muted) 72%, transparent) 25%, transparent 25%),
+    linear-gradient(-45deg, color-mix(in oklab, var(--muted) 72%, transparent) 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, color-mix(in oklab, var(--muted) 72%, transparent) 75%),
+    linear-gradient(-45deg, transparent 75%, color-mix(in oklab, var(--muted) 72%, transparent) 75%);
+  background-position: 0 0, 0 8px, 8px -8px, -8px 0;
+  background-size: 16px 16px;
+}
+
+.capture-canvas {
+  display: block;
+  width: 100%;
+  height: auto;
+  touch-action: none;
+  user-select: none;
+}
+
+.dark .qm-popup-page-card,
+.dark .qm-popup-action-card {
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.02);
+}
+
+
+.qm-capture-issue-form {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 10px;
+}
+
+.qm-field-span-2 {
+  grid-column: 1 / -1;
+}
+
+.qm-smart-card,
+.qm-preflight-card {
+  border: 1px solid color-mix(in oklab, var(--primary) 18%, var(--border));
+  border-radius: 14px;
+  background: color-mix(in oklab, var(--primary) 3%, var(--card));
+  padding: 12px;
+}
+
+.qm-smart-chip {
+  display: inline-flex;
+  min-height: 24px;
+  align-items: center;
+  border: 1px solid color-mix(in oklab, var(--primary) 16%, var(--border));
+  border-radius: 999px;
+  background: color-mix(in oklab, var(--primary) 7%, var(--card));
+  padding: 3px 8px;
+  color: var(--primary);
+  font-size: 10px;
+  font-weight: 650;
+}
+
+.dark .qm-smart-card,
+.dark .qm-preflight-card {
+  background: color-mix(in oklab, var(--primary) 4%, var(--card));
+}

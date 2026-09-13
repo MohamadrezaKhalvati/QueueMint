@@ -1,0 +1,203 @@
+[data-slot="sheet-content"][data-state="open"][data-side="bottom"] {
+  animation: qm-sheet-bottom-in 290ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+[data-slot="sheet-content"][data-state="closed"][data-side="bottom"] {
+  animation: qm-sheet-bottom-out 190ms ease-in both;
+}
+
+/* QueueMint editorial workspace — v0.10 visual system */
+:root {
+  --qm-sidebar-width: 232px;
+  --qm-topbar-height: 66px;
+  --qm-page-max: 1420px;
+  --qm-panel-radius: 11px;
+  --qm-control-radius: 8px;
+  --qm-primary-soft: color-mix(in oklab, var(--primary) 9%, var(--card));
+  --qm-primary-soft-strong: color-mix(in oklab, var(--primary) 15%, var(--card));
+  --qm-primary-border: color-mix(in oklab, var(--primary) 26%, var(--border));
+  --qm-primary-ink: color-mix(in oklab, var(--primary) 84%, var(--foreground) 16%);
+  --qm-surface-subtle: color-mix(in oklab, var(--card) 96%, var(--foreground) 4%);
+  --qm-surface-hover: color-mix(in oklab, var(--card) 93%, var(--primary) 7%);
+  --qm-ink: var(--foreground);
+}
+
+.app-frame {
+  min-height: 100dvh;
+  background: var(--background);
+}
+
+.qm-shell {
+  min-height: 100dvh;
+  display: grid;
+  grid-template-columns: var(--qm-sidebar-width) minmax(0, 1fr);
+}
+
+.qm-workspace {
+  min-width: 0;
+  min-height: 100dvh;
+}
+
+.qm-sidebar {
+  position: sticky;
+  inset-block-start: 0;
+  z-index: 45;
+  display: flex;
+  height: 100dvh;
+  min-height: 0;
+  flex-direction: column;
+  border-inline-end: 1px solid var(--border);
+  background: var(--sidebar);
+}
+
+.qm-brand {
+  display: flex;
+  min-height: var(--qm-topbar-height);
+  align-items: center;
+  gap: 11px;
+  border-block-end: 1px solid var(--border);
+  padding-inline: 27px 20px;
+}
+
+.qm-brand-mark {
+  width: 34px;
+  height: 34px;
+  flex: 0 0 auto;
+  border-radius: 9px;
+  object-fit: cover;
+  box-shadow: 0 1px 2px rgb(15 23 42 / 0.08);
+}
+
+.qm-brand-name {
+  color: var(--qm-ink);
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+}
+
+.qm-sidebar-nav {
+  display: grid;
+  gap: 4px;
+  padding: 18px 12px 12px;
+}
+
+.qm-sidebar-link {
+  position: relative;
+  display: flex;
+  min-height: 46px;
+  width: 100%;
+  align-items: center;
+  gap: 14px;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  padding-inline: 16px;
+  color: var(--sidebar-foreground);
+  font-size: 15px;
+  font-weight: 500;
+  text-align: start;
+  outline: none;
+  transition: color 150ms ease, background-color 150ms ease, box-shadow 150ms ease;
+}
+
+.qm-sidebar-link:hover {
+  background: var(--accent);
+  color: var(--primary);
+}
+
+.qm-sidebar-link:focus-visible {
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--ring) 18%, transparent);
+}
+
+.qm-sidebar-link.is-active {
+  background: var(--qm-primary-soft);
+  color: var(--primary);
+  font-weight: 600;
+}
+
+.qm-sidebar-icon {
+  width: 19px;
+  height: 19px;
+  flex: 0 0 auto;
+  stroke-width: 1.9;
+}
+
+.qm-sidebar-footer {
+  display: grid;
+  gap: 3px;
+  margin-block-start: auto;
+  padding: 14px 12px 28px;
+}
+
+.qm-sidebar-footer::before {
+  content: "";
+  display: block;
+  height: 1px;
+  margin: 0 12px 12px;
+  background: var(--border);
+}
+
+.qm-topbar {
+  position: sticky;
+  inset-block-start: 0;
+  z-index: 40;
+  height: var(--qm-topbar-height);
+  border-block-end: 1px solid var(--border);
+  background: color-mix(in oklab, var(--background) 94%, transparent);
+  backdrop-filter: blur(16px);
+}
+
+.qm-topbar-inner {
+  display: flex;
+  height: 100%;
+  width: 100%;
+  max-width: none;
+  align-items: center;
+  gap: 20px;
+  padding-inline: 30px 26px;
+}
+
+.qm-topbar-tagline {
+  min-width: 0;
+  margin: 0;
+  overflow: hidden;
+  color: var(--muted-foreground);
+  font-size: 13px;
+  line-height: 1.4;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.qm-topbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-inline-start: auto;
+}
+
+.qm-connection-pill {
+  display: inline-flex;
+  min-height: 28px;
+  align-items: center;
+  gap: 8px;
+  margin-inline-end: 8px;
+  border: 1px solid var(--qm-primary-border);
+  border-radius: 999px;
+  background: var(--qm-primary-soft);
+  padding-inline: 12px;
+  color: var(--primary);
+  font-size: 12px;
+  font-weight: 600;
+  outline: none;
+}
+
+.qm-connection-pill.is-disconnected {
+  border-color: color-mix(in oklab, var(--destructive) 28%, var(--border));
+  background: color-mix(in oklab, var(--destructive) 8%, var(--card));
+  color: var(--destructive);
+}
+
+.qm-connection-pill:focus-visible,
+.qm-user-menu:focus-visible {
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--ring) 18%, transparent);
+}

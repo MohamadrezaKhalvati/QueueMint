@@ -1,0 +1,198 @@
+.qm-context-item {
+  display: flex;
+  min-width: 0;
+  flex: 1 1 0;
+  align-items: center;
+  gap: 11px;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  padding: 4px 18px;
+}
+
+.qm-context-item:first-child {
+  padding-inline-start: 8px;
+}
+
+.qm-context-item:not(:last-child) {
+  border-inline-end: 1px solid var(--border) !important;
+}
+
+.qm-context-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+}
+
+.qm-context-count {
+  display: grid;
+  min-width: 104px;
+  place-items: center;
+  border-inline-start: 1px solid var(--border);
+}
+
+.qm-context-note {
+  max-width: 280px;
+  border-inline-start: 1px solid var(--border);
+  padding: 8px 18px 8px 26px;
+  color: var(--muted-foreground);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.qm-review-panel,
+.qm-manage-panel {
+  overflow: visible;
+}
+
+.qm-filter-row {
+  padding: 10px 12px !important;
+}
+
+.qm-filter-row [data-slot="button"],
+.qm-filter-row [data-slot="select-trigger"],
+.qm-filter-row [data-slot="input"] {
+  min-height: 42px;
+}
+
+.selection-dock,
+.selection-dock.is-active {
+  border-color: transparent;
+  background: var(--card);
+  box-shadow: none !important;
+}
+
+.qm-selection-row,
+.qm-manage-selection {
+  margin-inline: 0 !important;
+  margin-block-start: 0 !important;
+  border: 0 !important;
+  border-block-end: 1px solid var(--border) !important;
+  border-radius: 0 !important;
+  padding: 10px 13px !important;
+}
+
+.qm-selection-check {
+  width: 22px !important;
+  height: 22px !important;
+  border-radius: 5px !important;
+}
+
+.review-sticky-actions {
+  position: sticky;
+  inset-block-start: calc(var(--qm-topbar-height) + 1px);
+  z-index: 28;
+  background: color-mix(in oklab, var(--card) 92%, transparent);
+  backdrop-filter: blur(14px);
+  box-shadow: 0 8px 20px rgb(15 23 42 / 0.045) !important;
+}
+
+.qm-board-lanes {
+  display: flex;
+  align-items: stretch;
+  gap: 12px;
+}
+
+.qm-board-lane {
+  flex: 1 1 calc(50% - 6px) !important;
+  width: auto;
+  min-width: 420px;
+  border-color: var(--border) !important;
+  border-radius: 10px !important;
+  background: var(--qm-surface-subtle) !important;
+  padding: 12px !important;
+}
+
+.qm-board-lane.is-sprint {
+  border-color: var(--qm-primary-border) !important;
+  background: linear-gradient(180deg, var(--qm-primary-soft) 0%, var(--qm-surface-hover) 42%, var(--qm-surface-subtle) 100%) !important;
+}
+
+.qm-lane-heading {
+  min-height: 34px;
+  color: var(--foreground);
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.qm-empty-lane {
+  border-color: var(--border) !important;
+  background: color-mix(in oklab, var(--card) 72%, transparent) !important;
+}
+
+.issue-card {
+  position: relative;
+  border-radius: 9px !important;
+  border-color: var(--border) !important;
+  background: var(--card) !important;
+  box-shadow: 0 1px 1px rgb(15 23 42 / 0.025) !important;
+}
+
+.issue-card-actions {
+  position: absolute;
+  inset-block-end: 7px;
+  inset-inline-end: 7px;
+  z-index: 2;
+  display: flex;
+  gap: 2px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: color-mix(in oklab, var(--card) 94%, transparent);
+  padding: 2px;
+  opacity: 0;
+  box-shadow: 0 4px 12px rgb(15 23 42 / 0.08);
+  transition: opacity 130ms ease;
+}
+
+.issue-card:hover .issue-card-actions,
+.issue-card:focus-within .issue-card-actions {
+  opacity: 1;
+}
+
+.qm-scope-control {
+  display: grid;
+  gap: 4px;
+}
+
+.qm-scope-switch {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: color-mix(in oklab, var(--muted) 72%, var(--background));
+  padding: 3px;
+}
+
+.qm-scope-switch [data-slot="button"] {
+  min-height: 38px;
+  min-width: 124px;
+  gap: 9px;
+  border: 1px solid transparent;
+  border-radius: 7px;
+  color: var(--muted-foreground);
+  padding-inline: 12px;
+}
+
+.qm-scope-switch [data-slot="button"]:hover:not(:disabled) {
+  background: color-mix(in oklab, var(--accent) 76%, transparent);
+  color: var(--foreground);
+}
+
+.qm-scope-switch [data-slot="button"][data-scope-active="true"] {
+  border-color: color-mix(in oklab, var(--primary) 32%, var(--border));
+  background: var(--background);
+  color: var(--foreground);
+  box-shadow: 0 1px 2px rgb(15 23 42 / 0.07), inset 0 -2px 0 color-mix(in oklab, var(--primary) 68%, transparent);
+}
+
+.qm-scope-switch [data-slot="button"][data-scope-active="true"] .qm-scope-count {
+  background: color-mix(in oklab, var(--primary) 14%, var(--background));
+  color: var(--primary);
+}
+
+.qm-scope-count {
+  min-width: 24px;
+  justify-content: center;
+  padding-inline: 6px;
+}

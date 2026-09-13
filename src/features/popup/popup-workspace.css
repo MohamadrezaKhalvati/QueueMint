@@ -1,0 +1,129 @@
+html:has(body.qm-capture-page),
+body.qm-capture-page,
+body.qm-capture-page #root {
+  width: 100%;
+  min-width: 0;
+  height: 100vh;
+  min-height: 100vh;
+  overflow: hidden;
+}
+
+body.qm-capture-page {
+  background: var(--background);
+}
+
+.qm-popup-shell.is-capture-workspace {
+  width: 100%;
+  height: 100vh;
+  min-height: 100vh;
+}
+
+.qm-popup-shell.is-capture-workspace .qm-popup-header {
+  min-height: 64px;
+  padding-inline: clamp(18px, 3vw, 44px);
+}
+
+.qm-popup-shell.is-capture-workspace .qm-popup-body {
+  width: 100%;
+  max-width: 1440px;
+  margin-inline: auto;
+  padding: 22px clamp(20px, 4vw, 48px) 36px;
+}
+
+.qm-popup-shell.is-capture-workspace .qm-popup-body > .space-y-3 {
+  width: 100%;
+  max-width: 1120px;
+  margin-inline: auto;
+}
+
+.qm-popup-shell.is-capture-workspace .capture-canvas-shell {
+  max-height: calc(100vh - 240px);
+  min-height: 420px;
+}
+
+.qm-popup-shell.is-capture-workspace .capture-canvas {
+  width: auto;
+  max-width: 100%;
+  min-width: min(100%, 760px);
+}
+
+.qm-popup-shell.is-capture-workspace .qm-capture-issue-form {
+  width: 100%;
+  max-width: 1120px;
+  margin-inline: auto;
+  gap: 12px;
+}
+
+.qm-popup-shell.is-capture-workspace .qm-popup-field-shell:not(.qm-popup-summary-card) {
+  min-height: 92px;
+}
+
+.qm-popup-shell.is-capture-workspace .qm-section-three-up .qm-popup-field-section-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.qm-popup-shell.is-capture-workspace .qm-section-three-up .qm-field-third {
+  grid-column: auto;
+}
+
+.qm-popup-shell.is-capture-workspace .qm-capture-issue-form > .qm-section-half {
+  grid-column: auto;
+  height: 100%;
+}
+
+.qm-popup-shell.is-capture-workspace .qm-section-half .qm-popup-field-section-grid {
+  height: calc(100% - 34px);
+  grid-template-columns: 1fr;
+}
+
+.qm-popup-shell.is-capture-workspace .qm-section-half .qm-field-span-2 {
+  grid-column: 1;
+}
+
+.qm-popup-shell.is-capture-workspace .qm-section-half .qm-popup-field-shell {
+  height: 100%;
+}
+
+.qm-popup-shell.is-capture-workspace .qm-popup-summary-card {
+  padding: 12px;
+}
+
+@media (max-width: 880px) {
+  .qm-popup-shell.is-capture-workspace .qm-section-three-up .qm-popup-field-section-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .qm-popup-shell.is-capture-workspace .qm-section-three-up .qm-field-third {
+    grid-column: 1 / -1;
+  }
+
+  .qm-popup-shell.is-capture-workspace .qm-capture-issue-form > .qm-section-half {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 680px) {
+  .qm-capture-issue-form {
+    grid-template-columns: 1fr;
+  }
+
+  .qm-field-span-2 {
+    grid-column: 1;
+  }
+
+  .qm-popup-shell.is-capture-workspace .qm-popup-body {
+    padding: 14px;
+  }
+
+  .qm-popup-shell.is-capture-workspace .capture-canvas-shell {
+    min-height: 260px;
+  }
+
+  .qm-popup-shell.is-capture-workspace .qm-section-three-up .qm-popup-field-section-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .qm-popup-shell.is-capture-workspace .qm-section-three-up .qm-field-third {
+    grid-column: 1;
+  }
+}

@@ -1,0 +1,68 @@
+{
+  "project": "SLID",
+  "defaults": {
+    "priority": "Low"
+  },
+  "issues": [
+    {
+      "type": "Task",
+      "summary": "Add editable field metadata",
+      "description": "Define editable field metadata for Dynamic HTML templates, initially supporting text and asset fields."
+    },
+    {
+      "type": "Task",
+      "summary": "Map preview elements to content fields",
+      "description": "Support data-slider-field mapping between rendered elements and slide content."
+    },
+    {
+      "type": "Task",
+      "summary": "Resolve repeated field instances",
+      "description": "Resolve declared repeated paths such as cards[].title to concrete paths such as cards[2].title."
+    },
+    {
+      "type": "Task",
+      "summary": "Add Dynamic HTML Inspector",
+      "description": "Add focused no-code controls for the currently selected Dynamic HTML field."
+    },
+    {
+      "type": "Task",
+      "summary": "Add preview element selection",
+      "description": "Allow clicking editable rendered elements to select their content field."
+    },
+    {
+      "type": "Task",
+      "summary": "Add inline text editing",
+      "description": "Allow presentation authors to edit Dynamic HTML text directly from the slide canvas."
+    },
+    {
+      "type": "Task",
+      "summary": "Add asset replacement UX",
+      "description": "Replace or remove asset fields using Slider's existing Asset picker."
+    },
+    {
+      "type": "Task",
+      "summary": "Add editor-only selection states",
+      "description": "Show hover and selection outlines only inside the presentation editor."
+    },
+    {
+      "type": "Task",
+      "summary": "Add safe nested content path helpers",
+      "description": "Add safe immutable get/set helpers for nested objects and array indexes with prototype-pollution protection."
+    },
+    {
+      "type": "Task",
+      "summary": "Add Template Studio field editor",
+      "description": "Add a compact UI for declaring text and asset fields without raw schema authoring."
+    },
+    {
+      "type": "Task",
+      "summary": "Verify no-code editing persistence",
+      "description": "Verify autosave and full reload persistence for no-code Dynamic HTML edits."
+    },
+    {
+      "type": "Task",
+      "summary": "Add Phase 2 tests and docs",
+      "description": "Add focused runtime, security and persistence coverage and update Template Studio documentation."
+    }
+  ]
+}

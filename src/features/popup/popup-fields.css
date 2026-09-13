@@ -1,0 +1,125 @@
+.qm-popup-field-shell {
+  --qm-field-accent: color-mix(in oklab, var(--primary) 68%, var(--muted-foreground));
+  display: grid;
+  gap: 7px;
+  min-width: 0;
+  padding: 10px;
+  border: 1px solid color-mix(in oklab, var(--border) 88%, transparent);
+  border-radius: 12px;
+  background: color-mix(in oklab, var(--card) 94%, var(--background));
+  transition: border-color 160ms ease, background-color 160ms ease, box-shadow 160ms ease;
+}
+
+.qm-popup-field-shell:focus-within {
+  border-color: color-mix(in oklab, var(--qm-field-accent) 55%, var(--border));
+  background: color-mix(in oklab, var(--card) 97%, var(--qm-field-accent) 3%);
+  box-shadow: 0 0 0 2px color-mix(in oklab, var(--qm-field-accent) 12%, transparent);
+}
+
+.qm-popup-field-shell.is-context { --qm-field-accent: #3b82f6; }
+.qm-popup-field-shell.is-planning { --qm-field-accent: #8b5cf6; }
+.qm-popup-field-shell.is-people { --qm-field-accent: #14b8a6; }
+.qm-popup-field-shell.is-details { --qm-field-accent: #f59e0b; }
+
+.qm-popup-field-heading {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  min-width: 0;
+}
+
+.qm-popup-field-icon {
+  display: grid;
+  width: 26px;
+  height: 26px;
+  flex: 0 0 26px;
+  place-items: center;
+  border-radius: 8px;
+  color: var(--qm-field-accent);
+  background: color-mix(in oklab, var(--qm-field-accent) 11%, var(--card));
+  border: 1px solid color-mix(in oklab, var(--qm-field-accent) 18%, var(--border));
+}
+
+.qm-popup-field-label {
+  display: block;
+  overflow: hidden;
+  color: var(--foreground);
+  font-size: 11px;
+  font-weight: 650;
+  line-height: 1.25;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.qm-popup-field-hint {
+  display: block;
+  margin-top: 2px;
+  overflow: hidden;
+  color: var(--muted-foreground);
+  font-size: 9px;
+  line-height: 1.2;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.qm-popup-field-control {
+  display: block;
+  min-width: 0;
+}
+
+.qm-popup-field-control > * {
+  width: 100%;
+}
+
+.qm-popup-field-section {
+  overflow: hidden;
+  border: 1px solid color-mix(in oklab, var(--border) 92%, transparent);
+  border-radius: 14px;
+  background: color-mix(in oklab, var(--card) 76%, transparent);
+}
+
+.qm-popup-field-section-title {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 34px;
+  padding: 7px 10px;
+  color: var(--muted-foreground);
+  border-bottom: 1px solid color-mix(in oklab, var(--border) 75%, transparent);
+  background: color-mix(in oklab, var(--muted) 42%, transparent);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .04em;
+}
+
+.qm-popup-field-section-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 8px;
+  padding: 8px;
+}
+
+.qm-popup-field-section-grid > .qm-field-span-2 {
+  grid-column: 1 / -1;
+}
+
+.qm-popup-summary-card {
+  padding: 11px;
+  border-color: color-mix(in oklab, var(--primary) 26%, var(--border));
+  background: color-mix(in oklab, var(--primary) 4%, var(--card));
+}
+
+.qm-popup-more-fields {
+  border-style: dashed;
+  background: color-mix(in oklab, var(--muted) 35%, transparent);
+}
+
+@media (max-width: 680px) {
+  .qm-popup-field-section-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .qm-popup-field-section-grid > .qm-field-span-2 {
+    grid-column: 1;
+  }
+}

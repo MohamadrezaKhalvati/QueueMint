@@ -1,0 +1,206 @@
+@custom-variant dark (&:is(.dark *));
+
+@font-face {
+  font-family: "Samim";
+  src: local("Samim"), url("/fonts/Samim.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Samim";
+  src: local("Samim Medium"), local("Samim-Medium"), url("/fonts/Samim-Medium.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Samim";
+  src: local("Samim Bold"), local("Samim-Bold"), url("/fonts/Samim-Bold.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+}
+
+:root {
+  --app-font-sans: "Segoe UI Variable Text", "Segoe UI Variable", "Segoe UI", Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, Arial, sans-serif;
+  font-family: var(--app-font-sans);
+  color-scheme: light;
+  --radius: 0.625rem;
+  --background: #f8fafb;
+  --foreground: #17202b;
+  --card: #ffffff;
+  --card-foreground: #17202b;
+  --popover: #ffffff;
+  --popover-foreground: #17202b;
+  --sidebar: #fbfcfd;
+  --sidebar-foreground: #26313f;
+  --primary: #087b61;
+  --primary-foreground: #ffffff;
+  --secondary: #f1f4f6;
+  --secondary-foreground: #26313f;
+  --muted: #f2f5f7;
+  --muted-foreground: #697789;
+  --accent: color-mix(in oklab, var(--primary) 9%, var(--card));
+  --accent-foreground: color-mix(in oklab, var(--primary) 82%, var(--foreground) 18%);
+  --destructive: #dc2626;
+  --destructive-foreground: #ffffff;
+  --border: #e1e7ec;
+  --input: #d8e0e6;
+  --ring: var(--primary);
+  --success: #0e8a68;
+  --warning: #b7791f;
+  --review-cols: 3;
+  --default-animation-duration: 220ms;
+  --default-animation-delay: 0ms;
+  --default-animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.dark {
+  color-scheme: dark;
+  --background: #0f141b;
+  --foreground: #f3f6f8;
+  --card: #151c25;
+  --card-foreground: #f3f6f8;
+  --popover: #18212b;
+  --popover-foreground: #f3f6f8;
+  --sidebar: #111820;
+  --sidebar-foreground: #dfe6ed;
+  --primary: #4ed9c5;
+  --primary-foreground: #071f1b;
+  --secondary: #1d2732;
+  --secondary-foreground: #e8edf2;
+  --muted: #1a232d;
+  --muted-foreground: #96a3b3;
+  --accent: color-mix(in oklab, var(--primary) 14%, var(--card));
+  --accent-foreground: color-mix(in oklab, var(--primary) 88%, var(--foreground) 12%);
+  --destructive: #fb7185;
+  --destructive-foreground: #19080c;
+  --border: #2b3744;
+  --input: #344252;
+  --ring: var(--primary);
+  --success: #55d6a7;
+  --warning: #e7b95b;
+}
+
+@theme inline {
+  --font-sans: var(--app-font-sans);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+}
+
+* {
+  border-color: var(--border);
+}
+
+html {
+  background: var(--background);
+}
+
+body {
+  margin: 0;
+  font-family: var(--app-font-sans);
+  min-width: 320px;
+  min-height: 100dvh;
+  overflow-x: hidden;
+  background: var(--background);
+  color: var(--foreground);
+  text-rendering: optimizeLegibility;
+}
+
+#root {
+  min-height: 100dvh;
+  isolation: isolate;
+}
+
+html[lang="fa"] {
+  --app-font-sans: "Segoe UI Variable Text", "Segoe UI Variable", "Segoe UI", Tahoma, "Samim", Arial, sans-serif;
+}
+
+body,
+button,
+input,
+textarea,
+select {
+  font-family: var(--app-font-sans);
+}
+
+button,
+input,
+textarea {
+  font: inherit;
+}
+
+code,
+.json-editor {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace !important;
+}
+
+.json-editor {
+  direction: ltr;
+  text-align: left;
+  unicode-bidi: plaintext;
+  tab-size: 2;
+  overflow-wrap: anywhere;
+}
+
+.app-container {
+  width: min(100%, 1600px);
+  margin-inline: auto;
+}
+
+.review-grid {
+  display: grid;
+  grid-template-columns: repeat(var(--review-cols), minmax(0, 1fr));
+  gap: 0.75rem;
+}
+
+.board-scroll {
+  overscroll-behavior-inline: contain;
+  scrollbar-gutter: stable;
+}
+
+.issue-card {
+  min-width: 0;
+}
+
+.context-summary {
+  background:
+    radial-gradient(circle at 0% 0%, color-mix(in oklab, var(--primary) 9%, transparent), transparent 36%),
+    linear-gradient(135deg, color-mix(in oklab, var(--card) 92%, var(--primary) 8%), var(--card) 58%);
+  box-shadow: 0 8px 24px rgb(15 23 42 / 0.055);
+}
+
+.dark .context-summary {
+  background:
+    radial-gradient(circle at 0% 0%, color-mix(in oklab, var(--primary) 13%, transparent), transparent 38%),
+    linear-gradient(135deg, color-mix(in oklab, var(--card) 93%, var(--primary) 7%), var(--card) 62%);
+  box-shadow: 0 10px 28px rgb(7 12 20 / 0.22);
+}

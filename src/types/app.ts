@@ -1,0 +1,4 @@
+export type AppLocale = "en" | "fa"
+export type AppTheme = "light" | "dark" | "system"
+export type ReviewLayout = "grid" | "list" | "board"
+export type DensityMode = "compact" | "comfortable" | "spacious"

@@ -1,0 +1,34 @@
+{
+  "manifest_version": 3,
+  "name": "QueueMint",
+  "version": "0.24.1",
+  "description": "QueueMint is a fast Jira companion for capture, evidence-rich bug reporting, safe bulk actions, saved workflows, and power-user shortcuts.",
+  "action": {
+    "default_title": "Open QueueMint",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "32": "icons/icon32.png"
+    },
+    "default_popup": "popup.html"
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "permissions": [
+    "storage",
+    "activeTab",
+    "scripting",
+    "clipboardWrite"
+  ],
+  "optional_host_permissions": [
+    "https://*/*",
+    "http://*/*"
+  ],
+  "options_page": "index.html",
+  "icons": {
+    "16": "icons/icon16.png",
+    "32": "icons/icon32.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  }
+}

@@ -1,0 +1,29 @@
+name: Feature request
+description: Propose a QueueMint improvement
+labels: [enhancement]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Jira workflow problem
+      description: What is slow, repetitive, fragmented, or unsafe today?
+    validations:
+      required: true
+  - type: textarea
+    id: jira
+    attributes:
+      label: What does Jira already provide?
+      description: Explain why native Jira is not good enough for this workflow. QueueMint should not rebuild Jira unnecessarily.
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed QueueMint shortcut or assistant
+    validations:
+      required: true
+  - type: textarea
+    id: permissions
+    attributes:
+      label: Permission/data considerations
+      description: Does this require new browser permissions, AI data transfer, or new Jira endpoints?

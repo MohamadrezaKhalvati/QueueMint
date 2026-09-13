@@ -1,0 +1,146 @@
+.live-issue-card {
+  border-color: var(--border) !important;
+  background: var(--card) !important;
+  box-shadow: 0 1px 1px rgb(15 23 42 / 0.025);
+}
+
+.live-issue-card:hover {
+  border-color: var(--qm-primary-border) !important;
+}
+
+.qm-manage-selection > [data-slot="badge"] {
+  min-width: 34px;
+  min-height: 28px;
+  border: 1px solid var(--qm-primary-border);
+  border-radius: 8px;
+  background: var(--qm-primary-soft-strong);
+  color: var(--primary);
+  box-shadow: none;
+}
+
+.qm-workspace > .border-b > .app-container {
+  padding-inline: 30px;
+}
+
+.qm-context-item {
+  max-width: none !important;
+}
+
+.qm-attachment-compact > div:first-child {
+  display: none;
+}
+
+.qm-attachment-compact > [data-slot="button"] {
+  min-height: 42px !important;
+  height: 42px !important;
+  width: auto !important;
+  border-style: solid !important;
+  border-radius: 8px !important;
+  background: var(--card) !important;
+  padding-inline: 12px !important;
+}
+
+.qm-attachment-compact > [data-slot="button"] > span:first-child {
+  width: 28px;
+  height: 28px;
+  box-shadow: none;
+}
+
+.qm-attachment-compact > [data-slot="button"] span span:last-child {
+  display: none;
+}
+
+.qm-add-batch-shortcut {
+  width: 34px !important;
+  height: 34px !important;
+  border-color: var(--border) !important;
+  color: var(--muted-foreground);
+}
+
+[dir="rtl"] .qm-start-card [class*="lucide-chevron-right"],
+[dir="rtl"] .qm-editor-footer [class*="lucide-chevron-right"] {
+  transform: scaleX(-1);
+}
+
+.qm-review-summary,
+.qm-manage-summary {
+  min-height: 92px;
+  align-items: center;
+}
+
+.qm-review-summary > div:first-child,
+.qm-manage-summary > div:first-child {
+  width: 100%;
+}
+
+.qm-attachment-compact > [data-slot="button"] {
+  min-height: 36px !important;
+  height: 36px !important;
+}
+
+.qm-attachment-compact > [data-slot="button"] > span:first-child {
+  width: 24px;
+  height: 24px;
+}
+
+.qm-toolbar-divider {
+  width: 1px;
+  height: 28px;
+  margin-inline: 4px 8px;
+  background: var(--border);
+}
+
+.qm-view-toggle {
+  width: 42px !important;
+  height: 42px !important;
+  border-radius: 8px !important;
+}
+
+.qm-filter-row .inline-flex [data-slot="button"][data-variant="secondary"] {
+  background: var(--qm-primary-soft);
+  color: var(--primary);
+}
+
+.qm-form-card [data-slot="button"][data-variant="secondary"][aria-pressed="true"] {
+  background: var(--qm-primary-soft);
+  color: var(--primary);
+}
+
+.qm-review-footer [data-slot="button"][data-variant="default"] {
+  background: var(--primary);
+  color: var(--primary-foreground);
+}
+
+.qm-review-footer [data-slot="button"][data-variant="default"]:hover {
+  background: color-mix(in oklab, var(--primary) 88%, #000 12%);
+  color: var(--primary-foreground);
+}
+
+/* Compact board picker inside the Manage Jira context strip. */
+.qm-context-board-select {
+  height: 28px !important;
+  min-height: 28px !important;
+  border: 0 !important;
+  background: transparent !important;
+  padding-inline: 0 !important;
+  padding-block: 0 !important;
+  box-shadow: none !important;
+}
+
+.qm-context-board-select:hover,
+.qm-context-board-select:focus,
+.qm-context-board-select[data-state="open"] {
+  border-color: transparent !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+/* QueueMint notifications must remain visible even when a Sheet, Dialog, Select,
+   or capture surface is portalled above the application shell. */
+[data-sonner-toaster] {
+  z-index: 2147483647 !important;
+}
+
+[data-sonner-toast] {
+  pointer-events: auto;
+}

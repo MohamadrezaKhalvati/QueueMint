@@ -1,0 +1,199 @@
+.qm-status-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: currentColor;
+}
+
+.qm-topbar-icon {
+  width: 36px !important;
+  height: 36px !important;
+  border-radius: 8px !important;
+  color: var(--muted-foreground);
+}
+
+.qm-topbar-icon:hover {
+  background: var(--accent) !important;
+}
+
+.qm-topbar-divider {
+  width: 1px;
+  height: 24px;
+  margin-inline: 8px 6px;
+  background: var(--border);
+}
+
+.qm-user-menu {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: 0;
+  border-radius: 9px;
+  background: transparent;
+  padding: 2px;
+  color: var(--muted-foreground);
+  outline: none;
+}
+
+.qm-user-avatar {
+  display: grid;
+  width: 38px;
+  height: 38px;
+  place-items: center;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--muted);
+  color: var(--foreground);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.app-container {
+  width: 100%;
+  max-width: none;
+  margin-inline: 0;
+}
+
+.qm-page {
+  width: min(100%, calc(var(--qm-page-max) + 64px));
+  margin-inline: auto;
+  padding: 26px 32px 58px;
+}
+
+.qm-page-review {
+  padding-block-end: 104px;
+}
+
+.qm-page-heading {
+  margin-block-end: 20px;
+}
+
+.qm-page-heading-row {
+  align-items: end;
+}
+
+.qm-eyebrow {
+  margin-block-end: 8px;
+  color: var(--muted-foreground);
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+}
+
+.qm-page-title {
+  margin: 0;
+  color: var(--foreground);
+  font-size: clamp(36px, 2.8vw, 48px);
+  font-weight: 700;
+  line-height: 1.04;
+  letter-spacing: -0.04em;
+}
+
+.qm-page-subtitle {
+  margin-block-start: 9px;
+  color: var(--muted-foreground);
+  font-size: 16px;
+  line-height: 1.45;
+}
+
+.qm-heading-actions [data-slot="button"] {
+  min-height: 42px;
+  border-radius: var(--qm-control-radius);
+  padding-inline: 17px;
+}
+
+[data-slot="button"] {
+  box-shadow: none;
+}
+
+[data-slot="button"]:hover {
+  box-shadow: none;
+}
+
+[data-slot="input"],
+[data-slot="select-trigger"] {
+  min-height: 42px;
+  border-radius: var(--qm-control-radius);
+  box-shadow: none;
+}
+
+[data-slot="input"] {
+  background: var(--card);
+}
+
+[data-slot="card"] {
+  box-shadow: none;
+}
+
+.qm-form-card,
+.qm-editor-card,
+.qm-review-panel,
+.qm-manage-panel,
+.qm-review-summary,
+.qm-manage-summary {
+  border-color: var(--border);
+  border-radius: var(--qm-panel-radius);
+  background: var(--card);
+  box-shadow: none !important;
+}
+
+.qm-form-context {
+  min-height: 84px;
+}
+
+.qm-entity-summary {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 12px;
+}
+
+.qm-entity-icon,
+.qm-context-icon,
+.qm-start-card-icon {
+  display: grid;
+  flex: 0 0 auto;
+  place-items: center;
+  border: 1px solid var(--qm-primary-border);
+  background: var(--qm-primary-soft);
+  color: var(--primary);
+}
+
+.qm-entity-icon {
+  width: 46px;
+  height: 46px;
+  border-radius: 10px;
+}
+
+.qm-entity-label,
+.qm-context-label {
+  display: block;
+  margin-block-end: 2px;
+  color: var(--muted-foreground);
+  font-size: 12px;
+  line-height: 1.15;
+}
+
+.qm-entity-value,
+.qm-context-value {
+  display: block;
+  min-width: 0;
+  overflow: hidden;
+  color: var(--foreground);
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.25;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.qm-context-divider,
+.qm-mini-divider {
+  display: inline-block;
+  width: 1px;
+  align-self: stretch;
+  min-height: 28px;
+  background: var(--border);
+}

@@ -1,0 +1,84 @@
+{
+  "project": "SLID",
+  "defaults": {
+    "priority": "Low",
+    "labels": [
+      "slider",
+      "template-studio"
+    ]
+  },
+  "issues": [
+    {
+      "ref": "template-studio-phase-2",
+      "type": "Epic",
+      "summary": "No-Code Template Editing UX",
+      "description": "Make Dynamic HTML slides editable by non-technical presentation authors."
+    },
+    {
+      "type": "Task",
+      "summary": "Add editable field metadata",
+      "description": "Define text and asset field metadata for Dynamic HTML templates.",
+      "epic": "template-studio-phase-2"
+    },
+    {
+      "type": "Task",
+      "summary": "Map preview elements to content fields",
+      "description": "Map data-slider-field elements to concrete slide content paths.",
+      "epic": "template-studio-phase-2"
+    },
+    {
+      "type": "Task",
+      "summary": "Resolve repeated field instances",
+      "description": "Resolve paths such as cards[].title to cards[2].title at runtime.",
+      "epic": "template-studio-phase-2"
+    },
+    {
+      "type": "Task",
+      "summary": "Add Dynamic HTML Inspector",
+      "description": "Edit selected Dynamic HTML fields from the presentation editor inspector.",
+      "epic": "template-studio-phase-2"
+    },
+    {
+      "type": "Task",
+      "summary": "Add inline text editing",
+      "description": "Support direct persisted text editing inside Dynamic HTML slides.",
+      "epic": "template-studio-phase-2"
+    },
+    {
+      "type": "Task",
+      "summary": "Add asset replacement UX",
+      "description": "Replace and remove Dynamic HTML image fields through the existing Slider asset picker.",
+      "epic": "template-studio-phase-2"
+    },
+    {
+      "type": "Task",
+      "summary": "Add editor-only selection states",
+      "description": "Show hover and selection outlines only in presentation authoring mode.",
+      "epic": "template-studio-phase-2"
+    },
+    {
+      "type": "Task",
+      "summary": "Add safe nested content path helpers",
+      "description": "Provide secure immutable get/set helpers for nested object and array paths.",
+      "epic": "template-studio-phase-2"
+    },
+    {
+      "type": "Task",
+      "summary": "Add Template Studio field editor",
+      "description": "Allow template authors to declare editable fields without raw schema JSON.",
+      "epic": "template-studio-phase-2"
+    },
+    {
+      "type": "Task",
+      "summary": "Verify no-code editing persistence",
+      "description": "Verify autosave, reload persistence, Preview isolation and Public Viewer isolation.",
+      "epic": "template-studio-phase-2"
+    },
+    {
+      "type": "Task",
+      "summary": "Add Phase 2 tests and docs",
+      "description": "Cover field mapping, repeated paths, bridge security and asset persistence.",
+      "epic": "template-studio-phase-2"
+    }
+  ]
+}

@@ -1,0 +1,129 @@
+# QueueMint roadmap
+
+This roadmap reflects the current product decision: QueueMint is a Jira companion, not a Jira replacement.
+
+## Completed foundation
+
+### v0.10 through v0.16
+
+The product grew from Jira issue creation into Capture, bulk management, Workspace context, Saved Views, Issue Detail, safe clone/move helpers, Saved Actions, Command Palette, local intelligence, safe Automation rules, and persistent activity history.
+
+### v0.17 through v0.22
+
+A full architecture cleanup decomposed the original monolithic Popup and App. Jira transport, Capture, Review, Manage Jira, Workspace, Automation, shell, and orchestration are now feature modules. Every production code file is capped at 300 lines with no exceptions.
+
+## v0.23 - Capture Pro - completed
+
+Goal: make QueueMint the fastest path from "I found a bug" to a useful Jira issue.
+
+Delivered in this phase:
+
+- multiple screenshot evidence in one capture session
+- visible and full-page evidence shots
+- annotations and existing crop/redaction workflow retained
+- evidence preserved into full-screen Capture
+- screen/window/tab recording in full-screen Capture
+- optional microphone audio
+- short recording limits suitable for bug evidence
+- local evidence attachments including WebM, logs, JSON, PDFs, and images
+- clipboard copy for the active screenshot
+- optional runtime/resource/network diagnostics without Chrome debugger permission
+- multi-evidence Jira attachment upload
+- v0.23.1 tester follow-up: persistent Capture sessions across popup closure
+- v0.23.2 tester follow-up: retake reliability, removable final evidence, stale source reconnection, and Quick Issue context/assignee polish
+- source-tab linkage while the full-screen editor is active
+- recovery of screenshot edits and create-bug draft state
+- explicit Capture-session reset
+
+Possible small follow-ups inside the Capture area should continue to be driven by actual tester feedback, not by copying dedicated screen-recording products.
+
+## v0.24 - Smart Assistant - completed
+
+Goal: reduce the work needed to turn evidence into a useful Jira issue without giving AI control over Jira writes.
+
+Delivered:
+
+- optional OpenAI-backed Summary and Description drafting
+- structured Steps to reproduce, Expected result, and Actual result
+- suggested Issue Type, Priority, Component, Labels, Epic, and Assignee
+- semantic duplicate suggestions using recent issue titles only when explicitly enabled
+- visible per-request data boundaries for draft text, page context, screenshot, diagnostics, Jira metadata, and duplicate candidates
+- AI disabled by default with local-only mode and the existing local Smart Draft retained
+- explicit preview/apply step before AI suggestions change issue fields
+- Quick Issue project switching directly in the single-issue form
+
+Not included: autonomous Jira creation or hidden background AI calls.
+
+## v0.25 - Jira Power Tools
+
+Goal: make common high-friction Jira operations fast while Jira remains the source of truth.
+
+Candidate work:
+
+- stronger reusable bulk macros
+- common cleanup actions for missing ownership, estimates, labels, and placement
+- safer cross-project clone helpers
+- faster issue field fixes across selections
+- better saved action composition
+- action previews that explain exactly which issues and fields will change
+
+Selection rule: only build tools where QueueMint materially reduces Jira friction.
+
+## v0.26 - Command Layer
+
+Goal: make Ctrl+K a genuine command interface over the user's current Jira context.
+
+Examples:
+
+- assign selected to me
+- move selected to a sprint
+- show unassigned bugs
+- open the selected issue
+- create a bug from this page
+- apply a Saved Action
+- switch project/board context
+
+Commands should call existing QueueMint feature APIs instead of creating a second implementation path.
+
+## v0.27 - Productivity and polish
+
+Goal: make QueueMint comfortable for daily use.
+
+Candidate work:
+
+- recent issues/projects/boards
+- favorite commands
+- stronger capture draft recovery
+- import/export of local QueueMint preferences
+- backup/restore for Saved Views and Saved Actions
+- focused meeting/Slack summaries, not a reporting engine
+- accessibility pass
+- keyboard navigation pass
+- performance and bundle-size pass
+
+## v1.0 - Public release
+
+Goal: publish a stable Jira-agnostic QueueMint release for broader Chrome/Edge use.
+
+Release work:
+
+- supported Jira matrix and documented compatibility
+- least-privilege browser permission audit
+- privacy policy and data-flow documentation
+- install/onboarding polish
+- store assets and listing copy
+- CI and release tagging
+- automated tests for critical Jira bridge and Capture flows
+- error/diagnostics guidance for support
+- final security review
+
+## Permanently avoid unless product strategy changes
+
+- full Jira reporting replacement
+- full dashboard builder
+- full sprint planning replacement
+- full release management replacement
+- Jira workflow administration clone
+- Jira permissions/project administration clone
+- full Jira Automation engine clone
+- independent issue tracking database
