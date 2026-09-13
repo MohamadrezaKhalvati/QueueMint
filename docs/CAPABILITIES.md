@@ -1,6 +1,6 @@
 # QueueMint capabilities
 
-Current product version: v0.27.0.
+Current release candidate: v1.0.0 RC4.
 
 This document describes what is implemented today. It intentionally separates current capability from the future roadmap.
 
@@ -112,6 +112,9 @@ QueueMint does not request the Chrome `debugger` permission for Capture diagnost
 - Due Date.
 - additional supported field data through discovered field mappings.
 - attachment upload after issue creation.
+- Description editors use one editable visual surface rather than separate raw markup and preview panes. Bold, italic, lists, quote, inline code, and links render while editing; active toolbar buttons are highlighted; Ctrl/Cmd+B and Ctrl/Cmd+I are supported. The form value remains Jira wiki markup for the existing Jira create flows.
+- Smart Assistant output is normalized to Jira wiki formatting before it is applied to an issue description.
+- Quick Issue treats Backlog as a placement choice rather than a Sprint option; when Sprint placement is selected, the Sprint selector contains sprints only.
 
 ## Smart Draft and Smart Assistant
 
@@ -233,7 +236,7 @@ This is a QueueMint workflow trace, not a replacement for Jira issue history.
 
 ## Command Layer
 
-Ctrl+Shift+K is a context-aware command interface over the same QueueMint actions used by the visible UI. It does not maintain a second Jira mutation engine.
+Ctrl+Shift+K is the primary context-aware command interface over the same QueueMint actions used by the visible UI. Alt+Shift+K is a fallback for Chrome profiles where the primary extension shortcut cannot be assigned. Both routes open/focus the QueueMint workspace and reuse the same command actions; the Command Layer does not maintain a second Jira mutation engine.
 
 Current commands include:
 
@@ -267,3 +270,8 @@ Command search supports multiple words, and the palette groups results into navi
 - feature-oriented folders keep workflows separated.
 - Jira transport is kept outside visual components.
 - destructive or large mutations favor preview and explicit user confirmation.
+
+
+## Public release hardening
+
+The v1.0 release branch adds release-time validation and public documentation rather than new Jira business features: a permission audit, privacy/support docs, compatibility matrix, Store listing draft, and GitHub release-package workflow. Runtime product behavior remains the v0.27 capability set until final v1.0 smoke tests are complete.

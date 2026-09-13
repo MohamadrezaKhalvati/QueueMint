@@ -1,5 +1,39 @@
 # Changelog
 
+## 1.0.0-rc.4 - Attachment drag and drop
+
+- Added drag-and-drop attachment intake for images and supported evidence files in Quick Issue, Review, and Capture evidence flows.
+- Added a clear drop-zone state so users can drag files from the desktop or click the same surface to browse.
+- Dragged files now use the same type, per-file size, total-size, count, duplicate, preview, removal, and Jira upload path as picked files.
+- Explicitly validates drag-and-drop file types because the browser file-input `accept` filter does not protect dropped files.
+
+## 1.0.0-rc.3 - Visual description editing
+
+- Replaced the split raw Jira-wiki textarea plus preview with a single editable visual description surface in every flow that uses `RichTextEditor`.
+- Bold, italic, bullet lists, numbered lists, quote, inline code, and links now render directly while the user edits.
+- Formatting toolbar buttons expose active state from the current caret/selection, so selected bold/italic/list/etc. state is visible like a normal rich-text editor.
+- Kept Ctrl/Cmd+B and Ctrl/Cmd+I plus list keyboard shortcuts while serializing the visual DOM back to Jira wiki markup for the existing Jira transport.
+- Plain-text paste is enforced so unsupported external HTML does not leak into Jira descriptions.
+
+## 1.0.0-rc.2 - Editor and shortcut reliability
+
+- Added a second Command Layer shortcut, `Alt+Shift+K`, so a fresh QueueMint install still has a working global shortcut when Chrome cannot assign `Ctrl+Shift+K` because another extension profile/install already owns it.
+- Global Command Layer shortcuts now focus/open the QueueMint workspace before revealing the palette, while the in-app listener supports both primary and fallback shortcuts.
+- Added Jira wiki formatting preview plus `Ctrl/Cmd+B` and `Ctrl/Cmd+I` editor shortcuts for issue descriptions.
+- Smart Assistant now requests Jira wiki formatting and normalizes common Markdown bold, heading, list, and inline-code syntax before applying a suggestion.
+- Capture issue descriptions now use the same rich description editor as Quick Issue.
+- Removed Backlog from the Quick Issue Sprint selector because placement is already chosen separately; the Capture form labels its combined control as Sprint / Backlog instead.
+
+## 1.0.0-rc.1 - Public release hardening
+
+- Added a public privacy policy and support guide.
+- Added a least-privilege browser permission audit and conservative browser/Jira compatibility matrix.
+- Added `npm run check:release` to validate the Manifest V3/version contract, required permission boundary, public release docs, obvious committed secrets, and dynamic-code hazards.
+- Added CI coverage for release branches and a tag-driven GitHub release ZIP workflow built from the exact `dist/` contents.
+- Added a Chrome Web Store listing, privacy disclosure, permission justification, and screenshot-plan draft.
+- Added a clean-profile/upgrade/public-release checklist.
+- Shortened the manifest description to fit Chrome's public manifest description limit and added release-candidate `version_name` plus project homepage metadata.
+
 ## 0.27.0 - Productivity and Polish
 
 - Replaced the browser-reserved Ctrl+K shortcut with Ctrl+Shift+K / Command+Shift+K and registered a Chrome extension command so the browser no longer steals the palette shortcut.

@@ -173,7 +173,7 @@ export function QuickIssueScreen({
             {!isEpic && placement === "sprint" ? (
               <Field>
                 <FieldLabel>{t.sprint}</FieldLabel>
-                <SprintSelect sprints={sprints} value={sprintId} defaultSprint={payload?.defaults?.sprint} onValueChange={setSprintId} inheritedLabel={t.useDefault} backlogLabel={t.backlog} activeLabel={t.active} futureLabel={t.future} />
+                <SprintSelect sprints={sprints} value={sprintId} onValueChange={setSprintId} allowInherited={false} allowBacklog={false} noDefaultLabel={locale === "fa" ? "انتخاب اسپرینت" : "Select sprint"} activeLabel={t.active} futureLabel={t.future} />
               </Field>
             ) : null}
             {!isEpic ? (
@@ -204,7 +204,7 @@ export function QuickIssueScreen({
 
           <SmartAssistantCard locale={locale} projectKey={projectKey} draft={{ summary: issue.summary, description: issue.description ?? "", issueType: issue.type, priority: issue.priority, component: issue.components?.[0], labels: issue.labels, epic: issue.epic, assignee: issue.assignee }} metadata={assistantMetadata} onApply={applyAssistant} onOpenIssue={onOpenDuplicate} />
 
-          <AttachmentPicker files={attachments} onChange={setAttachments} label={t.addAttachment} helper={t.attachmentHelp} addLabel={t.addAttachment} className="qm-attachment-compact" />
+          <AttachmentPicker files={attachments} onChange={setAttachments} label={t.addAttachment} helper={t.attachmentHelp} addLabel={t.addAttachment} dropLabel={t.attachmentDrop} dropActiveLabel={t.attachmentDropActive} formatHint={t.attachmentTypes} className="qm-attachment-compact" />
 
           {resultItem ? (
             <div className={cn("rounded-xl border p-3 text-sm", resultItem.ok ? "border-emerald-200 bg-emerald-50 text-emerald-800 dark:border-emerald-900 dark:bg-emerald-950/30 dark:text-emerald-200" : "border-destructive/30 bg-destructive/5 text-destructive")}>

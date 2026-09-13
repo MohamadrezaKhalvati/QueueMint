@@ -4,11 +4,11 @@ Use this file when starting a new ChatGPT, coding-agent, or developer session. R
 
 ## Current state
 
-Current release: **v0.27.0**.
+Current release branch candidate: **v1.0.0 RC4**, based on the completed v0.27.0 product feature set.
 
 The architecture refactor is complete. The strict 300-line production code limit has no exceptions. `App.tsx` and `Popup.tsx` are orchestration/composition layers rather than monoliths.
 
-Capture Pro, Smart Assistant, Jira Power Tools, and Command Layer are complete. The current release completes **v0.27 Productivity & Polish**, fixing the Chrome shortcut collision and adding persistent favorites, recent context, portable backup/restore, sprint-share copy, and keyboard-accessibility polish.
+Capture Pro, Smart Assistant, Jira Power Tools, and Command Layer are complete. The product feature set through **v0.27 Productivity & Polish** is complete. The current work is v1.0 public-release hardening: permissions/privacy, compatibility, packaging/CI, clean-profile and upgrade validation, store preparation, and final security review.
 
 ## Product definition
 
@@ -118,6 +118,16 @@ For exact current detail, read `docs/CAPABILITIES.md`.
 - Durable Capture recovery was already solved by the persistent Capture Session architecture. Do not create a second draft-recovery store for the same data.
 - Command Palette keyboard behavior must continue to skip disabled commands and keep Escape/Arrow/Home/End/Enter navigation accessible.
 
+
+## v1.0 RC3/RC4 release-candidate fixes
+
+- Keep `Ctrl+Shift+K` / `Command+Shift+K` as the primary Command Layer shortcut, but also keep `Alt+Shift+K` as a fallback. Chrome can leave a suggested extension shortcut unassigned when another installed QueueMint build or extension already owns it.
+- The background command now opens/focuses QueueMint before sending the palette message, so a global shortcut is useful even when the workspace tab is not already focused.
+- `RichTextEditor` is now a visual content-editable surface. Users do not edit raw Jira wiki markers directly. Formatting is rendered in place, active toolbar controls are highlighted from the current selection, and the editor serializes back to Jira wiki markup before passing the value into existing Jira flows. Ctrl/Cmd+B and Ctrl/Cmd+I remain supported.
+- Smart Assistant must request Jira wiki formatting and normalize common Markdown before Apply. Do not send raw `**bold**`/backtick Markdown into Jira descriptions.
+- Backlog is a placement, not a sprint. Quick Issue already has a Placement control, so its Sprint selector must not contain Backlog. Capture has one combined routing control, so its label explicitly says Sprint / Backlog.
+- Desktop drag-and-drop for attachments is handled by the shared `AttachmentPicker`. Keep dropped files on the same allowlist, size/count limits, preview, duplicate guard, and Jira upload path as files chosen through the picker.
+
 ## Architecture rules
 
 - No production code file over 300 lines.
@@ -141,9 +151,9 @@ A phase should not be considered complete until these pass on a normal developme
 
 ## Agreed future direction
 
-Next planned phase:
+Current phase:
 
-- **v1.0 Public Release**: Jira compatibility matrix, least-privilege permission/privacy audit, critical-flow tests, onboarding/store assets, CI release flow, upgrade/fresh-install testing, and final security review.
+- **v1.0 Public Release**: RC4 keeps the RC1-RC3 hardening and adds shared attachment drag-and-drop without changing the Jira upload path. Remaining work is final clean-profile/upgrade validation, recorded critical-flow smoke tests, Store assets/privacy form, and final security review.
 
 Read `docs/ROADMAP.md` for the full reasoning and non-goals.
 
@@ -161,3 +171,13 @@ Ask:
 ## Git/release state
 
 The repository contains GitHub CI configuration, contribution guidance, release guidance, changelog, product direction, capabilities, architecture, and roadmap documentation. `dist/` and `node_modules/` remain ignored and should not be committed.
+
+
+## v1.0 RC1 hardening notes
+
+- `scripts/check-release.mjs` is now a required release gate in addition to the 300-line architecture check, TypeScript, and Vite build.
+- Required Chrome permissions remain `storage`, `activeTab`, `scripting`, and `clipboardWrite`. Jira/OpenAI host access remains optional runtime access.
+- `PRIVACY.md`, `SUPPORT.md`, `docs/PERMISSIONS.md`, `docs/COMPATIBILITY.md`, and `docs/PUBLIC-RELEASE-CHECKLIST.md` are part of the public release contract.
+- `store/CHROME-WEB-STORE.md` is the canonical Store listing/privacy/permission-justification draft.
+- `.github/workflows/release.yml` creates the exact `dist/` ZIP for version tags. It does not publish to the Chrome Web Store automatically.
+- Do not tag final `v1.0.0` until clean-profile Chrome/Edge and upgrade-from-v0.27 validation have been recorded.
