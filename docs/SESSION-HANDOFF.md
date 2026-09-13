@@ -4,7 +4,7 @@ Use this file when starting a new ChatGPT, coding-agent, or developer session. R
 
 ## Current state
 
-Current release branch candidate: **v1.0.0 RC4**, based on the completed v0.27.0 product feature set.
+Current release branch candidate:  **v1.0.0**, based on the completed v0.27.0 product feature set.
 
 The architecture refactor is complete. The strict 300-line production code limit has no exceptions. `App.tsx` and `Popup.tsx` are orchestration/composition layers rather than monoliths.
 

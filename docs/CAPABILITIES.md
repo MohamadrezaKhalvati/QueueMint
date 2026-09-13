@@ -1,6 +1,6 @@
 # QueueMint capabilities
 
-Current release candidate: v1.0.0 RC4.
+Current stable release: v1.0.0.
 
 This document describes what is implemented today. It intentionally separates current capability from the future roadmap.
 
