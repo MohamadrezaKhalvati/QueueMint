@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "QueueMint",
-  "version": "0.25.0",
+  "version": "0.26.0",
   "description": "QueueMint is a fast Jira companion for capture, evidence-rich bug reporting, safe bulk actions, saved workflows, and power-user shortcuts.",
   "action": {
     "default_title": "Open QueueMint",

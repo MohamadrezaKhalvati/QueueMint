@@ -46,7 +46,7 @@ export function filterManageIssues(source: JiraLiveIssue[], filters: ManageIssue
     .filter((issue) => filters.type === "all" || issue.type === filters.type)
     .filter((issue) => filters.priority === "all" || issue.priority === filters.priority)
     .filter((issue) => filters.status === "all" || issue.status === filters.status)
-    .filter((issue) => filters.assignee === "all" || issue.assignee === filters.assignee)
+    .filter((issue) => filters.assignee === "all" || (filters.assignee === "__unassigned__" ? !issue.assignee && !issue.assigneeId : issue.assignee === filters.assignee))
     .filter((issue) => filters.sprint === "all" || (filters.sprint === "backlog" ? issue.placement === "backlog" : issue.sprintId === Number(filters.sprint)))
     .filter((issue) => filters.label === "all" || issue.labels.includes(filters.label))
     .filter((issue) => filters.estimate === "all" || (filters.estimate === "estimated" ? formatEstimate(issue) !== "—" : formatEstimate(issue) === "—"))

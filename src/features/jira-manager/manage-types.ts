@@ -7,6 +7,23 @@ import type { JiraPowerToolPreparation } from "./power-tools"
 export type ManageScope = "created" | "board"
 export type ManageView = "list" | "board"
 
+export type ManageCommandPreset = {
+  id: string
+  scope?: ManageScope
+  search?: string
+  view?: ManageView
+  filters?: Partial<{
+    type: string
+    priority: string
+    status: string
+    assignee: string
+    sprint: string
+    label: string
+    estimate: string
+    myIssuesOnly: boolean
+  }>
+}
+
 export type ManageJiraScreenProps = {
   t: typeof copy.en | typeof copy.fa
   locale: AppLocale
@@ -44,6 +61,8 @@ export type ManageJiraScreenProps = {
   historyCount: number
   onHistory: () => void
   onDelete: () => void
+  commandPreset?: ManageCommandPreset | null
+  onCommandPresetApplied?: () => void
 }
 
 export type StringSetter = Dispatch<SetStateAction<string>>

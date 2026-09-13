@@ -71,9 +71,9 @@ After merge to main:
 git checkout main
 git pull --ff-only
 git status
-git tag -a v0.25.0 -m "QueueMint v0.25.0 Jira Power Tools"
+git tag -a v0.26.0 -m "QueueMint v0.26.0 Command Layer"
 git push origin main
-git push origin v0.25.0
+git push origin v0.26.0
 ```
 
 Change the version/tag to the actual release.

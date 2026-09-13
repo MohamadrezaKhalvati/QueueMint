@@ -3,6 +3,7 @@ import { useRef, useState } from "react"
 import type { LocalAttachment } from "@/components/attachment-picker"
 import { DEFAULT_FILTER, EMPTY_VALIDATION, type BulkHistoryEntry, type DynamicFieldDraft, type Mode, type PendingBulkPreview, type Placement } from "@/features/bulk/bulk-utils"
 import type { ActivityEntry, AutomationRule, SavedIssueView, SavedWorkspaceAction } from "@/lib/storage"
+import type { ManageCommandPreset } from "@/features/jira-manager/manage-types"
 import { EMPTY_JSON } from "@/sample"
 import type {
   AppLocale, AppTheme, BulkIssue, CreateRunResult, DensityMode, JiraBoard, JiraConnectionStatus,
@@ -94,6 +95,7 @@ export function useAppState() {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
   const [deleteConfirmText, setDeleteConfirmText] = useState("")
   const [commandOpen, setCommandOpen] = useState(false)
+  const [manageCommandPreset, setManageCommandPreset] = useState<ManageCommandPreset | null>(null)
   const [savedActions, setSavedActions] = useState<SavedWorkspaceAction[]>([])
   const [savedViews, setSavedViews] = useState<SavedIssueView[]>([])
   const [automationRules, setAutomationRules] = useState<AutomationRule[]>([])
@@ -128,7 +130,7 @@ export function useAppState() {
     liveBulkStoryPoints, setLiveBulkStoryPoints, liveDynamicFields, setLiveDynamicFields, liveDynamicEdits, setLiveDynamicEdits, liveDynamicLoading, setLiveDynamicLoading,
     liveDynamicError, setLiveDynamicError, bulkPreview, setBulkPreview, bulkPreviewOpen, setBulkPreviewOpen, bulkPreviewLoading, setBulkPreviewLoading,
     bulkApplying, setBulkApplying, bulkHistory, setBulkHistory, bulkHistoryOpen, setBulkHistoryOpen, undoingHistoryId, setUndoingHistoryId,
-    deleteDialogOpen, setDeleteDialogOpen, deleteConfirmText, setDeleteConfirmText, commandOpen, setCommandOpen, savedActions, setSavedActions,
+    deleteDialogOpen, setDeleteDialogOpen, deleteConfirmText, setDeleteConfirmText, commandOpen, setCommandOpen, manageCommandPreset, setManageCommandPreset, savedActions, setSavedActions,
     savedViews, setSavedViews, automationRules, setAutomationRules, activityLog, setActivityLog, activeAutomationRuleId, setActiveAutomationRuleId,
     duplicateProjectIssues, setDuplicateProjectIssues, duplicateLoading, setDuplicateLoading, duplicateCheckedSummary, setDuplicateCheckedSummary,
     issueDetailOpen, setIssueDetailOpen, issueDetailKey, setIssueDetailKey, issueDetails, setIssueDetails, issueDetailLoading, setIssueDetailLoading,

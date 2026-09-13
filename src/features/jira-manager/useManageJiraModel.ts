@@ -57,6 +57,24 @@ export function useManageJiraModel(props: ManageJiraScreenProps) {
   }, [visibleIssues, selectedKeys, setSelectedKeys])
   useEffect(() => { if (issues.length > 100) setView("list") }, [issues.length])
 
+  useEffect(() => {
+    const preset = props.commandPreset
+    if (!preset) return
+    setScope(preset.scope ?? "board")
+    props.setSearch(preset.search ?? "")
+    setView(preset.view ?? "list")
+    setTypeFilter(preset.filters?.type ?? "all")
+    setPriorityFilter(preset.filters?.priority ?? "all")
+    setStatusFilter(preset.filters?.status ?? "all")
+    setAssigneeFilter(preset.filters?.assignee ?? "all")
+    setSprintFilter(preset.filters?.sprint ?? "all")
+    setLabelFilter(preset.filters?.label ?? "all")
+    setEstimateFilter(preset.filters?.estimate ?? "all")
+    setMyIssuesOnly(preset.filters?.myIssuesOnly ?? false)
+    setFiltersOpen(true)
+    props.onCommandPresetApplied?.()
+  }, [props.commandPreset?.id])
+
   const pageCount = Math.max(1, Math.ceil(visibleIssues.length / pageSize))
   const safePage = Math.min(page, pageCount)
   const pageIssues = view === "list" ? visibleIssues.slice((safePage - 1) * pageSize, safePage * pageSize) : visibleIssues
@@ -116,7 +134,7 @@ export function useManageJiraModel(props: ManageJiraScreenProps) {
     type: [{ value: "all", label: t.allTypes }, ...typeOptions.map((value) => ({ value, label: value }))],
     priority: [{ value: "all", label: t.allPriorities }, ...priorityOptions.map((value) => ({ value, label: value }))],
     status: [{ value: "all", label: t.allStatuses }, ...statusOptions.map((value) => ({ value, label: value }))],
-    assignee: [{ value: "all", label: t.allAssignees }, ...assigneeOptions.map((value) => ({ value, label: value }))],
+    assignee: [{ value: "all", label: t.allAssignees }, { value: "__unassigned__", label: t.unassigned }, ...assigneeOptions.map((value) => ({ value, label: value }))],
     sprint: [{ value: "all", label: t.allSprints }, { value: "backlog", label: t.backlog }, ...sprints.map((sprint) => ({ value: String(sprint.id), label: sprint.name }))],
     label: [{ value: "all", label: t.allLabels }, ...labelOptions.map((value) => ({ value, label: value }))],
     estimate: [{ value: "all", label: t.allEstimates }, { value: "estimated", label: t.estimated }, { value: "unestimated", label: t.unestimated }],

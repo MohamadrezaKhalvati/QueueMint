@@ -4,11 +4,11 @@ Use this file when starting a new ChatGPT, coding-agent, or developer session. R
 
 ## Current state
 
-Current release: **v0.25.0**.
+Current release: **v0.26.0**.
 
 The architecture refactor is complete. The strict 300-line production code limit has no exceptions. `App.tsx` and `Popup.tsx` are orchestration/composition layers rather than monoliths.
 
-Capture Pro and Smart Assistant are complete. The current release completes **v0.25 Jira Power Tools**, adding preview-first cleanup shortcuts and composable Saved Actions while keeping the existing Bulk Edit path authoritative.
+Capture Pro, Smart Assistant, and Jira Power Tools are complete. The current release completes **v0.26 Command Layer**, turning Ctrl+K into a context-aware interface over the same Jira actions and filters already used by QueueMint.
 
 ## Product definition
 
@@ -97,6 +97,17 @@ For exact current detail, read `docs/CAPABILITIES.md`.
 - Project-bound Saved Actions must not be applied or composed in a different project. Board-specific sprint placement may be dropped when the board context does not match.
 - Bulk Preview now exposes the exact affected issue keys as well as aggregated field before/after values.
 
+## v0.26 Command Layer implementation notes
+
+- `src/features/app-orchestration/useAppCommandItems.tsx` builds context-aware commands from the current selection, project, board, sprints, and Saved Actions.
+- Command items must call existing action groups such as `useLiveBoardOperations`, `useProjectContext`, and `useWorkspaceAutomation`. Do not put Jira transport or a second mutation path into the palette.
+- Dynamic sprint commands only target non-closed sprints and reuse `moveLiveIssues`.
+- Project and board commands reuse `chooseProject` and `chooseBoard`.
+- The unassigned-Bug command applies a `ManageCommandPreset` to the normal Manage Jira model. The manager owns the actual filter state and also exposes Unassigned as a normal assignee filter option.
+- Saved Action command items are filtered to the current project and remain dependent on a current issue selection.
+- Command search is multi-token and grouped, but it is still deterministic local matching. There is no AI or autonomous command execution.
+- Capture-from-page continues to live in the browser-action popup/Capture session because the full workspace cannot safely assume the active browser tab is the original source page.
+
 ## Architecture rules
 
 - No production code file over 300 lines.
@@ -122,7 +133,6 @@ A phase should not be considered complete until these pass on a normal developme
 
 Next planned phases:
 
-- **v0.26 Command Layer**: deeper natural/command-style actions over selected Jira context using existing feature APIs.
 - **v0.27 Productivity & Polish**: recents/favorites, stronger draft recovery, local backup/restore, accessibility, performance, small shareable summaries.
 - **v1.0 Public Release**: Jira compatibility matrix, least-privilege permission audit, privacy policy, onboarding, automated critical-path tests, store assets, CI/release process.
 

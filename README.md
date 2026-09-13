@@ -4,7 +4,7 @@ QueueMint is a Chrome/Edge companion for Jira. It makes the work around Jira fas
 
 The product focuses on workflows that are slow, repetitive, fragmented, or awkward in the native Jira UI: evidence-rich bug capture, fast issue creation, safe bulk actions, reusable macros, command-driven actions, and personal productivity shortcuts.
 
-Current version: **v0.25.0**.
+Current version: **v0.26.0**.
 
 ## Product principle
 
@@ -32,10 +32,16 @@ See [Product direction](docs/PRODUCT.md) and [Roadmap](docs/ROADMAP.md).
 - Review and create issue batches safely before writing to Jira.
 - Manage Jira issues with filters, Saved Views, issue detail inspection, safe clone/move helpers, and bulk edit preview.
 - Reuse Saved Actions and safe Automation rules/macros through the same preview-first bulk-edit path.
-- Use Workspace context switching and the Ctrl+K command palette for faster navigation and actions.
+- Use the Ctrl+K Command Layer for navigation, selected-issue actions, sprint moves, Saved Actions, filtered Jira views, and project/board switching.
 - Switch English/Persian and light/dark theme in the main workspace and Capture surfaces.
 
 The complete current feature inventory is in [docs/CAPABILITIES.md](docs/CAPABILITIES.md).
+
+## v0.26.0 - Command Layer
+
+Ctrl+K is now a context-aware command interface instead of only a navigation palette. Commands reuse the existing QueueMint actions for assigning the current selection, opening or inspecting one selected issue, moving selected issues to backlog or an available sprint, applying Saved Actions, refreshing Jira context, and switching project or board.
+
+The command layer can also open a real Manage Jira filtered view such as unassigned Bugs. That filter is applied through the existing Manage Jira model rather than maintaining a second hidden issue query or mutation system. Search now matches multiple tokens and commands are grouped by navigation, Jira actions, Saved Actions, context, and utilities.
 
 ## v0.25.0 - Jira Power Tools
 
@@ -166,4 +172,4 @@ Do not commit `node_modules/`, `dist/`, local logs, secrets, or private Jira dat
 
 The large architecture refactor is complete. All production source files are under the 300-line limit. The product roadmap has now returned to user-facing capability work, with Capture Pro as the first post-refactor phase.
 
-Latest completed phase: **v0.25 Jira Power Tools**. Next planned phase: **v0.26 Command Layer**.
+Latest completed phase: **v0.26 Command Layer**. Next planned phase: **v0.27 Productivity & Polish**.

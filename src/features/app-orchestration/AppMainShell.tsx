@@ -145,6 +145,7 @@ export function AppMainShell({ state: s, derived: d, actions: a }: Props) {
                 savedActions={s.savedActions} onUseSavedAction={a.automation.loadSavedAction} onDeleteSavedAction={a.automation.deleteSavedAction}
                 savedViews={s.savedViews} onSaveView={a.automation.saveIssueView} onDeleteView={a.automation.deleteIssueView} onOpenIssue={(key) => void a.live.openIssueDetails(key)}
                 historyCount={s.bulkHistory.length} onHistory={() => s.setBulkHistoryOpen(true)} onDelete={() => { s.setDeleteConfirmText(""); s.setDeleteDialogOpen(true) }}
+                commandPreset={s.manageCommandPreset} onCommandPresetApplied={() => s.setManageCommandPreset(null)}
               />
             )}
           </main>

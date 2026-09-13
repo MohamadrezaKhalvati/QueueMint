@@ -1,6 +1,6 @@
 # QueueMint capabilities
 
-Current product version: v0.25.0.
+Current product version: v0.26.0.
 
 This document describes what is implemented today. It intentionally separates current capability from the future roadmap.
 
@@ -231,16 +231,23 @@ Local compact activity entries can record:
 
 This is a QueueMint workflow trace, not a replacement for Jira issue history.
 
-## Command palette
+## Command Layer
 
-- Ctrl+K command palette in the full app.
-- navigation to QueueMint features.
-- context-sensitive commands.
-- open issue inspector when one issue is selected.
-- Saved Action access.
-- Automation access.
+Ctrl+K is a context-aware command interface over the same QueueMint actions used by the visible UI. It does not maintain a second Jira mutation engine.
 
-The planned v0.26 phase expands this into a deeper Jira command layer.
+Current commands include:
+
+- navigate to Workspace, Quick Issue, Bulk Import, Review, Manage Jira, and Automations.
+- assign the current Jira selection to the connected user.
+- open Bulk Edit for the current selection.
+- inspect one selected issue or open it directly in Jira.
+- move the current selection to Backlog or any non-closed sprint.
+- show unassigned Bugs as a real Manage Jira filtered view.
+- apply project-compatible Saved Actions to the current selection.
+- switch Jira project or board context using the existing context loaders.
+- refresh Jira data, open history, settings, and batch context settings.
+
+Command search supports multiple words, and the palette groups results into navigation, Jira actions, Saved Actions, context, and utilities. Commands enable or disable based on the current selection and Jira context.
 
 ## Appearance and localization
 

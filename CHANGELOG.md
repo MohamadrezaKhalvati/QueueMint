@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.26.0 - Command Layer
+
+- Expanded Ctrl+K from navigation into a context-aware Jira command layer.
+- Added commands to assign selected issues to the current user, open Bulk Edit, inspect one selected issue, and open it directly in Jira.
+- Added dynamic move commands for backlog and every non-closed sprint using the existing Jira move path.
+- Added a real "Show unassigned bugs" command that opens Manage Jira with the corresponding visible filters applied.
+- Added project and board switch commands that reuse the existing context loaders instead of duplicating metadata logic.
+- Saved Action commands are now project-safe and require an active issue selection.
+- Added grouped command sections and multi-token command search for faster phrase-style discovery.
+- Preserved the strict 300-line production-file limit and existing mutation paths.
+
 ## 0.25.0 - Jira Power Tools
 
 - Added preview-first Power Tools in Manage Jira for unassigned ownership, missing estimates, missing labels, and backlog-to-sprint preparation.

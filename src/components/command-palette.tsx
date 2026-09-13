@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, type ReactNode } from "react"
+import { Fragment, useEffect, useMemo, useState, type ReactNode } from "react"
 import { createPortal } from "react-dom"
 import { Command, Search } from "lucide-react"
 
@@ -10,6 +10,7 @@ export type CommandPaletteItem = {
   description?: string
   keywords?: string
   shortcut?: string
+  group?: string
   icon?: ReactNode
   disabled?: boolean
   onSelect: () => void
@@ -36,7 +37,11 @@ export function CommandPalette({
   const filtered = useMemo(() => {
     const needle = query.trim().toLocaleLowerCase()
     if (!needle) return items
-    return items.filter((item) => `${item.label} ${item.description ?? ""} ${item.keywords ?? ""}`.toLocaleLowerCase().includes(needle))
+    const tokens = needle.split(/\s+/).filter(Boolean)
+    return items.filter((item) => {
+      const haystack = `${item.label} ${item.description ?? ""} ${item.keywords ?? ""} ${item.group ?? ""}`.toLocaleLowerCase()
+      return tokens.every((token) => haystack.includes(token))
+    })
   }, [items, query])
 
   useEffect(() => {
@@ -103,27 +108,32 @@ export function CommandPalette({
           <kbd className="rounded-md border bg-muted/40 px-1.5 py-0.5 text-[10px] text-muted-foreground">Esc</kbd>
         </div>
         <div className="max-h-[min(62vh,520px)] overflow-y-auto p-2">
-          {filtered.length ? filtered.map((item, index) => (
-            <button
-              key={item.id}
-              type="button"
-              disabled={item.disabled}
-              onMouseEnter={() => setActiveIndex(index)}
-              onClick={() => { if (!item.disabled) { onOpenChange(false); item.onSelect() } }}
-              className={cn(
-                "flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-start outline-none transition-colors",
-                index === activeIndex && "bg-accent text-accent-foreground",
-                item.disabled && "cursor-not-allowed opacity-45",
-              )}
-            >
-              <span className="grid size-9 shrink-0 place-items-center rounded-lg border bg-background text-muted-foreground">{item.icon ?? <Command className="size-4" />}</span>
-              <span className="min-w-0 flex-1">
-                <span className="block truncate text-sm font-medium">{item.label}</span>
-                {item.description ? <span className="mt-0.5 block truncate text-xs text-muted-foreground">{item.description}</span> : null}
-              </span>
-              {item.shortcut ? <kbd className="shrink-0 rounded-md border bg-background px-1.5 py-0.5 text-[10px] text-muted-foreground">{item.shortcut}</kbd> : null}
-            </button>
-          )) : (
+          {filtered.length ? filtered.map((item, index) => {
+            const showGroup = Boolean(item.group && item.group !== filtered[index - 1]?.group)
+            return (
+              <Fragment key={item.id}>
+                {showGroup ? <div className="px-3 pb-1 pt-3 text-[10px] font-semibold uppercase tracking-[0.16em] text-muted-foreground first:pt-1">{item.group}</div> : null}
+                <button
+                  type="button"
+                  disabled={item.disabled}
+                  onMouseEnter={() => setActiveIndex(index)}
+                  onClick={() => { if (!item.disabled) { onOpenChange(false); item.onSelect() } }}
+                  className={cn(
+                    "flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-start outline-none transition-colors",
+                    index === activeIndex && "bg-accent text-accent-foreground",
+                    item.disabled && "cursor-not-allowed opacity-45",
+                  )}
+                >
+                  <span className="grid size-9 shrink-0 place-items-center rounded-lg border bg-background text-muted-foreground">{item.icon ?? <Command className="size-4" />}</span>
+                  <span className="min-w-0 flex-1">
+                    <span className="block truncate text-sm font-medium">{item.label}</span>
+                    {item.description ? <span className="mt-0.5 block truncate text-xs text-muted-foreground">{item.description}</span> : null}
+                  </span>
+                  {item.shortcut ? <kbd className="shrink-0 rounded-md border bg-background px-1.5 py-0.5 text-[10px] text-muted-foreground">{item.shortcut}</kbd> : null}
+                </button>
+              </Fragment>
+            )
+          }) : (
             <div className="grid min-h-28 place-items-center px-4 text-center text-sm text-muted-foreground">{emptyLabel}</div>
           )}
         </div>

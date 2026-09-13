@@ -18,6 +18,7 @@ import { useProjectContext } from "@/features/app-orchestration/useProjectContex
 import { useWorkspaceAutomation } from "@/features/app-orchestration/useWorkspaceAutomation"
 import { findPotentialDuplicates, suggestAssignees } from "@/lib/intelligence"
 import { parseBulkJson } from "@/lib/validation"
+import { jiraBrowseUrl } from "@/lib/jira"
 import { AI_PROMPT_TEMPLATE, SAMPLE_PAYLOAD } from "@/sample"
 import type { BulkPayload, JiraIssueSearchResult } from "@/types"
 
@@ -42,7 +43,7 @@ function App() {
     liveBulkRemainingEstimate, setLiveBulkRemainingEstimate, liveBulkStoryPoints, setLiveBulkStoryPoints,
     liveDynamicFields, setLiveDynamicFields, liveDynamicEdits, setLiveDynamicEdits, setLiveDynamicLoading, setLiveDynamicError,
     bulkPreview, setBulkPreview, setBulkPreviewOpen, setBulkPreviewLoading, setBulkApplying, setBulkHistory, setBulkHistoryOpen,
-    setUndoingHistoryId, setDeleteDialogOpen, deleteConfirmText, setDeleteConfirmText, setCommandOpen,
+    setUndoingHistoryId, setDeleteDialogOpen, deleteConfirmText, setDeleteConfirmText, setCommandOpen, setManageCommandPreset,
     savedActions, setSavedActions, savedViews, setSavedViews, automationRules, setAutomationRules, activityLog, setActivityLog,
     activeAutomationRuleId, setActiveAutomationRuleId, duplicateProjectIssues, setDuplicateProjectIssues, setDuplicateLoading,
     setDuplicateCheckedSummary, setIssueDetailOpen, setIssueDetailKey, setIssueDetails, setIssueDetailLoading, setIssueDetailError,
@@ -169,10 +170,18 @@ function App() {
   }
   const contextualAiPrompt = AI_PROMPT_TEMPLATE.replaceAll("PROJECT_KEY", contextualSamplePayload.project)
   const commandItems = useAppCommandItems({
-    t, locale, issueCount, liveSelectedKeys, selectedBoardId, savedActions, setMode,
+    t, locale, issueCount, liveSelectedKeys, liveIssues, currentUserIdentity: metadata?.user?.name || metadata?.user?.key,
+    currentProjectKey: payload?.project, selectedBoardId, projects: metadata?.projects ?? [], boards, sprints, savedActions, setMode,
     onBulkEdit: () => { setActiveAutomationRuleId(null); setMode("manage"); setLiveBulkOpen(true) },
-    onInspect: (key) => void liveActions.openIssueDetails(key), onHistory: () => setBulkHistoryOpen(true),
-    onSettings: () => setSettingsOpen(true), onBatchSettings: () => setBatchSettingsOpen(true),
+    onInspect: (key) => void liveActions.openIssueDetails(key), onOpenInJira: (key) => window.open(jiraBrowseUrl(key), "_blank"),
+    onAssignToMe: () => void liveActions.assignLiveSelectionToMe(),
+    onMoveSelected: (sprintId) => void liveActions.moveLiveIssues(Array.from(liveSelectedKeys), sprintId),
+    onShowUnassignedBugs: (bugType) => {
+      setLiveSelectedKeys(new Set()); setManageCommandPreset({ id: crypto.randomUUID(), scope: "board", view: "list", filters: { type: bugType, assignee: "__unassigned__" } }); setMode("manage")
+    },
+    onSwitchProject: (key) => void projectActions.chooseProject(key),
+    onSwitchBoard: (id) => { setLiveScope("board"); void projectActions.chooseBoard(id) },
+    onHistory: () => setBulkHistoryOpen(true), onSettings: () => setSettingsOpen(true), onBatchSettings: () => setBatchSettingsOpen(true),
     onRefresh: () => void liveActions.loadLiveBoard(), onSavedAction: automationActions.loadSavedAction,
   })
   const derived: AppDerivedModel = {

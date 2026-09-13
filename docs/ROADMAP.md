@@ -72,21 +72,22 @@ Delivered:
 
 Selection rule: only build tools where QueueMint materially reduces Jira friction.
 
-## v0.26 - Command Layer
+## v0.26 - Command Layer - completed
 
 Goal: make Ctrl+K a genuine command interface over the user's current Jira context.
 
-Examples:
+Delivered:
 
-- assign selected to me
-- move selected to a sprint
-- show unassigned bugs
-- open the selected issue
-- create a bug from this page
-- apply a Saved Action
-- switch project/board context
+- assign selected issues to the current Jira user through the existing assignment action.
+- open Bulk Edit, inspect the selected issue, or open one selected issue directly in Jira.
+- dynamic move commands for Backlog and every non-closed sprint using the existing move action.
+- show unassigned Bugs by applying the normal Manage Jira filters.
+- project-safe Saved Action commands over the current selection.
+- switch project and board context through the existing project/board loaders.
+- grouped command sections and multi-token phrase-style search.
+- context-aware disabled states when selection, current user, board, sprint, or matching issues are unavailable.
 
-Commands should call existing QueueMint feature APIs instead of creating a second implementation path.
+The Command Layer deliberately calls existing QueueMint feature APIs and filter models instead of creating a second implementation path. Capture-from-page remains owned by the browser-action Capture flow because its source-tab permission/lifecycle is different from the full workspace.
 
 ## v0.27 - Productivity and polish
 
