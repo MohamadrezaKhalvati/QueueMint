@@ -1,6 +1,6 @@
 # QueueMint capabilities
 
-Current product version: v0.24.1.
+Current product version: v0.25.0.
 
 This document describes what is implemented today. It intentionally separates current capability from the future roadmap.
 
@@ -182,10 +182,24 @@ QueueMint does not intend to replace Jira's dashboard/reporting system.
 - supported dynamic Jira fields.
 - short-lived undo/history snapshots for QueueMint bulk operations.
 
+## Jira Power Tools
+
+Power Tools are preparation shortcuts over the normal Bulk Edit path. They do not maintain a separate Jira mutation engine.
+
+- operate on the current selection when issues are selected, otherwise the current filtered Manage Jira scope.
+- collect unassigned issues and stage assignment to the current Jira user.
+- collect issues with no time/story-point estimate for estimate cleanup.
+- collect issues with no labels for label cleanup.
+- collect backlog issues and stage sprint placement.
+- always route into Bulk Edit and the normal preview/confirm step before Jira writes.
+- Bulk Preview shows the exact issue keys that will be affected as well as field-level before/after summaries.
+
 ## Saved Actions and macros
 
 - Save commonly reused bulk-edit configurations.
 - Reapply them from Workspace/Manage Jira/Command Palette flows.
+- Compose multiple Saved Actions inside a single Bulk Edit draft. Only fields explicitly configured by the added action override the current draft.
+- Project-bound Saved Actions are blocked from being applied to another project.
 - Automation rules reuse the same Saved Action system instead of maintaining a separate mutation engine.
 
 ## Automation Center

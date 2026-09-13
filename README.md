@@ -4,7 +4,7 @@ QueueMint is a Chrome/Edge companion for Jira. It makes the work around Jira fas
 
 The product focuses on workflows that are slow, repetitive, fragmented, or awkward in the native Jira UI: evidence-rich bug capture, fast issue creation, safe bulk actions, reusable macros, command-driven actions, and personal productivity shortcuts.
 
-Current version: **v0.24.1**.
+Current version: **v0.25.0**.
 
 ## Product principle
 
@@ -36,6 +36,12 @@ See [Product direction](docs/PRODUCT.md) and [Roadmap](docs/ROADMAP.md).
 - Switch English/Persian and light/dark theme in the main workspace and Capture surfaces.
 
 The complete current feature inventory is in [docs/CAPABILITIES.md](docs/CAPABILITIES.md).
+
+## v0.25.0 - Jira Power Tools
+
+Manage Jira now includes preview-first cleanup tools that operate on the current selection, or the current filtered scope when nothing is selected. QueueMint can stage unassigned issues for assignment to the current Jira user, collect missing estimates, collect unlabeled issues, and prepare backlog issues for sprint placement. These tools reuse the existing Bulk Edit flow and never write to Jira before the normal preview/confirm step.
+
+Saved Actions can also be composed inside Bulk Edit. Adding another Saved Action only layers the fields configured by that action onto the current draft, so reusable macros can be combined without creating a second mutation path. Bulk Preview now lists the exact Jira issue keys that are about to change in addition to the before/after field summary.
 
 ## v0.24.0 - Smart Assistant
 
@@ -160,4 +166,4 @@ Do not commit `node_modules/`, `dist/`, local logs, secrets, or private Jira dat
 
 The large architecture refactor is complete. All production source files are under the 300-line limit. The product roadmap has now returned to user-facing capability work, with Capture Pro as the first post-refactor phase.
 
-Latest completed phase: **v0.24 Smart Assistant**. Next planned phase: **v0.25 Jira Power Tools**.
+Latest completed phase: **v0.25 Jira Power Tools**. Next planned phase: **v0.26 Command Layer**.

@@ -54,18 +54,21 @@ Delivered:
 
 Not included: autonomous Jira creation or hidden background AI calls.
 
-## v0.25 - Jira Power Tools
+## v0.25 - Jira Power Tools - completed
 
 Goal: make common high-friction Jira operations fast while Jira remains the source of truth.
 
-Candidate work:
+Delivered:
 
-- stronger reusable bulk macros
-- common cleanup actions for missing ownership, estimates, labels, and placement
-- safer cross-project clone helpers
-- faster issue field fixes across selections
-- better saved action composition
-- action previews that explain exactly which issues and fields will change
+- Power Tools over the current selection or filtered Manage Jira scope.
+- one-click preparation for unassigned ownership cleanup.
+- one-click collection of missing estimates and missing labels.
+- one-click preparation of backlog issues for sprint placement.
+- all Power Tools reuse the existing Bulk Edit preview/confirm path.
+- Saved Action composition inside an active Bulk Edit draft.
+- project-safety guard for Saved Actions created in another project.
+- Bulk Preview now lists exact affected issue keys in addition to field before/after summaries.
+- existing cross-project clone helper remains portable-field-first with minimal-field fallback rather than emulating Jira move behavior.
 
 Selection rule: only build tools where QueueMint materially reduces Jira friction.
 

@@ -9,13 +9,14 @@ import { Sheet, SheetBody, SheetContent, SheetDescription, SheetFooter, SheetHea
 import { ContextItem, BoardContextItem } from "@/features/review/ReviewContext"
 import { cn } from "@/lib/utils"
 import { LiveIssueCard, LiveIssueListRow } from "./LiveIssueViews"
+import { ManagePowerTools } from "./ManagePowerTools"
 import type { ManageJiraScreenProps } from "./manage-types"
 import { useManageJiraModel } from "./useManageJiraModel"
 
 type ManageJiraViewProps = ManageJiraScreenProps & ReturnType<typeof useManageJiraModel>
 
 export function ManageJiraView(args: ManageJiraViewProps) {
-  const { t, locale, project, boards, selectedBoardId, boardLoading, onBoardChange, sprints, issues, selectedKeys, scope, setScope, search, setSearch, loading, message, onRefresh, onMove, onAssignToMe, onBulkEdit, savedActions, onUseSavedAction, onDeleteSavedAction, onDeleteView, onOpenIssue, historyCount, onHistory, onDelete, draggedKey, setDraggedKey, overLane, setOverLane, moveTarget, view, setView, filtersOpen, setFiltersOpen, saveViewOpen, setSaveViewOpen, saveViewName, setSaveViewName, typeFilter, setTypeFilter, priorityFilter, setPriorityFilter, statusFilter, setStatusFilter, assigneeFilter, setAssigneeFilter, sprintFilter, setSprintFilter, labelFilter, setLabelFilter, estimateFilter, setEstimateFilter, myIssuesOnly, setMyIssuesOnly, setPage, pageSize, setPageSize, currentUser, matchingSavedViews, createdIssues, activeFilterCount, visibleIssues, hasActiveFiltering, createdScopeCount, boardScopeCount, pageCount, safePage, pageIssues, groups, allPageSelected, allMatchingSelected, moveItems, toggle, moveSelection, clearFilters, applySavedView, saveCurrentView, selectPage, selectMatching, filterItems } = args
+  const { t, locale, project, boards, selectedBoardId, boardLoading, onBoardChange, sprints, issues, selectedKeys, scope, setScope, search, setSearch, loading, message, onRefresh, onMove, onAssignToMe, onBulkEdit, onPreparePowerTool, savedActions, onUseSavedAction, onDeleteSavedAction, onDeleteView, onOpenIssue, historyCount, onHistory, onDelete, draggedKey, setDraggedKey, overLane, setOverLane, moveTarget, view, setView, filtersOpen, setFiltersOpen, saveViewOpen, setSaveViewOpen, saveViewName, setSaveViewName, typeFilter, setTypeFilter, priorityFilter, setPriorityFilter, statusFilter, setStatusFilter, assigneeFilter, setAssigneeFilter, sprintFilter, setSprintFilter, labelFilter, setLabelFilter, estimateFilter, setEstimateFilter, myIssuesOnly, setMyIssuesOnly, setPage, pageSize, setPageSize, currentUser, matchingSavedViews, createdIssues, activeFilterCount, visibleIssues, hasActiveFiltering, createdScopeCount, boardScopeCount, pageCount, safePage, pageIssues, groups, allPageSelected, allMatchingSelected, moveItems, toggle, moveSelection, clearFilters, applySavedView, saveCurrentView, selectPage, selectMatching, filterItems } = args
 return (
   <div className="qm-screen animate-in fade-in slide-in-from-bottom-2 duration-200">
     <div className="qm-page-heading qm-page-heading-row flex flex-wrap items-end justify-between gap-4">
@@ -86,6 +87,8 @@ return (
         </div>
       </section>
     ) : null}
+
+    <ManagePowerTools locale={locale} issues={visibleIssues} selectedKeys={selectedKeys} currentUserIdentity={args.metadata?.user?.name || args.metadata?.user?.key} onPrepare={onPreparePowerTool} />
 
     <section className="mb-4 rounded-xl border bg-card p-3 shadow-none">
       <div className="flex flex-col gap-3 xl:flex-row xl:items-center">

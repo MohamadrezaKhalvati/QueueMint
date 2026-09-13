@@ -26,6 +26,13 @@ export function LiveBulkPreviewSheet({ open, onOpenChange, locale, t, preview, a
             <div className="text-sm font-semibold">{preview?.keys.length ?? 0} {t.issuesAffected}</div>
             <div className="mt-1 text-xs text-muted-foreground">{preview?.rows.length ?? 0} {t.changes}</div>
           </div>
+          {preview?.keys.length ? (
+            <div className="rounded-xl border bg-card p-3">
+              <div className="mb-2 text-xs font-medium text-muted-foreground">{locale === "fa" ? "تسک‌هایی که تغییر می‌کنند" : "Issues that will change"}</div>
+              <div className="max-h-32 overflow-y-auto"><div className="flex flex-wrap gap-1.5">{preview.keys.map((key) => <Badge key={key} variant="secondary">{key}</Badge>)}</div></div>
+              <div className="mt-2 text-[11px] leading-5 text-muted-foreground">{locale === "fa" ? "تا وقتی تأیید نهایی را نزنی هیچ تغییری در Jira اعمال نمی‌شود." : "No Jira changes are applied until you confirm this preview."}</div>
+            </div>
+          ) : null}
           <div className="space-y-2">
             {(preview?.rows ?? []).map((row) => (
               <div key={row.id} className="rounded-xl border bg-card p-3">

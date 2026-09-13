@@ -53,7 +53,14 @@ At minimum:
 - diagnostics remain opt-in
 - Quick Issue creates a Jira issue
 - Manage Jira loads
+- Jira Power Tools use the current selection when present and the current filtered scope otherwise
+- unassigned ownership Power Tool stages assignment to the connected Jira user without writing before Preview
+- missing-estimate and missing-label Power Tools collect the expected issues
+- backlog-to-sprint Power Tool requires a target sprint before Preview
+- Saved Actions can be composed inside one Bulk Edit draft
+- project-bound Saved Actions are blocked in another project
 - Bulk Edit preview works
+- Bulk Edit preview shows every affected Jira issue key
 - Ctrl+K opens
 
 ## Git release
@@ -64,9 +71,9 @@ After merge to main:
 git checkout main
 git pull --ff-only
 git status
-git tag -a v0.24.1 -m "QueueMint v0.24.1 Smart Assistant typecheck hotfix"
+git tag -a v0.25.0 -m "QueueMint v0.25.0 Jira Power Tools"
 git push origin main
-git push origin v0.24.1
+git push origin v0.25.0
 ```
 
 Change the version/tag to the actual release.

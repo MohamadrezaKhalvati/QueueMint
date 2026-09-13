@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.25.0 - Jira Power Tools
+
+- Added preview-first Power Tools in Manage Jira for unassigned ownership, missing estimates, missing labels, and backlog-to-sprint preparation.
+- Power Tools use the current issue selection when present, otherwise the current filtered Manage Jira scope.
+- Kept all Power Tool execution on the existing Bulk Edit preview/confirm mutation path.
+- Added Saved Action composition inside Bulk Edit so reusable macros can be layered into one draft.
+- Added a project-safety guard that blocks project-bound Saved Actions from being applied to another Jira project.
+- Bulk Preview now lists the exact Jira issue keys that will change before confirmation.
+- Preserved the strict 300-line production-file limit.
+
 ## 0.24.1 - Smart Assistant typecheck hotfix
 
 - Fixed the `SmartAssistantDataOptions` normalization so TypeScript 7 can verify all required data-boundary fields without an unsafe `Object.fromEntries` assertion.

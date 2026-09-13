@@ -141,6 +141,7 @@ export function AppMainShell({ state: s, derived: d, actions: a }: Props) {
                 lastCreatedKeys={s.lastCreatedKeys} scope={s.liveScope} setScope={s.setLiveScope} search={s.liveSearch} setSearch={s.setLiveSearch}
                 loading={s.loadingLive} message={s.liveActionMessage} onRefresh={() => void a.live.loadLiveBoard()} onMove={(keys, sprintId) => void a.live.moveLiveIssues(keys, sprintId)}
                 onAssignToMe={() => void a.live.assignLiveSelectionToMe()} onBulkEdit={() => { s.setActiveAutomationRuleId(null); s.setLiveBulkOpen(true) }}
+                onPreparePowerTool={a.automation.preparePowerTool}
                 savedActions={s.savedActions} onUseSavedAction={a.automation.loadSavedAction} onDeleteSavedAction={a.automation.deleteSavedAction}
                 savedViews={s.savedViews} onSaveView={a.automation.saveIssueView} onDeleteView={a.automation.deleteIssueView} onOpenIssue={(key) => void a.live.openIssueDetails(key)}
                 historyCount={s.bulkHistory.length} onHistory={() => s.setBulkHistoryOpen(true)} onDelete={() => { s.setDeleteConfirmText(""); s.setDeleteDialogOpen(true) }}

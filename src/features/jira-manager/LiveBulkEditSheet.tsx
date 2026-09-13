@@ -10,9 +10,11 @@ import { dynamicFieldInitialValue, isDynamicDraftReady, isDynamicFieldSupported,
 import { SmartAssigneeSuggestions } from "@/features/intelligence/SmartAssigneeSuggestions"
 import { EstimateInput } from "@/features/quick-issue/EstimateInput"
 import type { AssigneeSuggestion } from "@/lib/intelligence"
+import type { SavedWorkspaceAction } from "@/lib/storage"
 import { isValidJiraEstimate } from "@/lib/validation"
 import type { AppLocale, JiraEditableField, JiraMetadata, JiraPriority, JiraSprint, JiraUser } from "@/types"
 import { DynamicBulkFieldEditor } from "./DynamicBulkFieldEditor"
+import { SavedActionComposer } from "./SavedActionComposer"
 
 export function LiveBulkEditSheet({
   open,
@@ -52,7 +54,9 @@ export function LiveBulkEditSheet({
   dynamicLoading,
   dynamicError,
   coreFieldIds,
+  savedActions,
   preparing,
+  onComposeAction,
   onSaveAction,
   onApply,
 }: {
@@ -93,7 +97,9 @@ export function LiveBulkEditSheet({
   dynamicLoading: boolean
   dynamicError: string | null
   coreFieldIds: string[]
+  savedActions: SavedWorkspaceAction[]
   preparing: boolean
+  onComposeAction: (action: SavedWorkspaceAction) => void
   onSaveAction: (name: string) => void
   onApply: () => void
 }) {
@@ -154,6 +160,7 @@ export function LiveBulkEditSheet({
       <SheetContent side={locale === "fa" ? "left" : "right"} className="w-[min(96vw,560px)]">
         <SheetHeader><SheetTitle>{t.bulkEdit}</SheetTitle><SheetDescription>{selectedCount} {t.selectedIssues}</SheetDescription></SheetHeader>
         <SheetBody className="space-y-5">
+          <SavedActionComposer locale={locale} actions={savedActions} onCompose={onComposeAction} />
           <Field><FieldLabel>{t.editIssueType}</FieldLabel><SimpleSelect value={issueType ?? "__no_change_type__"} onValueChange={(value) => setIssueType(value === "__no_change_type__" ? undefined : value)} items={[{ value: "__no_change_type__", label: t.noChange }, ...issueTypes.map((item) => ({ value: item.name, label: item.name }))]} disabled={!issueTypes.length} /></Field>
           <Field><FieldLabel>{t.editPriority}</FieldLabel><PrioritySelect priorities={priorities} value={priority} onValueChange={setPriority} allowInherited={false} noDefaultLabel={t.noChange} /></Field>
           <Field><FieldLabel>{t.editAssignee}</FieldLabel><BulkAssigneeCombobox users={users} value={assignee} onValueChange={setAssignee} placeholder={t.noChange} emptyLabel={t.assigneeEmpty} unassignedLabel={t.unassign} noChangeLabel={t.noChange} /><SmartAssigneeSuggestions locale={locale} suggestions={assigneeSuggestions} onSelect={setAssignee} /></Field>

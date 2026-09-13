@@ -4,11 +4,11 @@ Use this file when starting a new ChatGPT, coding-agent, or developer session. R
 
 ## Current state
 
-Current release: **v0.24.1**.
+Current release: **v0.25.0**.
 
 The architecture refactor is complete. The strict 300-line production code limit has no exceptions. `App.tsx` and `Popup.tsx` are orchestration/composition layers rather than monoliths.
 
-Capture Pro is complete. The current release completes **v0.24 Smart Assistant**, including optional AI-backed drafting with explicit data boundaries, while retaining local Smart Draft and manual review.
+Capture Pro and Smart Assistant are complete. The current release completes **v0.25 Jira Power Tools**, adding preview-first cleanup shortcuts and composable Saved Actions while keeping the existing Bulk Edit path authoritative.
 
 ## Product definition
 
@@ -87,6 +87,16 @@ For exact current detail, read `docs/CAPABILITIES.md`.
 - Local Smart Draft and local duplicate detection remain available without AI.
 - Quick Issue now exposes a Project selector directly in the form. Existing project-change lifecycle cleanup must remain in place so assignee, epic, and sprint context cannot leak across projects.
 
+## v0.25 Jira Power Tools implementation notes
+
+- `src/features/jira-manager/ManagePowerTools.tsx` derives common cleanup candidates from the visible Manage Jira scope, or from the current selection when one exists.
+- Power Tools only prepare selections and Bulk Edit draft values. They must not bypass `useBulkEditFlow` or the normal preview/confirm sequence.
+- Ownership cleanup stages assignment to the currently connected Jira user. Missing-estimate and missing-label tools collect the right issues and let the existing Bulk Edit controls decide the actual values.
+- Backlog-to-sprint preparation stages placement as Sprint but requires the user to choose a target sprint before Preview can proceed.
+- `SavedActionComposer.tsx` layers Saved Actions into the current Bulk Edit draft. Only fields explicitly present in the added action override the existing draft.
+- Project-bound Saved Actions must not be applied or composed in a different project. Board-specific sprint placement may be dropped when the board context does not match.
+- Bulk Preview now exposes the exact affected issue keys as well as aggregated field before/after values.
+
 ## Architecture rules
 
 - No production code file over 300 lines.
@@ -112,7 +122,6 @@ A phase should not be considered complete until these pass on a normal developme
 
 Next planned phases:
 
-- **v0.25 Jira Power Tools**: faster safe macros and cleanup operations for high-friction Jira tasks, not Jira feature clones.
 - **v0.26 Command Layer**: deeper natural/command-style actions over selected Jira context using existing feature APIs.
 - **v0.27 Productivity & Polish**: recents/favorites, stronger draft recovery, local backup/restore, accessibility, performance, small shareable summaries.
 - **v1.0 Public Release**: Jira compatibility matrix, least-privilege permission audit, privacy policy, onboarding, automated critical-path tests, store assets, CI/release process.

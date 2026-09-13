@@ -2,6 +2,7 @@ import type { Dispatch, SetStateAction } from "react"
 import { copy } from "@/features/app-shell/app-copy"
 import type { SavedIssueView, SavedWorkspaceAction } from "@/lib/storage"
 import type { AppLocale, JiraBoard, JiraLiveIssue, JiraMetadata, JiraPriority, JiraProject, JiraSprint, JiraUser } from "@/types"
+import type { JiraPowerToolPreparation } from "./power-tools"
 
 export type ManageScope = "created" | "board"
 export type ManageView = "list" | "board"
@@ -32,6 +33,7 @@ export type ManageJiraScreenProps = {
   onMove: (keys: string[], sprintId: number | null) => void
   onAssignToMe: () => void
   onBulkEdit: () => void
+  onPreparePowerTool: (input: JiraPowerToolPreparation) => void
   savedActions: SavedWorkspaceAction[]
   onUseSavedAction: (action: SavedWorkspaceAction) => void
   onDeleteSavedAction: (id: string) => void

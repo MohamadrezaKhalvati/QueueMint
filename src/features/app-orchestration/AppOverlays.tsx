@@ -65,7 +65,8 @@ export function AppOverlays({ state: s, derived: d, actions: a }: Props) {
         estimation={s.metadata?.estimation} dynamicFields={s.liveDynamicFields} dynamicEdits={s.liveDynamicEdits} setDynamicEdits={s.setLiveDynamicEdits}
         dynamicLoading={s.liveDynamicLoading} dynamicError={s.liveDynamicError}
         coreFieldIds={[s.metadata?.detectedFieldMap.epicLink, s.metadata?.estimation.storyPointsFieldId].filter((value): value is string => Boolean(value))}
-        preparing={s.bulkPreviewLoading} onSaveAction={a.automation.saveCurrentLiveBulkAction} onApply={() => void a.bulk.prepareLiveBulkEdit()}
+        savedActions={s.savedActions.filter((action) => !action.projectKey || action.projectKey === payload?.project)} preparing={s.bulkPreviewLoading}
+        onComposeAction={a.automation.composeSavedActionIntoBulkDraft} onSaveAction={a.automation.saveCurrentLiveBulkAction} onApply={() => void a.bulk.prepareLiveBulkEdit()}
       />
 
       <LiveBulkPreviewSheet

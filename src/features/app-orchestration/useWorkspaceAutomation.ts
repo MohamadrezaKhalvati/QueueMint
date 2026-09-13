@@ -3,6 +3,7 @@ import { toast } from "sonner"
 import type { AppCopy } from "@/features/app-shell/app-copy"
 import type { QuickAutomationActionInput } from "@/features/automation/automation-types"
 import type { DynamicFieldDraft, Mode } from "@/features/bulk/bulk-utils"
+import type { JiraPowerToolPreparation } from "@/features/jira-manager/power-tools"
 import { matchingIssuesForRule } from "@/lib/intelligence"
 import type { AutomationConditionKind, AutomationRule, SavedIssueView, SavedWorkspaceAction } from "@/lib/storage"
 import type { AppLocale, BulkPayload, JiraLiveIssue, JiraMetadata } from "@/types"
@@ -179,6 +180,43 @@ export function useWorkspaceAutomation(options: WorkspaceAutomationOptions) {
     setLiveDynamicEdits(action.dynamicEdits ? structuredClone(action.dynamicEdits) : {})
   }
 
+  function composeSavedActionIntoBulkDraft(action: SavedWorkspaceAction) {
+    if (action.projectKey && action.projectKey !== payload?.project) {
+      toast.warning(locale === "fa" ? "این عملیات برای پروژه دیگری ساخته شده است" : "This saved action belongs to another project")
+      return
+    }
+    const sameBoard = !action.boardId || action.boardId === selectedBoardId
+    if (action.priority !== undefined) setLiveBulkPriority(action.priority)
+    if (action.assignee !== undefined) setLiveBulkAssignee(action.assignee)
+    if (action.issueType !== undefined) setLiveBulkIssueType(action.issueType)
+    if (action.epicLink !== undefined) setLiveBulkEpicLink(action.epicLink)
+    if (action.placement !== "keep" && !(action.placement === "sprint" && !sameBoard)) setLiveBulkPlacement(action.placement)
+    if (action.placement === "sprint" && sameBoard) setLiveBulkSprintId(action.sprintId ?? null)
+    if (action.originalEstimate) setLiveBulkOriginalEstimate(action.originalEstimate)
+    if (action.remainingEstimate) setLiveBulkRemainingEstimate(action.remainingEstimate)
+    if (action.storyPoints) setLiveBulkStoryPoints(action.storyPoints)
+    const actionDynamicEdits = action.dynamicEdits
+    if (actionDynamicEdits) setLiveDynamicEdits((current) => ({ ...current, ...structuredClone(actionDynamicEdits) }))
+    toast.success(locale === "fa" ? "عملیات به پیش‌نویس اضافه شد" : "Saved action added to draft", { description: action.name })
+  }
+
+  function preparePowerTool(input: JiraPowerToolPreparation) {
+    if (!input.keys.length) return
+    resetLiveBulkDraft()
+    setActiveAutomationRuleId(null)
+    setLiveSelectedKeys(new Set(input.keys))
+    if (input.kind === "assign-unassigned") {
+      const identity = metadata?.user?.name || metadata?.user?.key
+      if (!identity) return void toast.error(locale === "fa" ? "کاربر فعلی Jira پیدا نشد" : "Current Jira user was not found")
+      setLiveBulkAssignee(identity)
+    }
+    if (input.kind === "missing-labels") setLiveDynamicEdits({ labels: { mode: "set", value: [] } })
+    if (input.kind === "backlog-to-sprint") setLiveBulkPlacement("sprint")
+    setMode("manage")
+    setLiveBulkOpen(true)
+    toast.info(locale === "fa" ? "Power Tool آماده بررسی است" : "Power Tool is ready for review", { description: `${input.keys.length} ${t.issues}` })
+  }
+
   function reviewAutomationRule(rule: AutomationRule) {
     const action = savedActions.find((item) => item.id === rule.actionId)
     if (!action) return void toast.error(locale === "fa" ? "عملیات این قانون پیدا نشد" : "This rule's saved action is missing")
@@ -198,6 +236,7 @@ export function useWorkspaceAutomation(options: WorkspaceAutomationOptions) {
   }
 
   function loadSavedAction(action: SavedWorkspaceAction) {
+    if (action.projectKey && action.projectKey !== payload?.project) return void toast.warning(locale === "fa" ? "این عملیات برای پروژه دیگری ساخته شده است" : "This saved action belongs to another project")
     setActiveAutomationRuleId(null)
     applySavedActionToBulkDraft(action)
     setMode("manage")
@@ -209,6 +248,7 @@ export function useWorkspaceAutomation(options: WorkspaceAutomationOptions) {
   return {
     resetLiveBulkDraft, saveCurrentLiveBulkAction, deleteSavedAction, createQuickAutomationAction,
     openAdvancedAutomationActionBuilder, saveIssueView, deleteIssueView, createAutomationRule,
-    toggleAutomationRule, deleteAutomationRule, applySavedActionToBulkDraft, reviewAutomationRule, loadSavedAction,
+    toggleAutomationRule, deleteAutomationRule, applySavedActionToBulkDraft, composeSavedActionIntoBulkDraft,
+    preparePowerTool, reviewAutomationRule, loadSavedAction,
   }
 }
