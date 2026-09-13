@@ -115,6 +115,12 @@ This release keeps Capture as an evidence session and adds durable session recov
 - Capture issues can include local images, PDFs, WebM recordings, text/log files, and JSON.
 - Files are uploaded after the Jira issue is created, one attachment request at a time so one failed file does not invalidate the issue itself.
 
+## Manual installation for users
+
+QueueMint does not require the Chrome Web Store for internal or team use. Download and extract the packaged extension, open `chrome://extensions`, enable **Developer mode**, choose **Load unpacked**, and select the extracted folder that contains `manifest.json`.
+
+For the full Chrome/Edge install and update steps, see [INSTALL.md](INSTALL.md).
+
 ## Install for development
 
 Requirements:
@@ -201,4 +207,4 @@ Do not commit `node_modules/`, `dist/`, local logs, secrets, or private Jira dat
 
 The large architecture refactor is complete. All production source files are under the 300-line limit. The product roadmap has now returned to user-facing capability work, with Capture Pro as the first post-refactor phase.
 
-Latest completed phase: **v0.27 Productivity & Polish**. Next planned phase: **v1.0 Public Release**.
+Current stable release: **v1.0.0**. Future work should be handled as maintenance, compatibility fixes, or a separately planned post-v1 roadmap.

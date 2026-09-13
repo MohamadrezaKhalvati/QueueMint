@@ -15,5 +15,5 @@ Thumbs.db
 public/fonts/*.woff
 public/fonts/*.woff2
 !public/fonts/README.md
-
 release-artifacts/
+store-artifacts/
