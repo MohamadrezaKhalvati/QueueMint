@@ -71,3 +71,7 @@ New Chrome permissions should be treated as product/security changes. Any future
 - what data becomes accessible
 - whether the permission is optional
 - how the user can avoid the feature
+
+## Portable backup boundary
+
+QueueMint portable backups intentionally exclude the Smart Assistant API key, activity history, working issue drafts, and last-created issue state. Backup import accepts only the QueueMint portable-backup schema and writes only the preference/workflow fields intended for transfer between installations.

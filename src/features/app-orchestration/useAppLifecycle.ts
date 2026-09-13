@@ -73,7 +73,12 @@ export function useAppLifecycle(options: LifecycleOptions) {
   useEffect(() => { if (o.hydrated) void o.connect(false) }, [o.hydrated])
   useEffect(() => {
     if (typeof chrome === "undefined" || !chrome.runtime?.onMessage) return
-    const listener = (message: unknown) => { if (message && typeof message === "object" && (message as { type?: string }).type === "QUEUEMINT_JIRA_CANDIDATE_CHANGED") void o.connect(false) }
+    const listener = (message: unknown) => {
+      if (!message || typeof message !== "object") return
+      const type = (message as { type?: string }).type
+      if (type === "QUEUEMINT_JIRA_CANDIDATE_CHANGED") void o.connect(false)
+      if (type === "QUEUEMINT_OPEN_COMMAND_PALETTE") o.setCommandOpen(true)
+    }
     chrome.runtime.onMessage.addListener(listener); return () => chrome.runtime.onMessage.removeListener(listener)
   }, [o.hydrated])
   useEffect(() => { if (o.metadata && o.payload?.project) void o.loadProjectContext(o.payload.project) }, [o.metadata, o.payload?.project])
@@ -105,7 +110,9 @@ export function useAppLifecycle(options: LifecycleOptions) {
     return () => { cancelled = true }
   }, [o.liveBulkOpen, o.liveSelectedKeys, o.liveIssues])
   useEffect(() => {
-    const onKeyDown = (event: KeyboardEvent) => { if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "k") { event.preventDefault(); o.setCommandOpen((current) => !current) } }
+    const onKeyDown = (event: KeyboardEvent) => {
+      if ((event.ctrlKey || event.metaKey) && event.shiftKey && event.key.toLowerCase() === "k") { event.preventDefault(); o.setCommandOpen((current) => !current) }
+    }
     window.addEventListener("keydown", onKeyDown); return () => window.removeEventListener("keydown", onKeyDown)
   }, [])
   useEffect(() => {

@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.27.0 - Productivity and Polish
+
+- Replaced the browser-reserved Ctrl+K shortcut with Ctrl+Shift+K / Command+Shift+K and registered a Chrome extension command so the browser no longer steals the palette shortcut.
+- Added persistent favorite commands with one-click star toggles and a Favorites section at the top of the Command Layer.
+- Added recent project and recent board context to the Command Layer for faster daily switching.
+- Added a focused active-sprint summary command for Slack/meeting sharing without introducing a reporting subsystem.
+- Added portable backup/restore for appearance preferences, Saved Views, Saved Actions, Automation rules, favorite commands, and recent context.
+- Portable backups intentionally exclude Smart Assistant API keys, activity history, last-created issue state, and working drafts.
+- Improved Command Layer keyboard accessibility with disabled-item skipping plus Home/End navigation and clearer listbox semantics.
+- Preserved the strict 300-line production-file limit and existing Jira mutation paths.
+
 ## 0.26.0 - Command Layer
 
 - Expanded Ctrl+K from navigation into a context-aware Jira command layer.

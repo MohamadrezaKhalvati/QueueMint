@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "QueueMint",
-  "version": "0.26.0",
+  "version": "0.27.0",
   "description": "QueueMint is a fast Jira companion for capture, evidence-rich bug reporting, safe bulk actions, saved workflows, and power-user shortcuts.",
   "action": {
     "default_title": "Open QueueMint",
@@ -30,5 +30,14 @@
     "32": "icons/icon32.png",
     "48": "icons/icon48.png",
     "128": "icons/icon128.png"
+  },
+  "commands": {
+    "open-command-palette": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+K",
+        "mac": "Command+Shift+K"
+      },
+      "description": "Open the QueueMint command palette"
+    }
   }
 }

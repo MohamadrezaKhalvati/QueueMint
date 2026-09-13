@@ -4,7 +4,7 @@ QueueMint is a Chrome/Edge companion for Jira. It makes the work around Jira fas
 
 The product focuses on workflows that are slow, repetitive, fragmented, or awkward in the native Jira UI: evidence-rich bug capture, fast issue creation, safe bulk actions, reusable macros, command-driven actions, and personal productivity shortcuts.
 
-Current version: **v0.26.0**.
+Current version: **v0.27.0**.
 
 ## Product principle
 
@@ -32,14 +32,20 @@ See [Product direction](docs/PRODUCT.md) and [Roadmap](docs/ROADMAP.md).
 - Review and create issue batches safely before writing to Jira.
 - Manage Jira issues with filters, Saved Views, issue detail inspection, safe clone/move helpers, and bulk edit preview.
 - Reuse Saved Actions and safe Automation rules/macros through the same preview-first bulk-edit path.
-- Use the Ctrl+K Command Layer for navigation, selected-issue actions, sprint moves, Saved Actions, filtered Jira views, and project/board switching.
+- Use the Ctrl+Shift+K Command Layer for navigation, selected-issue actions, sprint moves, Saved Actions, filtered Jira views, and project/board switching.
 - Switch English/Persian and light/dark theme in the main workspace and Capture surfaces.
 
 The complete current feature inventory is in [docs/CAPABILITIES.md](docs/CAPABILITIES.md).
 
+## v0.27.0 - Productivity and Polish
+
+The Command Layer now uses **Ctrl+Shift+K** on Windows/Linux and **Command+Shift+K** on macOS because Chrome reserves Ctrl+K for the address bar. QueueMint also registers the shortcut as an extension command and keeps the visible command button as a fallback.
+
+Daily-use polish now includes persistent favorite commands, recent project/board context, a compact active-sprint summary that can be copied for Slack or meetings, and portable backup/restore for QueueMint preferences and reusable workflows. Backup files intentionally exclude the Smart Assistant API key and working data. Command navigation also skips disabled commands and supports Home/End in addition to arrows and Enter.
+
 ## v0.26.0 - Command Layer
 
-Ctrl+K is now a context-aware command interface instead of only a navigation palette. Commands reuse the existing QueueMint actions for assigning the current selection, opening or inspecting one selected issue, moving selected issues to backlog or an available sprint, applying Saved Actions, refreshing Jira context, and switching project or board.
+In v0.26 the palette became a context-aware command interface instead of only a navigation menu. The browser-safe shortcut is now Ctrl+Shift+K as of v0.27. Commands reuse the existing QueueMint actions for assigning the current selection, opening or inspecting one selected issue, moving selected issues to backlog or an available sprint, applying Saved Actions, refreshing Jira context, and switching project or board.
 
 The command layer can also open a real Manage Jira filtered view such as unassigned Bugs. That filter is applied through the existing Manage Jira model rather than maintaining a second hidden issue query or mutation system. Search now matches multiple tokens and commands are grouped by navigation, Jira actions, Saved Actions, context, and utilities.
 
@@ -172,4 +178,4 @@ Do not commit `node_modules/`, `dist/`, local logs, secrets, or private Jira dat
 
 The large architecture refactor is complete. All production source files are under the 300-line limit. The product roadmap has now returned to user-facing capability work, with Capture Pro as the first post-refactor phase.
 
-Latest completed phase: **v0.26 Command Layer**. Next planned phase: **v0.27 Productivity & Polish**.
+Latest completed phase: **v0.27 Productivity & Polish**. Next planned phase: **v1.0 Public Release**.

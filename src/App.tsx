@@ -1,4 +1,5 @@
 import { useMemo, type CSSProperties } from "react"
+import { toast } from "sonner"
 
 import { buildEpicOptions } from "@/components/jira-controls"
 import { copy } from "@/features/app-shell/app-copy"
@@ -16,6 +17,8 @@ import { useJiraConnection } from "@/features/app-orchestration/useJiraConnectio
 import { useLiveBoardOperations } from "@/features/app-orchestration/useLiveBoardOperations"
 import { useProjectContext } from "@/features/app-orchestration/useProjectContext"
 import { useWorkspaceAutomation } from "@/features/app-orchestration/useWorkspaceAutomation"
+import { buildSprintShareSummary } from "@/features/productivity/sprint-summary"
+import { useProductivityState } from "@/features/productivity/useProductivityState"
 import { findPotentialDuplicates, suggestAssignees } from "@/lib/intelligence"
 import { parseBulkJson } from "@/lib/validation"
 import { jiraBrowseUrl } from "@/lib/jira"
@@ -56,6 +59,7 @@ function App() {
   const issueCount = issues.length
   const selectedIssue = issues[selectedIndex]
   const selectedProjectKey = payload?.project ?? metadata?.projects[0]?.key
+  const productivity = useProductivityState(selectedProjectKey, project?.name, selectedBoardId, boards.find((item) => item.id === selectedBoardId)?.name)
   const issueTypes = useMemo(() => project?.issueTypes?.filter((item) => !item.subtask) ?? [], [project])
   const epicOptions = useMemo(
     () => buildEpicOptions(issues.filter((issue) => issue.type?.toLowerCase() === "epic" && issue.ref).map((issue) => ({ ref: issue.ref as string, summary: issue.summary })), jiraEpics),
@@ -169,9 +173,12 @@ function App() {
     },
   }
   const contextualAiPrompt = AI_PROMPT_TEMPLATE.replaceAll("PROJECT_KEY", contextualSamplePayload.project)
+  const sprintShareSummary = buildSprintShareSummary(locale, payload?.project, sprints, liveIssues)
   const commandItems = useAppCommandItems({
     t, locale, issueCount, liveSelectedKeys, liveIssues, currentUserIdentity: metadata?.user?.name || metadata?.user?.key,
-    currentProjectKey: payload?.project, selectedBoardId, projects: metadata?.projects ?? [], boards, sprints, savedActions, setMode,
+    currentProjectKey: payload?.project, selectedBoardId, projects: metadata?.projects ?? [], boards, sprints, savedActions,
+    recentProjects: productivity.recentProjects, recentBoards: productivity.recentBoards, favoriteCommandIds: productivity.favoriteCommandIds,
+    sprintSummary: sprintShareSummary ? { label: sprintShareSummary.sprint.name, issueCount: sprintShareSummary.issueCount } : undefined, setMode,
     onBulkEdit: () => { setActiveAutomationRuleId(null); setMode("manage"); setLiveBulkOpen(true) },
     onInspect: (key) => void liveActions.openIssueDetails(key), onOpenInJira: (key) => window.open(jiraBrowseUrl(key), "_blank"),
     onAssignToMe: () => void liveActions.assignLiveSelectionToMe(),
@@ -183,6 +190,8 @@ function App() {
     onSwitchBoard: (id) => { setLiveScope("board"); void projectActions.chooseBoard(id) },
     onHistory: () => setBulkHistoryOpen(true), onSettings: () => setSettingsOpen(true), onBatchSettings: () => setBatchSettingsOpen(true),
     onRefresh: () => void liveActions.loadLiveBoard(), onSavedAction: automationActions.loadSavedAction,
+    onCopySprintSummary: () => { if (sprintShareSummary) void navigator.clipboard.writeText(sprintShareSummary.text).then(() => toast.success(locale === "fa" ? "خلاصه اسپرینت کپی شد" : "Sprint summary copied")) },
+    onToggleFavorite: productivity.toggleFavoriteCommand,
   })
   const derived: AppDerivedModel = {
     t, parsedError: parsed.error, payload, issues, issueCount, selectedIssue, selectedProjectKey, issueTypes, epicOptions,

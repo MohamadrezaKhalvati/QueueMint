@@ -9,6 +9,7 @@ import { cn } from "@/lib/utils"
 import type { AppLocale, AppTheme, DensityMode, ReviewLayout } from "@/types"
 import type { AppCopy } from "./app-copy"
 import { SmartAssistantSettingsPanel } from "./SmartAssistantSettings"
+import { ProductivitySettingsPanel } from "@/features/productivity/ProductivitySettings"
 
 type IconType = ComponentType<{ className?: string }>
 
@@ -46,6 +47,7 @@ export function AppearanceSheet({ open, onOpenChange, locale, t, theme, setTheme
           {reviewLayout === "grid" ? <SettingGroup title={t.columns} icon={Grid3X3}><Segmented values={[2, 3, 4].map((value) => ({ value: String(value), label: String(value) }))} value={String(gridColumns)} onChange={(value) => setGridColumns(Number(value) as 2 | 3 | 4)} /></SettingGroup> : null}
           <SettingGroup title={t.density} icon={ArrowLeftRight}><Segmented values={[{ value: "compact", label: t.compact }, { value: "comfortable", label: t.comfortable }, { value: "spacious", label: t.spacious }]} value={density} onChange={(value) => setDensity(value as DensityMode)} /></SettingGroup>
           <SmartAssistantSettingsPanel locale={locale} />
+          <ProductivitySettingsPanel locale={locale} />
         </SheetBody>
         <SheetFooter className="justify-end"><Button className="min-w-24" onClick={() => onOpenChange(false)}>{t.done}</Button></SheetFooter>
       </SheetContent>

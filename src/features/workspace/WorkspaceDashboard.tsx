@@ -96,7 +96,7 @@ export function WorkspaceDashboard({
           <p className="qm-page-subtitle">{t.workspaceHint}</p>
         </div>
         <div className="qm-heading-actions flex flex-wrap items-center gap-2">
-          <Button variant="outline" onClick={onCommands}><Command className="size-4" />{t.commandPalette}<kbd className="ms-1 rounded border bg-muted/30 px-1.5 py-0.5 text-[10px] text-muted-foreground">Ctrl K</kbd></Button>
+          <Button variant="outline" onClick={onCommands}><Command className="size-4" />{t.commandPalette}<kbd className="ms-1 rounded border bg-muted/30 px-1.5 py-0.5 text-[10px] text-muted-foreground">Ctrl/⌘ Shift K</kbd></Button>
           <Button variant="outline" onClick={onRefresh} disabled={loading || !board}>{loading ? <LoaderCircle className="size-4 animate-spin" /> : <RefreshCcw className="size-4" />}{t.refreshWorkspace}</Button>
         </div>
       </div>

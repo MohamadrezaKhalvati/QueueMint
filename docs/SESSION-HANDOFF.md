@@ -4,11 +4,11 @@ Use this file when starting a new ChatGPT, coding-agent, or developer session. R
 
 ## Current state
 
-Current release: **v0.26.0**.
+Current release: **v0.27.0**.
 
 The architecture refactor is complete. The strict 300-line production code limit has no exceptions. `App.tsx` and `Popup.tsx` are orchestration/composition layers rather than monoliths.
 
-Capture Pro, Smart Assistant, and Jira Power Tools are complete. The current release completes **v0.26 Command Layer**, turning Ctrl+K into a context-aware interface over the same Jira actions and filters already used by QueueMint.
+Capture Pro, Smart Assistant, Jira Power Tools, and Command Layer are complete. The current release completes **v0.27 Productivity & Polish**, fixing the Chrome shortcut collision and adding persistent favorites, recent context, portable backup/restore, sprint-share copy, and keyboard-accessibility polish.
 
 ## Product definition
 
@@ -108,6 +108,16 @@ For exact current detail, read `docs/CAPABILITIES.md`.
 - Command search is multi-token and grouped, but it is still deterministic local matching. There is no AI or autonomous command execution.
 - Capture-from-page continues to live in the browser-action popup/Capture session because the full workspace cannot safely assume the active browser tab is the original source page.
 
+## v0.27 Productivity and Polish implementation notes
+
+- Do not restore Ctrl+K as the primary shortcut. Chrome owns it for the omnibox. QueueMint uses Ctrl+Shift+K / Command+Shift+K and also registers `open-command-palette` in the extension manifest.
+- `src/features/productivity/useProductivityState.ts` owns persistent favorite-command ids plus recent project/board context. Storage is isolated under `queuemint-productivity-v1`.
+- Favorite commands are decoration only. They do not create alternate execution paths; command items still call the same existing QueueMint actions.
+- Portable backup/restore lives in `src/features/productivity/productivity-storage.ts`. It intentionally excludes Smart Assistant API keys, activity history, last-created issue state, and working drafts.
+- The active-sprint share helper is a compact clipboard summary. Do not grow it into a reporting/dashboard engine.
+- Durable Capture recovery was already solved by the persistent Capture Session architecture. Do not create a second draft-recovery store for the same data.
+- Command Palette keyboard behavior must continue to skip disabled commands and keep Escape/Arrow/Home/End/Enter navigation accessible.
+
 ## Architecture rules
 
 - No production code file over 300 lines.
@@ -131,10 +141,9 @@ A phase should not be considered complete until these pass on a normal developme
 
 ## Agreed future direction
 
-Next planned phases:
+Next planned phase:
 
-- **v0.27 Productivity & Polish**: recents/favorites, stronger draft recovery, local backup/restore, accessibility, performance, small shareable summaries.
-- **v1.0 Public Release**: Jira compatibility matrix, least-privilege permission audit, privacy policy, onboarding, automated critical-path tests, store assets, CI/release process.
+- **v1.0 Public Release**: Jira compatibility matrix, least-privilege permission/privacy audit, critical-flow tests, onboarding/store assets, CI release flow, upgrade/fresh-install testing, and final security review.
 
 Read `docs/ROADMAP.md` for the full reasoning and non-goals.
 

@@ -74,7 +74,7 @@ Selection rule: only build tools where QueueMint materially reduces Jira frictio
 
 ## v0.26 - Command Layer - completed
 
-Goal: make Ctrl+K a genuine command interface over the user's current Jira context.
+Goal: make the command palette a genuine command interface over the user's current Jira context.
 
 Delivered:
 
@@ -89,21 +89,23 @@ Delivered:
 
 The Command Layer deliberately calls existing QueueMint feature APIs and filter models instead of creating a second implementation path. Capture-from-page remains owned by the browser-action Capture flow because its source-tab permission/lifecycle is different from the full workspace.
 
-## v0.27 - Productivity and polish
+## v0.27 - Productivity and polish - completed
 
-Goal: make QueueMint comfortable for daily use.
+Goal: make QueueMint comfortable for daily use without adding a second reporting or state-management product.
 
-Candidate work:
+Delivered:
 
-- recent issues/projects/boards
-- favorite commands
-- stronger capture draft recovery
-- import/export of local QueueMint preferences
-- backup/restore for Saved Views and Saved Actions
-- focused meeting/Slack summaries, not a reporting engine
-- accessibility pass
-- keyboard navigation pass
-- performance and bundle-size pass
+- Chrome-safe Command Layer shortcut: Ctrl+Shift+K on Windows/Linux and Command+Shift+K on macOS.
+- registered extension command plus in-app key handling so Chrome's reserved Ctrl+K address-bar shortcut is no longer used.
+- persistent favorite commands surfaced first in the Command Layer.
+- recent project and board context for faster switching.
+- portable backup/restore for appearance preferences, Saved Views, Saved Actions, Automation rules, favorites, and recent context.
+- API keys, activity history, last-created issue state, and working drafts are deliberately excluded from portable backups.
+- focused active-sprint summary copy for Slack/meeting use, not a reporting engine.
+- keyboard/accessibility improvements in the Command Layer, including disabled-item skipping and Home/End navigation.
+- Capture draft recovery remains owned by the durable v0.23 Capture Session architecture and did not need a parallel recovery system.
+
+Performance work in this phase stayed conservative: no new runtime dependency was added and existing feature paths were reused. Broader automated bundle budgets belong with the v1.0 release pipeline.
 
 ## v1.0 - Public release
 

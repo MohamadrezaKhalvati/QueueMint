@@ -61,7 +61,11 @@ At minimum:
 - project-bound Saved Actions are blocked in another project
 - Bulk Edit preview works
 - Bulk Edit preview shows every affected Jira issue key
-- Ctrl+K opens
+- Ctrl+Shift+K opens the Command Layer without Chrome focusing the address bar
+- favorite commands persist after reload
+- recent project/board commands appear after context switching
+- portable backup export/import restores preferences and reusable workflows without exporting the Smart Assistant API key
+- active sprint summary copies a short shareable text
 
 ## Git release
 
@@ -71,9 +75,9 @@ After merge to main:
 git checkout main
 git pull --ff-only
 git status
-git tag -a v0.26.0 -m "QueueMint v0.26.0 Command Layer"
+git tag -a v0.27.0 -m "QueueMint v0.27.0 Productivity and Polish"
 git push origin main
-git push origin v0.26.0
+git push origin v0.27.0
 ```
 
 Change the version/tag to the actual release.

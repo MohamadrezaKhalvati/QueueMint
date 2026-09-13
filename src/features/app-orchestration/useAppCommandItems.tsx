@@ -1,5 +1,5 @@
 import {
-  ArrowLeftRight, Bookmark, Bolt, Bug, Eye, ExternalLink, FileJson, History, Layers3,
+  ArrowLeftRight, Bookmark, Bolt, Bug, ClipboardCopy, Eye, ExternalLink, FileJson, History, Layers3,
   LayoutDashboard, ListChecks, RefreshCcw, Settings2, SlidersHorizontal, Sparkles, SquareKanban,
   UserCheck, UsersRound,
 } from "lucide-react"
@@ -7,6 +7,7 @@ import {
 import type { CommandPaletteItem } from "@/components/command-palette"
 import type { AppCopy } from "@/features/app-shell/app-copy"
 import type { Mode } from "@/features/bulk/bulk-utils"
+import type { RecentBoard, RecentProject } from "@/features/productivity/productivity-storage"
 import type { SavedWorkspaceAction } from "@/lib/storage"
 import type { AppLocale, JiraBoard, JiraLiveIssue, JiraProject, JiraSprint } from "@/types"
 
@@ -23,6 +24,10 @@ type CommandItemOptions = {
   boards: JiraBoard[]
   sprints: JiraSprint[]
   savedActions: SavedWorkspaceAction[]
+  recentProjects: RecentProject[]
+  recentBoards: RecentBoard[]
+  favoriteCommandIds: Set<string>
+  sprintSummary?: { label: string; issueCount: number }
   setMode: (mode: Mode) => void
   onBulkEdit: () => void
   onInspect: (key: string) => void
@@ -37,11 +42,14 @@ type CommandItemOptions = {
   onBatchSettings: () => void
   onRefresh: () => void
   onSavedAction: (action: SavedWorkspaceAction) => void
+  onCopySprintSummary: () => void
+  onToggleFavorite: (id: string) => void
 }
 
 export function useAppCommandItems(o: CommandItemOptions): CommandPaletteItem[] {
   const isFa = o.locale === "fa"
   const groups = {
+    favorite: isFa ? "محبوب‌ها" : "Favorites", recent: isFa ? "زمینه‌های اخیر" : "Recent context",
     navigate: isFa ? "رفتن به" : "Navigate", actions: isFa ? "عملیات Jira" : "Jira actions",
     saved: isFa ? "عملیات ذخیره شده" : "Saved actions", context: isFa ? "زمینه" : "Context", utility: isFa ? "ابزار" : "Utilities",
   }
@@ -67,25 +75,32 @@ export function useAppCommandItems(o: CommandItemOptions): CommandPaletteItem[] 
     { id: "show-unassigned-bugs", group: groups.actions, label: isFa ? "نمایش باگ‌های بدون مسئول" : "Show unassigned bugs", description: unassignedBugCount ? `${unassignedBugCount} ${o.t.issues}` : (isFa ? "موردی در بورد فعلی نیست" : "No matching issues on this board"), keywords: "show filter unassigned bugs ownership", icon: <Bug className="size-4" />, disabled: !unassignedBugCount, onSelect: () => o.onShowUnassignedBugs(bugType) },
   ]
 
-  items.push(...o.savedActions
-    .filter((action) => !action.projectKey || action.projectKey === o.currentProjectKey)
-    .map((action) => ({ id: `saved:${action.id}`, group: groups.saved, label: action.name, description: selectedDescription, keywords: "saved action preset automation macro apply", icon: <Bookmark className="size-4" />, disabled: !selectedCount, onSelect: () => o.onSavedAction(action) })))
+  items.push(...o.savedActions.filter((action) => !action.projectKey || action.projectKey === o.currentProjectKey).map((action) => ({ id: `saved:${action.id}`, group: groups.saved, label: action.name, description: selectedDescription, keywords: "saved action preset automation macro apply", icon: <Bookmark className="size-4" />, disabled: !selectedCount, onSelect: () => o.onSavedAction(action) })))
 
-  items.push(...o.projects.map((project) => ({
-    id: `project:${project.key}`, group: groups.context, label: isFa ? `پروژه: ${project.name}` : `Project: ${project.name}`,
-    description: project.key === o.currentProjectKey ? (isFa ? "پروژه فعلی" : "Current project") : project.key, keywords: `switch project ${project.key} ${project.name}`,
-    icon: <Layers3 className="size-4" />, disabled: project.key === o.currentProjectKey, onSelect: () => o.onSwitchProject(project.key),
-  })))
-  items.push(...o.boards.map((board) => ({
-    id: `board:${board.id}`, group: groups.context, label: isFa ? `بورد: ${board.name}` : `Board: ${board.name}`,
-    description: board.id === o.selectedBoardId ? (isFa ? "بورد فعلی" : "Current board") : board.type, keywords: `switch board ${board.name} ${board.type}`,
-    icon: <SquareKanban className="size-4" />, disabled: board.id === o.selectedBoardId, onSelect: () => o.onSwitchBoard(board.id),
-  })))
+  const recentKeys = new Set(o.recentProjects.map((item) => item.key))
+  items.push(...o.recentProjects.flatMap((recent) => {
+    const project = o.projects.find((item) => item.key === recent.key)
+    if (!project) return []
+    return [{ id: `project:${project.key}`, group: groups.recent, label: `${project.key} - ${project.name}`, description: project.key === o.currentProjectKey ? (isFa ? "پروژه فعلی" : "Current project") : (isFa ? "باز کردن پروژه اخیر" : "Open recent project"), keywords: `recent switch project ${project.key} ${project.name}`, icon: <Layers3 className="size-4" />, disabled: project.key === o.currentProjectKey, onSelect: () => o.onSwitchProject(project.key) }]
+  }))
+  items.push(...o.projects.filter((project) => !recentKeys.has(project.key)).map((project) => ({ id: `project:${project.key}`, group: groups.context, label: isFa ? `پروژه: ${project.name}` : `Project: ${project.name}`, description: project.key === o.currentProjectKey ? (isFa ? "پروژه فعلی" : "Current project") : project.key, keywords: `switch project ${project.key} ${project.name}`, icon: <Layers3 className="size-4" />, disabled: project.key === o.currentProjectKey, onSelect: () => o.onSwitchProject(project.key) })))
+  const recentBoardIds = new Set(o.recentBoards.filter((item) => item.projectKey === o.currentProjectKey).map((item) => item.id))
+  items.push(...o.recentBoards.flatMap((recent) => {
+    if (recent.projectKey !== o.currentProjectKey) return []
+    const board = o.boards.find((item) => item.id === recent.id)
+    if (!board) return []
+    return [{ id: `board:${board.id}`, group: groups.recent, label: board.name, description: board.id === o.selectedBoardId ? (isFa ? "بورد فعلی" : "Current board") : (isFa ? "باز کردن بورد اخیر" : "Open recent board"), keywords: `recent switch board ${board.name} ${board.type}`, icon: <SquareKanban className="size-4" />, disabled: board.id === o.selectedBoardId, onSelect: () => o.onSwitchBoard(board.id) }]
+  }))
+  items.push(...o.boards.filter((board) => !recentBoardIds.has(board.id)).map((board) => ({ id: `board:${board.id}`, group: groups.context, label: isFa ? `بورد: ${board.name}` : `Board: ${board.name}`, description: board.id === o.selectedBoardId ? (isFa ? "بورد فعلی" : "Current board") : board.type, keywords: `switch board ${board.name} ${board.type}`, icon: <SquareKanban className="size-4" />, disabled: board.id === o.selectedBoardId, onSelect: () => o.onSwitchBoard(board.id) })))
   items.push(
+    { id: "copy-sprint-summary", group: groups.utility, label: isFa ? "کپی خلاصه اسپرینت" : "Copy sprint summary", description: o.sprintSummary ? `${o.sprintSummary.label} · ${o.sprintSummary.issueCount} ${o.t.issues}` : (isFa ? "اسپرینت فعال پیدا نشد" : "No active sprint"), keywords: "copy sprint summary slack meeting share", icon: <ClipboardCopy className="size-4" />, disabled: !o.sprintSummary, onSelect: o.onCopySprintSummary },
     { id: "history", group: groups.utility, label: o.t.changeHistory, description: o.t.historyHint, keywords: "undo history", icon: <History className="size-4" />, onSelect: o.onHistory },
-    { id: "settings", group: groups.utility, label: o.t.sidebarSettings, description: o.t.settings, keywords: "theme language appearance", icon: <Settings2 className="size-4" />, onSelect: o.onSettings },
+    { id: "settings", group: groups.utility, label: o.t.sidebarSettings, description: o.t.settings, keywords: "theme language appearance backup restore", icon: <Settings2 className="size-4" />, onSelect: o.onSettings },
     { id: "batch-settings", group: groups.utility, label: o.t.batchSettings, description: o.t.context, keywords: "project board sprint defaults context", icon: <SlidersHorizontal className="size-4" />, onSelect: o.onBatchSettings },
     { id: "refresh", group: groups.utility, label: o.t.refreshWorkspace, description: o.t.refreshBoard, keywords: "reload jira board", icon: <RefreshCcw className="size-4" />, disabled: !o.selectedBoardId, onSelect: o.onRefresh },
   )
-  return items
+  return items.map((item) => {
+    const favorite = o.favoriteCommandIds.has(item.id)
+    return { ...item, favorite, group: favorite ? groups.favorite : item.group, onToggleFavorite: () => o.onToggleFavorite(item.id) }
+  }).sort((a, b) => Number(Boolean(b.favorite)) - Number(Boolean(a.favorite)))
 }

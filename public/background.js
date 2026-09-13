@@ -1,3 +1,4 @@
+importScripts("background-commands.js")
 const CONNECTION_KEY = "queuemint-jira-connection-v1"
 const CANDIDATE_KEY = "queuemint-jira-last-candidate-v1"
 const LEGACY_CONNECTION_KEY = "raadco-jira-connection-v1"

@@ -55,7 +55,7 @@ export function AppHeader({
             {loadingConnection ? <LoaderCircle className="size-3 animate-spin" /> : <span className="qm-status-dot" />}
             <span>{metadata ? t.connected : t.disconnected}</span>
           </button>
-          <Button variant="ghost" size="sm" className="qm-topbar-command hidden gap-2 md:inline-flex" onClick={onCommands} aria-label={t.openCommandPalette} title={t.openCommandPalette}><Command className="size-[17px]" /><span className="text-xs">Ctrl K</span></Button>
+          <Button variant="ghost" size="sm" className="qm-topbar-command hidden gap-2 md:inline-flex" onClick={onCommands} aria-label={t.openCommandPalette} title={t.openCommandPalette}><Command className="size-[17px]" /><span className="text-xs">Ctrl/⌘ Shift K</span></Button>
           <Button variant="ghost" size="icon" className="qm-topbar-icon md:hidden" onClick={onCommands} aria-label={t.openCommandPalette} title={t.openCommandPalette}><Command className="size-[18px]" /></Button>
           <AppearanceQuickControls locale={locale} theme={theme} themeLabel={t.theme} languageLabel={t.language} onTheme={onTheme} onLocale={onLocale} />
           <Button variant="ghost" size="icon" className="qm-topbar-icon" onClick={onSettings} aria-label={t.settings} title={t.settings}><Settings2 className="size-[18px]" /></Button>

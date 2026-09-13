@@ -1,6 +1,6 @@
 # QueueMint capabilities
 
-Current product version: v0.26.0.
+Current product version: v0.27.0.
 
 This document describes what is implemented today. It intentionally separates current capability from the future roadmap.
 
@@ -233,7 +233,7 @@ This is a QueueMint workflow trace, not a replacement for Jira issue history.
 
 ## Command Layer
 
-Ctrl+K is a context-aware command interface over the same QueueMint actions used by the visible UI. It does not maintain a second Jira mutation engine.
+Ctrl+Shift+K is a context-aware command interface over the same QueueMint actions used by the visible UI. It does not maintain a second Jira mutation engine.
 
 Current commands include:
 
