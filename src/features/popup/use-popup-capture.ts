@@ -10,6 +10,7 @@ import {
   deleteCaptureDraft, loadActiveCaptureDraft, loadCaptureDraft, saveCaptureDraft, updateCaptureDraft,
   type QueueMintCaptureDraft, type QueueMintCaptureIssueDraft, type QueueMintCaptureSource,
 } from "@/lib/capture-draft"
+import { captureSourceFromTab, shouldRebindCaptureSource } from "@/lib/capture-source"
 import type { PopupCopy } from "./popup-copy"
 import { saveDataUrl } from "./popup-shared"
 
@@ -43,19 +44,27 @@ export function usePopupCapture({ captureDraftId, t, onCaptureReady }: { capture
   useEffect(() => { void initialize() }, [captureDraftId])
 
   async function initialize() {
+    const activeTab = captureDraftId ? null : await getActiveBrowserTab()
+    const activeSource = captureSourceFromTab(activeTab)
     try {
       const draft = captureDraftId ? await loadCaptureDraft(captureDraftId) : await loadActiveCaptureDraft()
       if (draft && (draft.shots.length || draft.source || draft.issueDraft)) {
         restoreDraft(draft)
         if (captureDraftId) await registerEditorTab(draft.id)
-        else toast.success(t.captureRestored)
-        const diagnosticsTabId = draft.source?.tabId ?? draft.context?.tabId
+        else {
+          if (activeSource && shouldRebindCaptureSource(draft.source, activeSource)) {
+            setSource(activeSource); setActiveTitle(activeSource.title); setActiveUrl(activeSource.url); setDiagnostics(null)
+            await updateCaptureDraft(draft.id, { source: activeSource, diagnostics: null })
+          }
+          toast.success(t.captureRestored)
+        }
+        const diagnosticsTabId = activeSource?.tabId ?? draft.source?.tabId ?? draft.context?.tabId
         if (diagnosticsTabId) await installPageDiagnostics(diagnosticsTabId)
         onCaptureReady()
         return
       }
     } catch (error) { toast.error(error instanceof Error ? error.message : t.captureFailed) }
-    const tab = await getActiveBrowserTab()
+    const tab = activeTab ?? await getActiveBrowserTab()
     setActiveTitle(tab?.title ?? ""); setActiveUrl(tab?.url ?? "")
     if (tab?.id) await installPageDiagnostics(tab.id)
     if (tab?.id && tab.url && /^https?:\/\//i.test(tab.url)) {
@@ -229,6 +238,12 @@ export function usePopupCapture({ captureDraftId, t, onCaptureReady }: { capture
     await updateCaptureDraft(sessionId, { view, issueDraft, finalScreenshot })
   }
 
+  async function completeSession() {
+    const id = sessionId
+    setSessionId(null); setSessionView("capture"); setRestoredIssueDraft(null)
+    if (id) await deleteCaptureDraft(id)
+  }
+
   async function resetSession() {
     if (sessionId) await deleteCaptureDraft(sessionId)
     clear(); setSessionId(null); setSessionView("capture"); setRestoredIssueDraft(null); setEditorTabId(null)
@@ -247,5 +262,5 @@ export function usePopupCapture({ captureDraftId, t, onCaptureReady }: { capture
   function activeEditorState() { return shots.find((shot) => shot.id === activeShotId)?.editorState ?? null }
   function clear() { setSource(null); setCaptureDataUrl(null); setFinalScreenshot(null); setCaptureContext(null); setShots([]); setActiveShotId(null); setDiagnostics(null) }
 
-  return { sessionId, sessionView, restoredIssueDraft, activeTitle, activeUrl, captureDataUrl, setCaptureDataUrl, finalScreenshot, setFinalScreenshot, captureContext, setCaptureContext, capturing, editorRef, shots, activeShotId, diagnostics, takeCapture, retakeCapture, selectShot, removeShot, updateEditorState, activeEditorState, refreshDiagnostics, openFullscreen, openCapturePro, prepareReport, persistIssueDraft, resetSession, copyScreenshot, download, currentScreenshot, allScreenshots, clear }
+  return { sessionId, sessionView, restoredIssueDraft, activeTitle, activeUrl, captureDataUrl, setCaptureDataUrl, finalScreenshot, setFinalScreenshot, captureContext, setCaptureContext, capturing, editorRef, shots, activeShotId, diagnostics, takeCapture, retakeCapture, selectShot, removeShot, updateEditorState, activeEditorState, refreshDiagnostics, openFullscreen, openCapturePro, prepareReport, persistIssueDraft, completeSession, resetSession, copyScreenshot, download, currentScreenshot, allScreenshots, clear }
 }

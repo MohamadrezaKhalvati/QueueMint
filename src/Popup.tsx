@@ -83,7 +83,8 @@ export default function Popup() {
   async function createIssue() {
     const key = await form.createIssue({ captureContext: capture.captureContext, finalScreenshot: capture.finalScreenshot, screenshots: capture.allScreenshots(), diagnostics: capture.diagnostics })
     if (!key) return
-    setCreatedKey(key); setView("success")
+    setCreatedKey(key); setView("success"); setRestoredSessionId(null)
+    await capture.completeSession()
   }
 
   async function resetCaptureSession(confirmFirst = false) {
