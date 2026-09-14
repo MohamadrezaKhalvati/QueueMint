@@ -1,5 +1,16 @@
 # Changelog
 
+## 1.0.1 - Security & Reliability
+
+- Redacted sensitive query strings, fragments, credentials, and tokens from Capture diagnostics.
+- Improved page runtime diagnostics by collecting page errors from the MAIN world.
+- Moved OpenAI API key storage from persistent local storage to browser session storage.
+- Added secure migration and cleanup for previously stored API keys.
+- Added automated security regression tests.
+- Added production dependency security auditing.
+- Added scheduled security checks and Dependabot.
+- Strengthened public release security validation.
+
 ## 1.0.0-rc.4 - Attachment drag and drop
 
 - Added drag-and-drop attachment intake for images and supported evidence files in Quick Issue, Review, and Capture evidence flows.
