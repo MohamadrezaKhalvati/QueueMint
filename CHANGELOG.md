@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.0.2 - Capture Reliability
+
+- Fixed Capture sessions staying bound to the previous browser tab.
+- Opening QueueMint from another tab now rebinds the active Capture source to that tab.
+- Existing screenshots, annotations, and issue drafts remain intact while moving between tabs.
+- Completed Jira issues now retire their Capture session instead of being restored later.
+- Added regression tests for cross-tab capture source switching.
+
 ## 1.0.1 - Security & Reliability
 
 - Redacted sensitive query strings, fragments, credentials, and tokens from Capture diagnostics.
