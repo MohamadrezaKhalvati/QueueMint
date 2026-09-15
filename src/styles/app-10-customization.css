@@ -165,9 +165,14 @@ html[data-density="spacious"] .qm-worklog-draft-row { gap: 10px; padding: 12px 1
 .qm-worklog-issues-panel { overflow: visible; }
 .qm-worklog-data-view { flex: none; }
 .qm-worklog-board-wrap { display: block; flex: none; }
-.qm-worklog-board-scroll { max-height: none; overflow-x: auto; overflow-y: hidden; }
-.qm-worklog-table-scroll { max-height: none; overflow-x: auto; overflow-y: hidden; }
+.qm-worklog-board-scroll { max-height: none; overflow-x: auto; overflow-y: hidden; overscroll-behavior-x: contain; overscroll-behavior-y: auto; }
+.qm-worklog-table-scroll { max-height: none; overflow-x: auto; overflow-y: hidden; overscroll-behavior-x: contain; overscroll-behavior-y: auto; }
 .qm-worklog-cards-scroll { max-height: none; overflow: visible; }
+.qm-worklog-draft-column {
+  position: sticky;
+  inset-block-start: calc(var(--qm-topbar-height) + 10px);
+  align-self: start;
+}
 .qm-worklog-draft-sidebar {
   height: auto;
   max-height: calc(100dvh - var(--qm-topbar-height) - 20px);
@@ -175,7 +180,8 @@ html[data-density="spacious"] .qm-worklog-draft-row { gap: 10px; padding: 12px 1
 .qm-worklog-draft-scroll { min-height: 0; overflow-y: auto; }
 
 @media (max-width: 1120px) {
-  .qm-worklog-draft-sidebar { position: relative; inset-block-start: auto; max-height: none; }
+  .qm-worklog-draft-column { position: relative; inset-block-start: auto; }
+  .qm-worklog-draft-sidebar { max-height: none; }
   .qm-worklog-draft-scroll { overflow: visible; }
   .qm-worklog-draft-list { max-height: 320px; overflow-y: auto; }
 }

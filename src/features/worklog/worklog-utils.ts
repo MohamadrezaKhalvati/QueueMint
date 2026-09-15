@@ -47,6 +47,20 @@ export function buildManualWorklogDraft(issues: JiraLiveIssue[], current: Worklo
   return issues.map((issue) => existing.get(issue.key) ?? { issueKey: issue.key, summary: issue.summary, minutes: 0, comment: "" })
 }
 
+export function worklogEstimateMinutes(issue: JiraLiveIssue) {
+  const seconds = typeof issue.remainingEstimateSeconds === "number"
+    ? issue.remainingEstimateSeconds
+    : issue.originalEstimateSeconds ?? 0
+  if (seconds <= 0) return 0
+  return Math.max(1, Math.round(seconds / 60))
+}
+
+export function buildEstimateOnlyWorklogDraft(issues: JiraLiveIssue[]): WorklogDraftEntry[] {
+  return issues
+    .map((issue) => ({ issueKey: issue.key, summary: issue.summary, minutes: worklogEstimateMinutes(issue), comment: "" }))
+    .filter((entry) => entry.minutes > 0)
+}
+
 export function buildWorklogDraft(issues: JiraLiveIssue[], totalMinutes: number, strategy: "equal" | "estimate"): WorklogDraftEntry[] {
   const weights = strategy === "estimate"
     ? issues.map((issue) => Math.max(0, issue.originalEstimateSeconds ?? issue.remainingEstimateSeconds ?? 0))

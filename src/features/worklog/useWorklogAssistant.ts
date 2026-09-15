@@ -7,7 +7,7 @@ import type { AppLocale, JiraLiveIssue, JiraUser, WorklogDaySummary, WorklogDraf
 import { generateAiWorklogDraft } from "./worklog-ai"
 import { buildDailyCandidateIssues } from "./worklog-issues"
 import { DEFAULT_WORKLOG_SETTINGS, loadWorklogSettings, saveWorklogSettings } from "./worklog-storage"
-import { buildManualWorklogDraft, buildWorklogDraft, formatWorklogMinutes, parseWorklogDuration, worklogStartedAtForDate } from "./worklog-utils"
+import { buildEstimateOnlyWorklogDraft, buildManualWorklogDraft, buildWorklogDraft, formatWorklogMinutes, parseWorklogDuration, worklogStartedAtForDate } from "./worklog-utils"
 
 type Options = {
   locale: AppLocale
@@ -98,9 +98,19 @@ export function useWorklogAssistant(options: Options) {
     toast.success(options.locale === "fa" ? "هدف روزانه ذخیره شد" : "Daily target saved")
   }
 
-  function prepare(strategy: "equal" | "estimate", minutesOverride?: number) {
+  function prepare(strategy: "equal" | "estimate" | "estimate-only", minutesOverride?: number) {
+    if (!selectedIssues.length) { toast.info(options.locale === "fa" ? "اول چند تسک انتخاب کن" : "Choose issues first"); return }
+    if (strategy === "estimate-only") {
+      const next = buildEstimateOnlyWorklogDraft(selectedIssues)
+      if (!next.length) {
+        toast.info(options.locale === "fa" ? "تسک های انتخاب شده Estimate باقی مانده ندارند" : "Selected issues have no remaining estimates")
+        return
+      }
+      setDraft(next)
+      return
+    }
     const minutes = minutesOverride ?? selectedTargetMinutes
-    if (!selectedIssues.length || minutes <= 0) { toast.info(options.locale === "fa" ? "اول تسک و زمان را مشخص کن" : "Choose issues and a duration first"); return }
+    if (minutes <= 0) { toast.info(options.locale === "fa" ? "زمان تقسیم را مشخص کن" : "Choose a duration first"); return }
     setDraft(buildWorklogDraft(selectedIssues, minutes, strategy))
   }
 
