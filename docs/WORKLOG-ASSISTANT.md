@@ -1,6 +1,6 @@
 # Worklog Assistant
 
-QueueMint v1.1 introduces a preview-first Jira worklog workflow. It is designed to reduce daily logging friction without treating estimates as actual work or silently submitting a timesheet.
+QueueMint includes a preview-first Jira worklog workflow. It is designed to reduce daily logging friction without treating estimates as actual work or silently submitting a timesheet.
 
 ## Core rules
 
@@ -9,7 +9,7 @@ QueueMint v1.1 introduces a preview-first Jira worklog workflow. It is designed 
 - Status and estimate are context, not proof that work happened.
 - AI suggestions never write directly to Jira.
 - Every duration and comment is editable before submit.
-- No background daily auto-submit is included in this candidate.
+- No background daily auto-submit is included.
 
 ## Reading the selected day
 
@@ -61,7 +61,7 @@ The filter does not auto-select anything. The user still chooses the rows/cards 
 
 ### 2. Distribute time
 
-The sticky draft sidebar keeps the selected issues, editable duration inputs, total time, distribution method, optional common comment, and final submit action in one place. Its header and submit action stay stable while the sidebar body scrolls internally, so a long draft never pushes the submit controls below the viewport. Estimate weighting remains the default suggestion, while manual, equal, and AI-assisted allocation are still available. Estimate changes proportions only after the issue set is chosen. Daily target settings stay collapsible at the bottom of the scrollable draft body so configuration does not compete with the daily task.
+The sticky draft sidebar keeps the selected issues, editable duration inputs, total time, distribution method, optional common comment, and final submit action in one place. Its header and submit action stay stable while the sidebar body scrolls internally, so a long draft never pushes the submit controls below the viewport. Estimate weighting remains the default suggestion, while manual, equal, AI-assisted, and Estimate only allocation are available. Estimate weighted changes proportions for a chosen target; Estimate only uses Jira remaining estimates directly and never pads the draft to the daily target. Daily target settings stay collapsible at the bottom of the scrollable draft body so configuration does not compete with the daily task.
 
 ### Estimate display
 
@@ -114,16 +114,16 @@ QueueMint creates the Jira issue first and only then creates the worklog. A work
 
 The connected user must be able to view the relevant issues and have Jira permission to log work. QueueMint reuses the authenticated Jira browser session and does not store Jira credentials.
 
-## Candidate smoke test
+## Smoke test
 
-Before v1.1 is released:
+Before tagging a Worklog release:
 
 1. Log time in Jira/Tempo, open Worklog, press Sync, and verify the global total matches the report.
 2. Verify current-board time is shown separately from the global daily total.
 3. Change Project, Board, Sprint, Assignee, Status, Type, Activity, and Estimate filters and verify the visible issues match the filter chips. Switch Table / Board / Cards views; confirm Table header select-all affects only visible rows and the Board view uses the selected Jira board column configuration.
 4. Confirm an untouched old In Progress issue is not included by the Relevant today filter.
 5. Confirm Updated today, Done today, and already-logged-today issues can appear when assigned to the current user.
-6. Select rows inside Worklog, press Distribute time, verify the page scrolls to step 2, and confirm estimate weighting is selected by default. Check that equal and estimate-weighted splits preserve the requested total.
+6. Select rows inside Worklog and confirm estimate weighting is selected by default. Check that equal and estimate-weighted splits preserve the requested total, then choose Estimate only and verify the draft total equals the sum of Jira remaining estimates instead of the daily target.
 7. Export AI JSON and verify status, sprint, assignee, estimate, and already-logged-today values are present.
 8. Import AI worklog JSON and verify it opens as an editable review draft.
 9. Edit/remove draft rows and submit. Verify Jira matches the reviewed values.

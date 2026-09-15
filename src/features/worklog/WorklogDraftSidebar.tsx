@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react"
-import { BrainCircuit, Check, Equal, Gauge, LoaderCircle, MessageSquareText, Plus, Save, Send, SlidersHorizontal, Target, X } from "lucide-react"
+import { BrainCircuit, Check, Clock3, Equal, Gauge, LoaderCircle, MessageSquareText, Plus, Save, Send, SlidersHorizontal, Target, X } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -7,9 +7,9 @@ import { Textarea } from "@/components/ui/textarea"
 import { cn } from "@/lib/utils"
 import type { AppLocale, JiraLiveIssue, WorklogDraftEntry } from "@/types"
 import { WorklogDurationInput } from "./WorklogDurationInput"
-import { formatWorklogMinutes } from "./worklog-utils"
+import { formatWorklogMinutes, worklogEstimateMinutes } from "./worklog-utils"
 
-export type WorklogSidebarStrategy = "manual" | "equal" | "estimate"
+export type WorklogSidebarStrategy = "manual" | "equal" | "estimate" | "estimate-only"
 
 export function WorklogDraftSidebar({ locale, date, selectedIssues, draft, draftMinutes, remainingMinutes, targetMinutes, targetText, selectionText, loading, applying, note, onSelectionText, onTargetText, onSaveTarget, onNote, onManual, onBuild, onAi, onUpdate, onRemove, onDeselect, onFocusIssues, onApply }: {
   locale: AppLocale
@@ -29,7 +29,7 @@ export function WorklogDraftSidebar({ locale, date, selectedIssues, draft, draft
   onSaveTarget: () => void
   onNote: (value: string) => void
   onManual: () => void
-  onBuild: (strategy: "equal" | "estimate") => void
+  onBuild: (strategy: "equal" | "estimate" | "estimate-only") => void
   onAi: () => void
   onUpdate: (issueKey: string, patch: Partial<Pick<WorklogDraftEntry, "minutes" | "comment">>) => void
   onRemove: (issueKey: string) => void
@@ -43,11 +43,13 @@ export function WorklogDraftSidebar({ locale, date, selectedIssues, draft, draft
   const [settingsOpen, setSettingsOpen] = useState(false)
   const draftByKey = useMemo(() => new Map(draft.map((entry) => [entry.issueKey, entry])), [draft])
   const ready = draft.some((entry) => entry.minutes > 0) && draftMinutes > 0
+  const estimateTotal = useMemo(() => selectedIssues.reduce((sum, issue) => sum + worklogEstimateMinutes(issue), 0), [selectedIssues])
   const dateText = new Intl.DateTimeFormat(isFa ? "fa-IR-u-ca-gregory" : "en-US", { weekday: "short", month: "short", day: "numeric", year: "numeric" }).format(date)
   const methods = [
     { id: "manual" as const, icon: SlidersHorizontal, title: isFa ? "دستی" : "Manual", hint: isFa ? "زمان هر تسک رو خودت وارد کن" : "Set time for each issue" },
     { id: "equal" as const, icon: Equal, title: isFa ? "تقسیم مساوی" : "Auto-distribute", hint: isFa ? "زمان کل رو مساوی تقسیم کن" : "Split the target evenly" },
-    { id: "estimate" as const, icon: Gauge, title: isFa ? "بر اساس Estimate" : "Use estimates", hint: isFa ? "Estimate فقط وزن تقسیم زمانه" : "Use estimates as weights" },
+    { id: "estimate" as const, icon: Gauge, title: isFa ? "وزن بر اساس Estimate" : "Estimate weighted", hint: isFa ? "زمان انتخابی را با وزن Estimate تقسیم کن" : "Split the selected target using estimates as weights" },
+    { id: "estimate-only" as const, icon: Clock3, title: isFa ? "فقط Estimate" : "Estimate only", hint: isFa ? `همان زمان باقی مانده Jira را ثبت کن · ${formatWorklogMinutes(estimateTotal)}` : `Use Jira remaining estimates only · ${formatWorklogMinutes(estimateTotal)}` },
   ]
 
   function chooseMethod(next: WorklogSidebarStrategy) {
@@ -79,7 +81,7 @@ export function WorklogDraftSidebar({ locale, date, selectedIssues, draft, draft
         <Button variant="outline" size="sm" className="mx-4 my-3 w-[calc(100%-2rem)] border-primary/25 text-primary" onClick={onFocusIssues}><Plus className="size-3.5" />{isFa ? "افزودن تسک" : "Add another issue"}</Button>
 
         <div className="border-t px-4 py-4">
-          <div className="flex items-end justify-between gap-3"><div><div className="text-xs text-muted-foreground">{isFa ? "زمان کل Draft" : "Total time"}</div><div className="mt-0.5 text-xl font-semibold tabular-nums">{formatWorklogMinutes(draftMinutes)}</div></div><label className="grid gap-1 text-[11px] font-medium text-muted-foreground"><span>{isFa ? "زمان برای تقسیم" : "Time to distribute"}</span><Input value={selectionText} onChange={(event) => onSelectionText(event.target.value)} className="h-9 w-28 bg-background text-center text-xs font-medium" placeholder="7h 30m" /></label></div>
+          <div className="flex items-end justify-between gap-3"><div><div className="text-xs text-muted-foreground">{isFa ? "زمان کل Draft" : "Total time"}</div><div className="mt-0.5 text-xl font-semibold tabular-nums">{formatWorklogMinutes(draftMinutes)}</div></div><label className="grid gap-1 text-[11px] font-medium text-muted-foreground"><span>{strategy === "estimate-only" ? (isFa ? "جمع Estimate" : "Estimate total") : (isFa ? "زمان برای تقسیم" : "Time to distribute")}</span><Input value={strategy === "estimate-only" ? formatWorklogMinutes(estimateTotal) : selectionText} onChange={(event) => onSelectionText(event.target.value)} disabled={strategy === "estimate-only"} className="h-9 w-28 bg-background text-center text-xs font-medium" placeholder="7h 30m" /></label></div>
           <div className="mt-4 text-xs font-semibold">{isFa ? "روش تقسیم" : "Distribution method"}</div>
           <div className="mt-2 grid gap-2">
             {methods.map(({ id, icon: Icon, title, hint }) => <button key={id} type="button" aria-pressed={strategy === id} onClick={() => chooseMethod(id)} className={cn("qm-worklog-method flex min-h-12 items-center gap-3 border px-3 py-2 text-start outline-none transition hover:border-primary/30 hover:bg-primary/[0.02] focus-visible:ring-[3px] focus-visible:ring-ring/20", strategy === id && "border-primary/35 bg-primary/[0.055]")}><span className={cn("qm-worklog-method-check grid size-5 shrink-0 place-items-center border", strategy === id ? "border-primary bg-primary text-primary-foreground" : "border-muted-foreground/35 text-transparent")}><Check className="size-3" /></span><Icon className={cn("size-4 shrink-0", strategy === id ? "text-primary" : "text-muted-foreground")} /><span className="min-w-0 flex-1"><span className="block text-xs font-semibold">{title}</span><span className="block text-[11px] text-muted-foreground">{hint}</span></span></button>)}

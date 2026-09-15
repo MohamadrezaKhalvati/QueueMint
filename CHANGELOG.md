@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.2.1 - Worklog board and estimate UX fixes
+
+- Fixed Worklog Board and Table wheel trapping by allowing vertical wheel events to chain to the document while keeping their horizontal scrolling local.
+- Made the Worklog draft column itself sticky on desktop so the right sidebar stays visible while the page scrolls, with the draft body remaining internally scrollable when needed.
+- Removed the duplicate plus/check action from Worklog issue cards. Selection now has one explicit checkbox control across Board, Cards, and Table views.
+- Added an `Estimate only` distribution mode that uses each issue's Jira remaining estimate as the worklog duration and never stretches the selected issues to the daily target. Original estimate is used only when Jira does not provide a remaining estimate.
+- Kept the existing equal and estimate-weighted modes for users who intentionally want to distribute a chosen target duration.
+
 ## 1.2.0 - Appearance Studio
 
 - Added on-demand delivery for every shadcn/create font exposed by Appearance Studio, plus Persian/Arabic web-font sources. Google Fonts serves the shadcn families, Vazirmatn, Noto Naskh Arabic, and Lalezar; Samim, Shabnam, Sahel, and Mikhak use commit-pinned jsDelivr/GitHub resources. Local/system stacks remain the offline fallback.

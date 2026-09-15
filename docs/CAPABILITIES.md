@@ -2,7 +2,7 @@
 
 Current stable release: v1.0.2.
 
-Development candidate: v1.1.0 Worklog Assistant. The Worklog Assistant section below describes candidate behavior until v1.1 is released.
+Current release line: v1.2.1. Appearance Studio and Worklog UX fixes are included in the supported release.
 
 This document describes what is implemented today. It intentionally separates current capability from the future roadmap.
 
@@ -189,7 +189,7 @@ QueueMint does not intend to replace Jira's dashboard/reporting system.
 
 ## Worklog Assistant
 
-The v1.1 development candidate adds a preview-first time logging workflow while keeping Jira worklogs as the system of record.
+QueueMint includes a preview-first time logging workflow while keeping Jira worklogs as the system of record.
 
 - Configurable daily target stored locally in QueueMint, defaulting to 7h 30m.
 - Reads current-user worklogs for today through Jira worklog JQL, explicit Data Center user identities, paginated issue worklogs, an optional Tempo Data Center read, and a direct current-board scan merged by issue/worklog id.
@@ -201,7 +201,7 @@ The v1.1 development candidate adds a preview-first time logging workflow while 
 - Active filters are shown as visible chips rather than hidden selection rules.
 - Worklog selection is independent from Manage Jira; explicit Manage Jira and Command Layer actions can copy a current selection into Worklog when desired.
 - The relevant-today filter requires evidence from today: an existing worklog, an update today, or completion today. In Progress by itself is not enough. At most eight issues are ranked.
-- Estimates never decide what the user worked on. They can only weight a time split after the user has selected issues.
+- Estimates never decide what the user worked on. After selection, they can either weight a chosen target duration or be used exactly through Estimate only mode, which uses Jira remaining estimate and does not stretch worklogs to the daily target.
 - Each issue row exposes status, assignee, sprint/backlog, estimate, time already logged today, and last update.
 - Worklog context can be copied/downloaded as an AI-ready JSON package with selected/visible issue metadata and already-logged time.
 - AI-produced JSON can be pasted or uploaded and is converted into the same editable review table before any Jira write.

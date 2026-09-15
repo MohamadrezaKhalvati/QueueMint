@@ -6,7 +6,7 @@ The product focuses on workflows that are slow, repetitive, fragmented, or awkwa
 
 Current stable release: **v1.0.2**.
 
-Development candidate: **v1.1.0 Worklog Assistant**.
+Current release line: **v1.2.1 Worklog UX Fixes**.
 
 ## Product principle
 
@@ -33,7 +33,7 @@ See [Product direction](docs/PRODUCT.md) and [Roadmap](docs/ROADMAP.md).
 - Use local Smart Draft suggestions without sending data externally, or optionally enable Smart Assistant with explicit per-request data controls.
 - Review and create issue batches safely before writing to Jira.
 - Manage Jira issues with filters, Saved Views, issue detail inspection, safe clone/move helpers, and bulk edit preview.
-- Review today's Jira worklogs against a configurable daily target, prepare worklogs for selected issues, split time equally or by estimates, and optionally ask AI for a reviewable allocation before writing anything to Jira.
+- Review today's Jira worklogs against a configurable daily target, prepare worklogs for selected issues, split a chosen target equally or by estimate weight, use Jira remaining estimates exactly without stretching to the daily target, and optionally ask AI for a reviewable allocation before writing anything to Jira.
 - Include an optional reviewed worklog in AI/JSON batch issue creation; QueueMint creates the issue first and reports worklog failures separately so issue creation is not rolled back.
 - Reuse Saved Actions and safe Automation rules/macros through the same preview-first bulk-edit path.
 - Use the Ctrl+Shift+K Command Layer for navigation, selected-issue actions, sprint moves, Saved Actions, filtered Jira views, and project/board switching. Alt+Shift+K is the fallback when Chrome cannot assign the primary shortcut.
@@ -42,13 +42,13 @@ See [Product direction](docs/PRODUCT.md) and [Roadmap](docs/ROADMAP.md).
 
 The complete current feature inventory is in [docs/CAPABILITIES.md](docs/CAPABILITIES.md).
 
-## v1.1.0 - Worklog Assistant development candidate
+## Worklog Assistant
 
-The current development candidate adds a preview-first Worklog Assistant. QueueMint can move across worklog dates with a calendar picker, reads the selected day through multiple Jira/Tempo-compatible paths, and merges a direct board scan so a fragile zero-result query is not trusted by itself. Worklog has explicit Project, Board, Sprint, Assignee, Status, Type, Activity, Estimate, and search filters plus Table, Cards, and a Jira-configuration-backed Board view. Distribution can be estimate-weighted, equal, manual, AI-assisted, or imported from external AI JSON, and every path ends in review before Jira writes. The Worklog screen is lazy-loaded so the feature does not stay in QueueMint's initial application chunk.
+QueueMint includes a preview-first Worklog Assistant. QueueMint can move across worklog dates with a calendar picker, reads the selected day through multiple Jira/Tempo-compatible paths, and merges a direct board scan so a fragile zero-result query is not trusted by itself. Worklog has explicit Project, Board, Sprint, Assignee, Status, Type, Activity, Estimate, and search filters plus Table, Cards, and a Jira-configuration-backed Board view. Distribution can be estimate-weighted, estimate-only, equal, manual, AI-assisted, or imported from external AI JSON, and every path ends in review before Jira writes. The Worklog screen is lazy-loaded so the feature does not stay in QueueMint's initial application chunk.
 
 Bulk JSON can also attach an optional `worklog` object to a new issue. The issue is created first; the worklog is added only after the reviewed batch is confirmed, and a failed worklog remains retryable without turning the successfully created Jira issue into a failed creation.
 
-See [Worklog Assistant](docs/WORKLOG-ASSISTANT.md) for the candidate behavior and smoke-test checklist.
+See [Worklog Assistant](docs/WORKLOG-ASSISTANT.md) for behavior and smoke-test guidance.
 
 ## v0.27.0 - Productivity and Polish
 
@@ -182,7 +182,7 @@ See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
 - Chrome Web Store draft: `store/CHROME-WEB-STORE.md`
 
 - [Capabilities](docs/CAPABILITIES.md): what QueueMint does today.
-- [Worklog Assistant](docs/WORKLOG-ASSISTANT.md): v1.1 candidate behavior, safety rules, and smoke tests.
+- [Worklog Assistant](docs/WORKLOG-ASSISTANT.md): Worklog behavior, safety rules, and smoke tests.
 - [Product direction](docs/PRODUCT.md): what QueueMint is and is not.
 - [Roadmap](docs/ROADMAP.md): agreed future phases.
 - [Session handoff](docs/SESSION-HANDOFF.md): current context for a new ChatGPT/agent session.
@@ -221,4 +221,4 @@ Do not commit `node_modules/`, `dist/`, local logs, secrets, or private Jira dat
 
 The large architecture refactor is complete. All production source files are under the 300-line limit. The product roadmap has now returned to user-facing capability work, with Capture Pro as the first post-refactor phase.
 
-Current stable release: **v1.0.2**. The current source candidate is **v1.1.0 Worklog Assistant** and should be treated as feature work until its smoke tests and release checks pass on a fully installed development environment.
+Current release: **v1.2.1**. Appearance Studio and the Worklog UX fixes are part of the supported release line.

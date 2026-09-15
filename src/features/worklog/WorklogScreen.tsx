@@ -103,7 +103,7 @@ export function WorklogScreen({ locale, issues, selectedKeys, onSelectedKeysChan
           <div ref={issueRef} className="qm-worklog-issue-stage scroll-mt-[calc(var(--qm-topbar-height)+72px)]"><WorklogIssuePicker locale={locale} date={date} issues={issues} selectedKeys={selectedKeys} currentUser={currentUser} boardId={boardId} sprintFilter={sprintFilter} dailyCandidateKeys={dailyCandidateKeys} loggedMinutesByIssue={model.loggedMinutesByIssue} onSelectedKeysChange={onSelectedKeysChange} onCopyForAi={(items) => void copyForAi(items)} onDownloadForAi={(items) => downloadJson(`queuemint-worklog-ai-${date.toISOString().slice(0, 10)}.json`, aiPackage(items))} onOpenImport={() => setImportOpen(true)} /></div>
         </div>
 
-        <div ref={draftRef} className="min-w-0 scroll-mt-[calc(var(--qm-topbar-height)+20px)]">
+        <div ref={draftRef} className="qm-worklog-draft-column min-w-0 scroll-mt-[calc(var(--qm-topbar-height)+20px)]">
           <WorklogDraftSidebar locale={locale} date={date} selectedIssues={model.selectedIssues} draft={model.draft} draftMinutes={model.draftMinutes} remainingMinutes={model.remainingMinutes} targetMinutes={model.targetMinutes} targetText={model.targetText} selectionText={model.selectionText} loading={model.loading} applying={model.applying} note={model.note} onSelectionText={model.setSelectionText} onTargetText={model.setTargetText} onSaveTarget={() => void model.saveTarget()} onNote={model.setNote} onManual={model.prepareManual} onBuild={(strategy) => model.prepare(strategy)} onAi={() => void model.prepareAi()} onUpdate={model.updateDraft} onRemove={model.removeDraft} onDeselect={deselect} onFocusIssues={() => scrollTo(2)} onApply={(comment) => void model.applyDraft(comment)} />
         </div>
       </div>
