@@ -35,7 +35,7 @@ export function WorklogPreparePanel({ locale, selectionText, selectedCount, rema
   const activeHelper = strategies.find((item) => item.id === strategy)?.helper
 
   return (
-    <Card className="gap-0 border-violet-200/70 py-0 shadow-none dark:border-violet-900/60">
+    <Card className="gap-0 border-primary/25 py-0 shadow-none">
       <CardContent className="p-3">
         <div className="grid gap-3 xl:grid-cols-[minmax(250px,0.85fr)_minmax(460px,2.2fr)_170px] xl:items-end">
           <div className="min-w-0">
@@ -46,7 +46,7 @@ export function WorklogPreparePanel({ locale, selectionText, selectedCount, rema
           <div className="min-w-0">
             <div className="mb-1 text-xs font-semibold">{isFa ? "روش تقسیم" : "Distribution method"}</div>
             <ButtonGroup className="w-full" role="radiogroup" aria-label={isFa ? "روش تقسیم زمان" : "Time distribution method"}>
-              {strategies.map(({ id, icon: Icon, label }) => <Button key={id} type="button" variant="ghost" aria-checked={strategy === id} role="radio" onClick={() => setStrategy(id)} className={cn("min-h-10 flex-1 justify-center rounded-none px-3", strategy === id ? "bg-primary/[0.09] text-primary hover:bg-primary/[0.12]" : "text-muted-foreground hover:text-foreground")}><Icon className="size-4" /><span className="truncate">{label}</span>{id === "estimate" ? <span className="hidden rounded bg-primary/10 px-1.5 py-0.5 text-[10px] font-semibold sm:inline">{isFa ? "پیش فرض" : "Default"}</span> : null}</Button>)}
+              {strategies.map(({ id, icon: Icon, label }) => <Button key={id} type="button" variant="ghost" aria-checked={strategy === id} role="radio" onClick={() => setStrategy(id)} className={cn("min-h-10 flex-1 justify-center rounded-none px-3", strategy === id ? "bg-primary/[0.09] text-primary hover:bg-primary/[0.12]" : "text-muted-foreground hover:text-foreground")}><Icon className="size-4" /><span className="truncate">{label}</span>{id === "estimate" ? <span className="hidden rounded-[var(--qm-control-radius)] bg-primary/10 px-1.5 py-0.5 text-[10px] font-semibold sm:inline">{isFa ? "پیش فرض" : "Default"}</span> : null}</Button>)}
             </ButtonGroup>
           </div>
 
@@ -54,7 +54,7 @@ export function WorklogPreparePanel({ locale, selectionText, selectedCount, rema
         </div>
 
         <div className="mt-2 text-[11px] leading-4 text-muted-foreground">{activeHelper}</div>
-        {strategy === "ai" ? <label className="mt-3 grid gap-1.5 rounded-lg border border-violet-200/70 bg-violet-50/35 p-3 text-xs font-medium dark:border-violet-900/60 dark:bg-violet-950/15"><span className="inline-flex items-center gap-1.5"><Sparkles className="size-3.5 text-violet-600" />{isFa ? "یادداشت امروز برای AI" : "Today's note for AI"}</span><Textarea value={note} onChange={(event) => onNote(event.target.value)} placeholder={isFa ? "مثلا: امروز بیشتر روی Login و API validation کار کردم." : "e.g. I spent most of today on login validation and API error handling."} rows={2} /><span className="font-normal text-muted-foreground">{isFa ? "خروجی AI اول وارد Review میشه و مستقیم در Jira ثبت نمیشه." : "AI output always goes to review before anything is written to Jira."}</span></label> : null}
+        {strategy === "ai" ? <label className="mt-3 grid gap-1.5 rounded-[var(--qm-control-radius)] border border-primary/20 bg-primary/[0.035] p-3 text-xs font-medium"><span className="inline-flex items-center gap-1.5"><Sparkles className="size-3.5 text-primary" />{isFa ? "یادداشت امروز برای AI" : "Today's note for AI"}</span><Textarea value={note} onChange={(event) => onNote(event.target.value)} placeholder={isFa ? "مثلا: امروز بیشتر روی Login و API validation کار کردم." : "e.g. I spent most of today on login validation and API error handling."} rows={2} /><span className="font-normal text-muted-foreground">{isFa ? "خروجی AI اول وارد Review میشه و مستقیم در Jira ثبت نمیشه." : "AI output always goes to review before anything is written to Jira."}</span></label> : null}
       </CardContent>
     </Card>
   )

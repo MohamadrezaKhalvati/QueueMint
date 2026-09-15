@@ -8,7 +8,7 @@
 .qm-topbar-icon {
   width: 36px !important;
   height: 36px !important;
-  border-radius: 8px !important;
+  border-radius: var(--qm-control-radius) !important;
   color: var(--muted-foreground);
 }
 
@@ -28,7 +28,7 @@
   align-items: center;
   gap: 8px;
   border: 0;
-  border-radius: 9px;
+  border-radius: var(--qm-control-radius);
   background: transparent;
   padding: 2px;
   color: var(--muted-foreground);
@@ -164,7 +164,7 @@
 .qm-entity-icon {
   width: 46px;
   height: 46px;
-  border-radius: 10px;
+  border-radius: var(--qm-control-radius);
 }
 
 .qm-entity-label,

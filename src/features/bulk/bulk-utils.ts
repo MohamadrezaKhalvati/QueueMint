@@ -2,8 +2,6 @@ import type { JiraBulkEditPatch, JiraEditableField, JiraIssueFieldSnapshot, Vali
 
 export const EMPTY_VALIDATION: ValidationResult = { valid: false, errors: [], warnings: [] }
 export const DEFAULT_FILTER = "all"
-export const ACCENT_PRESETS = ["#087b61", "#2563eb", "#4f46e5", "#7c3aed", "#c2410c"]
-
 export function foregroundForHex(hex: string) {
   const match = /^#([0-9a-f]{6})$/i.exec(hex)
   if (!match) return "#ffffff"
@@ -25,7 +23,7 @@ export function accentForDarkMode(hex: string) {
   return `#${mixed.map((channel) => channel.toString(16).padStart(2, "0")).join("")}`
 }
 
-export type Mode = "dashboard" | "quick" | "bulk" | "review" | "manage" | "worklog" | "automation"
+export type Mode = "dashboard" | "quick" | "bulk" | "review" | "manage" | "worklog" | "automation" | "customize"
 export type Placement = "sprint" | "backlog"
 export type DynamicFieldDraft = { mode: "set" | "clear"; value: unknown }
 export type BulkPlacementSnapshot = { key: string; placement: Placement; sprintId?: number }

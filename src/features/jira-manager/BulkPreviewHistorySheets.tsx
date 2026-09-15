@@ -22,12 +22,12 @@ export function LiveBulkPreviewSheet({ open, onOpenChange, locale, t, preview, a
       <SheetContent side={locale === "fa" ? "left" : "right"} className="w-[min(96vw,620px)]">
         <SheetHeader><SheetTitle>{t.bulkEditPreview}</SheetTitle><SheetDescription>{t.bulkEditPreviewHint}</SheetDescription></SheetHeader>
         <SheetBody className="space-y-4">
-          <div className="rounded-xl border bg-primary/[0.035] px-4 py-3">
+          <div className="rounded-[var(--qm-panel-radius)] border bg-primary/[0.035] px-4 py-3">
             <div className="text-sm font-semibold">{preview?.keys.length ?? 0} {t.issuesAffected}</div>
             <div className="mt-1 text-xs text-muted-foreground">{preview?.rows.length ?? 0} {t.changes}</div>
           </div>
           {preview?.keys.length ? (
-            <div className="rounded-xl border bg-card p-3">
+            <div className="rounded-[var(--qm-panel-radius)] border bg-card p-3">
               <div className="mb-2 text-xs font-medium text-muted-foreground">{locale === "fa" ? "تسک‌هایی که تغییر می‌کنند" : "Issues that will change"}</div>
               <div className="max-h-32 overflow-y-auto"><div className="flex flex-wrap gap-1.5">{preview.keys.map((key) => <Badge key={key} variant="secondary">{key}</Badge>)}</div></div>
               <div className="mt-2 text-[11px] leading-5 text-muted-foreground">{locale === "fa" ? "تا وقتی تأیید نهایی را نزنی هیچ تغییری در Jira اعمال نمی‌شود." : "No Jira changes are applied until you confirm this preview."}</div>
@@ -35,12 +35,12 @@ export function LiveBulkPreviewSheet({ open, onOpenChange, locale, t, preview, a
           ) : null}
           <div className="space-y-2">
             {(preview?.rows ?? []).map((row) => (
-              <div key={row.id} className="rounded-xl border bg-card p-3">
+              <div key={row.id} className="rounded-[var(--qm-panel-radius)] border bg-card p-3">
                 <div className="mb-2 text-sm font-medium">{row.label}</div>
                 <div className="grid gap-2 sm:grid-cols-[1fr_auto_1fr] sm:items-center">
-                  <div className="rounded-lg bg-muted/30 px-3 py-2"><div className="text-[10px] uppercase tracking-[0.12em] text-muted-foreground">{t.beforeValue}</div><div className="mt-1 break-words text-sm">{row.before}</div></div>
+                  <div className="rounded-[var(--qm-control-radius)] bg-muted/30 px-3 py-2"><div className="text-[10px] uppercase tracking-[0.12em] text-muted-foreground">{t.beforeValue}</div><div className="mt-1 break-words text-sm">{row.before}</div></div>
                   <ChevronRight className={cn("mx-auto size-4 text-muted-foreground", locale === "fa" && "rotate-180")} />
-                  <div className="rounded-lg bg-primary/[0.06] px-3 py-2"><div className="text-[10px] uppercase tracking-[0.12em] text-primary">{t.afterValue}</div><div className="mt-1 break-words text-sm font-medium">{row.after}</div></div>
+                  <div className="rounded-[var(--qm-control-radius)] bg-primary/[0.06] px-3 py-2"><div className="text-[10px] uppercase tracking-[0.12em] text-primary">{t.afterValue}</div><div className="mt-1 break-words text-sm font-medium">{row.after}</div></div>
                 </div>
               </div>
             ))}
@@ -69,12 +69,12 @@ export function BulkHistorySheet({ open, onOpenChange, locale, t, history, undoi
       <SheetContent side={locale === "fa" ? "left" : "right"} className="w-[min(94vw,520px)]">
         <SheetHeader><SheetTitle>{t.changeHistory}</SheetTitle><SheetDescription>{t.historyHint}</SheetDescription></SheetHeader>
         <SheetBody>
-          {!history.length ? <div className="grid min-h-44 place-items-center rounded-xl border border-dashed text-sm text-muted-foreground">{t.noHistory}</div> : (
+          {!history.length ? <div className="grid min-h-44 place-items-center rounded-[var(--qm-panel-radius)] border border-dashed text-sm text-muted-foreground">{t.noHistory}</div> : (
             <div className="space-y-3">
               {history.map((entry) => (
-                <div key={entry.id} className="rounded-xl border bg-card p-3.5">
+                <div key={entry.id} className="rounded-[var(--qm-panel-radius)] border bg-card p-3.5">
                   <div className="flex items-start gap-3">
-                    <div className="grid size-9 shrink-0 place-items-center rounded-lg bg-muted text-muted-foreground"><History className="size-4" /></div>
+                    <div className="grid size-9 shrink-0 place-items-center rounded-[var(--qm-control-radius)] bg-muted text-muted-foreground"><History className="size-4" /></div>
                     <div className="min-w-0 flex-1">
                       <div className="text-sm font-semibold">{entry.keys.length} {t.issuesAffected}</div>
                       <div className="mt-0.5 text-xs text-muted-foreground">{new Date(entry.createdAt).toLocaleString(locale === "fa" ? "fa-IR" : "en-US", { dateStyle: "medium", timeStyle: "short" })}</div>

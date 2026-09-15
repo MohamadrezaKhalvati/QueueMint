@@ -41,7 +41,7 @@ export function PopupIssueView(props: PopupIssueViewProps) {
   return (
     <div className="space-y-3">
       <div><div className="text-base font-semibold">{finalScreenshot ? t.createBug : t.createIssue}</div><div className="mt-1 text-xs text-muted-foreground">{finalScreenshot ? t.screenshotReady : status.selectedTab?.title ?? status.origin}</div></div>
-      {loadingMetadata ? <div className="grid min-h-64 place-items-center rounded-xl border bg-card"><div className="flex items-center gap-2 text-sm text-muted-foreground"><LoaderCircle className="size-4 animate-spin" />{t.loadingJira}</div></div> : metadata ? <>
+      {loadingMetadata ? <div className="grid min-h-64 place-items-center rounded-[var(--qm-panel-radius)] border bg-card"><div className="flex items-center gap-2 text-sm text-muted-foreground"><LoaderCircle className="size-4 animate-spin" />{t.loadingJira}</div></div> : metadata ? <>
         <PopupSmartDraftCard t={t} template={smartTemplate} categoryLabel={smartCategoryLabel} suggestion={smartSuggestion} onTemplate={props.onSmartTemplate} onApply={props.onApplySmart} />
         <SmartAssistantCard locale={locale} projectKey={projectKey} draft={{ summary, description, issueType, priority, component, labels: labels.split(",").map((item) => item.trim()).filter(Boolean), epic, assignee }} metadata={assistantMetadata} pageContext={captureContext} screenshot={finalScreenshot} diagnostics={diagnostics} onApply={props.onApplyAi} onOpenIssue={(key) => window.open(jiraBrowseUrl(key), "_blank")} />
         <div className="qm-capture-issue-form">
@@ -55,7 +55,7 @@ export function PopupIssueView(props: PopupIssueViewProps) {
           <PopupPreflightCard t={t} items={preflight} />
           <Button className="qm-field-span-2 w-full" onClick={props.onCreate} disabled={creating || !projectKey || !issueType || !summary.trim()}>{creating ? <LoaderCircle className="size-4 animate-spin" /> : finalScreenshot ? <Bug className="size-4" /> : <Sparkles className="size-4" />}{creating ? t.creating : finalScreenshot ? t.createBug : t.createIssue}</Button>
         </div>
-      </> : <div className="rounded-xl border border-warning/25 bg-warning/5 p-4 text-center"><div className="font-semibold">{t.noJira}</div><p className="mt-1 text-xs leading-5 text-muted-foreground">{t.noJiraHint}</p><Button variant="outline" size="sm" className="mt-3" onClick={openFullWorkspace}>{t.openWorkspace}</Button></div>}
+      </> : <div className="rounded-[var(--qm-panel-radius)] border border-warning/25 bg-warning/5 p-4 text-center"><div className="font-semibold">{t.noJira}</div><p className="mt-1 text-xs leading-5 text-muted-foreground">{t.noJiraHint}</p><Button variant="outline" size="sm" className="mt-3" onClick={openFullWorkspace}>{t.openWorkspace}</Button></div>}
     </div>
   )
 }

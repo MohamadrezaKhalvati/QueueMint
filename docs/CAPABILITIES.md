@@ -196,6 +196,7 @@ The v1.1 development candidate adds a preview-first time logging workflow while 
 - Global daily time and current-board daily time are shown separately so scope is visible.
 - Project, Board, Sprint/Backlog, Assignee, Status, Issue Type, Activity, Estimate, and key/summary search filters live directly in Worklog.
 - Worklog issue selection supports Table, Cards, and Board views. The Board view reads the selected Jira board configuration so each board keeps its own workflow columns, with exact-status fallback when that configuration is unavailable.
+- Review before Jira mirrors the same selection model: List/Table keeps select-all inside the table header with an indeterminate state, while Cards and Board expose the explicit Select all/Clear selection action. Select-all follows the current visible filter set.
 - Assignee avatars and familiar type/status/filter icons are reused across Worklog filters and issue views.
 - Active filters are shown as visible chips rather than hidden selection rules.
 - Worklog selection is independent from Manage Jira; explicit Manage Jira and Command Layer actions can copy a current selection into Worklog when desired.
@@ -280,12 +281,20 @@ Command search supports multiple words, and the palette groups results into navi
 
 ## Appearance and localization
 
-- English.
-- Persian.
-- RTL support where relevant.
-- light theme.
-- dark theme.
-- appearance controls in main workspace and full-screen Capture.
+- English and Persian with RTL support where relevant.
+- Light, Dark, and System theme modes.
+- A dedicated Appearance Studio with staged live preview, one-open-menu-at-a-time controls, hover previews isolated to the preview panel, and explicit Apply/Discard.
+- Live accent color presets plus a custom color input.
+- Neutral tone presets: Mist, Slate, Zinc, Gray, Neutral, Stone, Sand, and Paper, each with light and dark token sets.
+- Independent body and heading typography choices. The selector includes QueueMint presets plus the complete shadcn/create Sans, Mono, and Serif family list, and Persian/Arabic choices such as Vazirmatn/Vazir, Mikhak, Samim, Shabnam, Sahel, Arabic Naskh, and Lalezar headings. Selected web fonts load only when needed from Google Fonts or commit-pinned jsDelivr resources, while local/system stacks remain the offline fallback. Remote JavaScript is not used for font delivery.
+- Compact, Comfortable, and Spacious density modes.
+- None, Small, Medium, and Large shared corner-radius modes. Radius tokens cover shared shadcn controls plus Jira/review boards, Worklog lanes/cards, connection cards, and other custom QueueMint surfaces.
+- Soft, Solid, and Outline sidebar styles with Subtle or Filled active accents.
+- Flat, Bordered, and Raised surface styles.
+- Board, Cards, and List default issue views, including card column count.
+- Reset and Shuffle actions plus portable appearance preset JSON import/export and a copyable preset code.
+- Appearance values persist in extension storage, participate in portable QueueMint backup/restore, and apply to the header, workspace, import, Jira manager, automation, Worklog, and extension popup through shared semantic tokens.
+- Existing full-screen Capture appearance controls remain available.
 
 ## Architecture and quality constraints
 

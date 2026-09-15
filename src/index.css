@@ -12,3 +12,11 @@
 
 @import "./styles/app-09-worklog.css";
 @import "./styles/app-10-customization.css";
+
+@import "./styles/app-11-theme-presets.css";
+@import "./styles/app-16-neutral-tones.css";
+@import "./styles/app-12-customization-page.css";
+
+@import "./styles/app-13-theme-compliance.css";
+@import "./styles/app-14-font-families.css";
+@import "./styles/app-15-theme-contract.css";

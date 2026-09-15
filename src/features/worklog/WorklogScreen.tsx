@@ -94,7 +94,7 @@ export function WorklogScreen({ locale, issues, selectedKeys, onSelectedKeysChan
         <div className="qm-worklog-main min-w-0">
           <header className="qm-worklog-heading">
             <div><h1>{isFa ? "دستیار ثبت زمان" : "Worklog Assistant"}</h1><p>{isFa ? "تسک های Jira رو انتخاب کن، زمان رو تقسیم کن و قبل از ثبت نهایی Review کن." : "Select Jira issues, distribute time, and submit your worklog in minutes."}</p></div>
-            <div className="flex items-center gap-2"><WorklogDateToolbar locale={locale} value={date} onChange={changeDate} loading={model.loading} /><Button variant="outline" size="icon-sm" className="size-9" onClick={() => void model.refreshDay()} disabled={model.loading} aria-label={isFa ? "همگام سازی Worklog" : "Sync worklogs"}>{model.loading ? <LoaderCircle className="size-4 animate-spin" /> : <RefreshCcw className="size-4" />}</Button></div>
+            <div className="qm-worklog-date-actions"><WorklogDateToolbar locale={locale} value={date} onChange={changeDate} loading={model.loading} /><Button variant="outline" size="icon-sm" className="qm-worklog-date-sync" onClick={() => void model.refreshDay()} disabled={model.loading} aria-label={isFa ? "همگام سازی Worklog" : "Sync worklogs"}>{model.loading ? <LoaderCircle className="size-4 animate-spin" /> : <RefreshCcw className="size-4" />}</Button></div>
           </header>
 
           <WorklogSummaryStrip locale={locale} targetMinutes={model.targetMinutes} dayMinutes={model.dayMinutes} scopeMinutes={model.scopeMinutes} remainingMinutes={model.remainingMinutes} draftMinutes={model.draftMinutes} daySummary={model.daySummary} date={date} />

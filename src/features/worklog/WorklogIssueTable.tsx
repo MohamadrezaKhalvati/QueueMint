@@ -32,14 +32,14 @@ export function WorklogIssueTable({ locale, issues, selectedKeys, loggedMinutesB
             const logged = loggedMinutesByIssue[issue.key] ?? 0
             const TypeIcon = issueTypeIcon(issue.type)
             return (
-              <label key={issue.key} className={cn("grid cursor-pointer items-center gap-3 border-b px-4 py-2.5 transition hover:bg-sky-50/55 dark:hover:bg-sky-950/15", cols, selected && "bg-primary/[0.055]")}>
+              <label key={issue.key} className={cn("grid cursor-pointer items-center gap-3 border-b px-4 py-2.5 transition hover:bg-accent/45", cols, selected && "bg-primary/[0.055]")}>
                 <span className="grid place-items-center"><WorklogSelectionCheckbox checked={selected} onChange={() => onToggle(issue.key)} label={`${selected ? "Deselect" : "Select"} ${issue.key}`} /></span>
                 <span className="min-w-0"><span className="flex items-center gap-1.5 font-mono text-xs text-primary"><TypeIcon className="size-3.5" />{issue.key}</span><span className="mt-0.5 block truncate text-sm font-medium text-foreground">{issue.summary}</span></span>
                 <Badge variant="outline" className={cn("w-fit max-w-28 truncate font-normal", statusTone(issue))}>{issue.status ?? "—"}</Badge>
                 <span className="flex min-w-0 items-center gap-2">{issue.assignee ? <JiraUserAvatar name={issue.assignee} avatarUrl={issue.avatarUrl} className="size-5" /> : <span className="size-5 rounded-full bg-muted" />}<span className="truncate text-xs text-muted-foreground">{issue.assignee ?? (isFa ? "بدون مسئول" : "Unassigned")}</span></span>
                 <span className="truncate text-xs text-muted-foreground">{issue.sprintName ?? "Backlog"}</span>
                 <WorklogEstimateStatus issue={issue} locale={locale} />
-                <span className={cn("text-xs font-medium tabular-nums", logged ? "text-emerald-700 dark:text-emerald-300" : "text-muted-foreground")}>{logged ? formatWorklogMinutes(logged) : "—"}</span>
+                <span className={cn("text-xs font-medium tabular-nums", logged ? "text-success" : "text-muted-foreground")}>{logged ? formatWorklogMinutes(logged) : "—"}</span>
                 <span className="text-xs text-muted-foreground">{formatWorklogUpdated(issue.updated)}</span>
               </label>
             )

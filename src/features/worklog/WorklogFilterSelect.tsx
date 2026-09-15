@@ -17,7 +17,7 @@ function FilterVisual({ option, className }: { option?: WorklogFilterOption; cla
   if (option.avatarUrl) return <JiraUserAvatar name={option.label} avatarUrl={option.avatarUrl} className={cn("size-5", className)} />
   if (option.icon) {
     const Icon = option.icon
-    return <span className={cn("grid size-5 shrink-0 place-items-center rounded-md bg-muted text-muted-foreground", option.tone, className)}><Icon className="size-3.5" /></span>
+    return <span className={cn("grid size-5 shrink-0 place-items-center rounded-[var(--qm-control-radius)] bg-muted text-muted-foreground", option.tone, className)}><Icon className="size-3.5" /></span>
   }
   return <span className={cn("size-2.5 shrink-0 rounded-full bg-muted-foreground/35", option.tone, className)} />
 }

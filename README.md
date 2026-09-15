@@ -38,7 +38,7 @@ See [Product direction](docs/PRODUCT.md) and [Roadmap](docs/ROADMAP.md).
 - Reuse Saved Actions and safe Automation rules/macros through the same preview-first bulk-edit path.
 - Use the Ctrl+Shift+K Command Layer for navigation, selected-issue actions, sprint moves, Saved Actions, filtered Jira views, and project/board switching. Alt+Shift+K is the fallback when Chrome cannot assign the primary shortcut.
 - Switch English/Persian and light/dark theme in the main workspace and Capture surfaces.
-- Customize QueueMint appearance with a live accent color, Compact/Comfortable/Spacious density, and shared corner-radius tokens that apply across the interface.
+- Open the dedicated Appearance Studio to customize theme, accent, an expanded eight-tone neutral palette, typography, density, radius, sidebar style, surface style, and default issue layout. All major controls use a consistent dropdown pattern, hover affects only the live preview, and QueueMint changes only after Apply. Typography includes the full shadcn/create Sans, Mono, and Serif menu (Geist through Instrument Serif) plus Persian/Arabic families such as Vazirmatn, Mikhak, Samim, Shabnam, Sahel, Naskh, and Lalezar headings. Selected web fonts load on demand from Google Fonts or commit-pinned jsDelivr resources and fall back safely to local/system fonts offline. Appearance presets can be shuffled, copied, downloaded, and imported as JSON, and the same semantic tokens flow into the extension popup.
 
 The complete current feature inventory is in [docs/CAPABILITIES.md](docs/CAPABILITIES.md).
 
@@ -58,7 +58,7 @@ Daily-use polish now includes persistent favorite commands, recent project/board
 
 ## v1.0 RC4 - Drag and drop attachments
 
-Attachment surfaces now accept both desktop drag-and-drop and normal file-picker selection. Images and supported evidence files use one shared validation and upload path, with visual drag-over feedback, duplicate protection, previews where available, and the same size/count limits.
+Attachment surfaces now accept both desktop drag-and-drop and normal file-picker selection. Images and supported evidence files use one shared validation and upload path, with visual drag-over feedback, duplicate protection, previews where available, the same size/count limits, and Appearance Studio radius/surface tokens for the drop zone and previews.
 
 ## v1.0 RC3 - Visual Jira description editor
 

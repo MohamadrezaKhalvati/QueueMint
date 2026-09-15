@@ -58,7 +58,7 @@ export function IssueInspectorSheet({ open, onOpenChange, locale, t, issue, inde
                 <Field><FieldLabel>{t.priority}</FieldLabel><PrioritySelect priorities={priorities} value={issue.priority} defaultPriority={payload.defaults?.priority} onValueChange={(priority) => onUpdate({ priority })} inheritedLabel={t.useDefault} /></Field>
                 {!isEpic ? <div className="sm:col-span-2"><EstimateInput label={t.estimate} value={issue.estimate ?? ""} onValueChange={(estimate) => onUpdate({ estimate: estimate.trim() ? estimate : undefined })} placeholder={t.estimatePlaceholder} help={timeTrackingAvailable ? t.estimateHelp : t.estimateUnavailable} inheritedText={payload.defaults?.estimate ? `${t.inheritedEstimate}: ${payload.defaults.estimate}` : undefined} /></div> : null}
               </div>
-              <div className="rounded-xl border bg-muted/15 p-3">
+              <div className="rounded-[var(--qm-panel-radius)] border bg-muted/15 p-3">
                 <div className="mb-3">
                   <div className="text-sm font-medium">{locale === "fa" ? "ثبت زمان بعد از ساخت" : "Worklog after create"}</div>
                   <div className="mt-1 text-xs leading-5 text-muted-foreground">{locale === "fa" ? "اختیاری. QueueMint اول تسک را میسازد و بعد از تایید همین Review، زمان را روی Jira ثبت میکند." : "Optional. QueueMint creates the issue first, then adds this worklog after the same review is confirmed."}</div>
@@ -172,7 +172,7 @@ export function BatchSettingsSheet({ open, onOpenChange, locale, t, payload, met
           <EstimateInput label={t.defaultEstimate} value={payload?.defaults?.estimate ?? ""} onValueChange={(estimate) => onDefaults({ estimate: estimate.trim() ? estimate : undefined })} placeholder={t.estimatePlaceholder} help={metadata?.estimation.timeTracking ? t.estimateHelp : t.estimateUnavailable} />
           <Field><FieldLabel>{t.defaultAssignee}</FieldLabel><AssigneeCombobox users={users} value={payload?.defaults?.assignee} onValueChange={(assignee) => onDefaults({ assignee })} placeholder={t.assigneeSearch} emptyLabel={t.assigneeEmpty} unassignedLabel={t.unassigned} /></Field>
           <Field><FieldLabel>{t.defaultLabels}</FieldLabel><LabelsCombobox projectKey={payload?.project} options={labels} value={payload?.defaults?.labels ?? []} onValueChange={(nextLabels) => onDefaults({ labels: nextLabels })} placeholder={t.labelSearch} emptyLabel={t.labelEmpty} createLabel={(label) => `${t.createLabel}: ${label}`} loadingLabel={t.loadingLabels} /></Field>
-          {autoSprintNote ? <div className="flex items-start gap-2 rounded-xl border border-emerald-200 bg-emerald-50 p-3 text-sm text-emerald-800 dark:border-emerald-900 dark:bg-emerald-950/30 dark:text-emerald-200"><CheckCircle2 className="mt-0.5 size-4 shrink-0" />{t.autoSprint}</div> : null}
+          {autoSprintNote ? <div className="flex items-start gap-2 rounded-[var(--qm-panel-radius)] border border-success/25 bg-success/8 p-3 text-sm text-success"><CheckCircle2 className="mt-0.5 size-4 shrink-0" />{t.autoSprint}</div> : null}
         </SheetBody>
         <SheetFooter className="justify-end"><Button className="min-w-24" onClick={() => onOpenChange(false)}>{t.done}</Button></SheetFooter>
       </SheetContent>

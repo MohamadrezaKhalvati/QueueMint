@@ -10,7 +10,7 @@ function inlineNodes(value: string): ReactNode[] {
     const index = match.index ?? 0
     if (index > cursor) nodes.push(value.slice(cursor, index))
     const token = match[0]
-    if (token.startsWith("{{")) nodes.push(<code key={`${index}-${token}`} className="rounded bg-muted px-1 py-0.5 font-mono text-[0.9em]">{token.slice(2, -2)}</code>)
+    if (token.startsWith("{{")) nodes.push(<code key={`${index}-${token}`} className="rounded-[var(--qm-control-radius)] bg-muted px-1 py-0.5 font-mono text-[0.9em]">{token.slice(2, -2)}</code>)
     else if (token.startsWith("**") || token.startsWith("__")) nodes.push(<strong key={`${index}-${token}`}>{token.slice(2, -2)}</strong>)
     else if (token.startsWith("*")) nodes.push(<strong key={`${index}-${token}`}>{token.slice(1, -1)}</strong>)
     else if (token.startsWith("_")) nodes.push(<em key={`${index}-${token}`}>{token.slice(1, -1)}</em>)

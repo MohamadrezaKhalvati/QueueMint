@@ -25,7 +25,7 @@ return (
         <h1 className="qm-page-title">{t.manageTitle}</h1>
         <p className="qm-page-subtitle">{t.manageHint}</p>
       </div>
-      <div className="qm-heading-actions flex flex-wrap items-center gap-3">
+      <div className="qm-heading-actions qm-manage-heading-actions flex flex-wrap items-center gap-3">
         <div className="qm-scope-control">
           <div className="qm-scope-switch" role="group" aria-label={locale === "fa" ? "محدوده نمایش" : "Issue scope"}>
             <Button
@@ -59,7 +59,7 @@ return (
       </div>
     </div>
 
-    <section className="qm-manage-summary mb-5 rounded-xl border bg-card px-3 py-3 shadow-none">
+    <section className="qm-manage-summary mb-5 rounded-[var(--qm-panel-radius)] border bg-card px-3 py-3 shadow-none">
       <div className="flex flex-wrap items-center text-sm">
         <div className="qm-context-items flex min-w-0 flex-1 flex-wrap">
           <ContextItem label={t.project} value={project ? `${project.key} - ${project.name}` : "-"} icon={Layers3} />
@@ -69,16 +69,16 @@ return (
         {issues.length > 100 ? <span className="qm-context-note ms-auto inline-flex max-w-sm items-center gap-2 px-5 py-1.5 text-xs text-primary"><List className="size-3.5" />{t.largeBoardHint}</span> : <span className="qm-context-note ms-auto max-w-[300px] px-5 py-1.5 text-xs leading-5 text-muted-foreground">{t.postCreateHelp}</span>}
       </div>
       {view === "board" ? <div className="sr-only"><span>{t.dragHint}</span></div> : null}
-      {message ? <div className="mt-2 rounded-lg border bg-muted/20 px-3 py-2 text-xs">{message}</div> : null}
+      {message ? <div className="mt-2 rounded-[var(--qm-control-radius)] border bg-muted/20 px-3 py-2 text-xs">{message}</div> : null}
     </section>
 
     {savedActions.length ? (
-      <section className="mb-4 rounded-xl border bg-card p-3 shadow-none">
+      <section className="mb-4 rounded-[var(--qm-panel-radius)] border bg-card p-3 shadow-none">
         <div className="flex flex-col gap-3 xl:flex-row xl:items-center">
           <div className="flex shrink-0 items-center gap-2"><Bookmark className="size-4 text-primary" /><span className="text-sm font-semibold">{t.savedActions}</span><Badge variant="secondary">{savedActions.length}</Badge></div>
           <div className="flex min-w-0 flex-1 gap-2 overflow-x-auto pb-1 xl:justify-end">
             {savedActions.slice(0, 8).map((action) => (
-              <div key={action.id} className="inline-flex shrink-0 items-center rounded-lg border bg-background">
+              <div key={action.id} className="inline-flex shrink-0 items-center rounded-[var(--qm-control-radius)] border bg-background">
                 <Button variant="ghost" size="sm" className="rounded-e-none" onClick={() => onUseSavedAction(action)} disabled={!selectedKeys.size} title={!selectedKeys.size ? t.selectIssuesFirst : action.name}><Play className={cn("size-3.5", locale === "fa" && "rotate-180")} /><span className="max-w-40 truncate">{action.name}</span></Button>
                 <Button variant="ghost" size="icon-sm" className="rounded-s-none border-s text-muted-foreground hover:text-destructive" onClick={() => onDeleteSavedAction(action.id)} aria-label={t.deleteAction} title={t.deleteAction}><Trash2 className="size-3.5" /></Button>
               </div>
@@ -90,7 +90,7 @@ return (
 
     <ManagePowerTools locale={locale} issues={visibleIssues} selectedKeys={selectedKeys} currentUserIdentity={args.metadata?.user?.name || args.metadata?.user?.key} onPrepare={onPreparePowerTool} />
 
-    <section className="mb-4 rounded-xl border bg-card p-3 shadow-none">
+    <section className="mb-4 rounded-[var(--qm-panel-radius)] border bg-card p-3 shadow-none">
       <div className="flex flex-col gap-3 xl:flex-row xl:items-center">
         <div className="flex shrink-0 items-center gap-2">
           <Eye className="size-4 text-primary" />
@@ -99,7 +99,7 @@ return (
         </div>
         <div className="flex min-w-0 flex-1 gap-2 overflow-x-auto pb-1 xl:justify-end">
           {matchingSavedViews.map((saved) => (
-            <div key={saved.id} className="inline-flex shrink-0 items-center rounded-lg border bg-background">
+            <div key={saved.id} className="inline-flex shrink-0 items-center rounded-[var(--qm-control-radius)] border bg-background">
               <Button variant="ghost" size="sm" className="rounded-e-none" onClick={() => applySavedView(saved)}><Eye className="size-3.5" /><span className="max-w-40 truncate">{saved.name}</span></Button>
               <Button variant="ghost" size="icon-sm" className="rounded-s-none border-s text-muted-foreground hover:text-destructive" onClick={() => onDeleteView(saved.id)} aria-label={locale === "fa" ? "حذف نما" : "Delete view"}><Trash2 className="size-3.5" /></Button>
             </div>
@@ -109,25 +109,25 @@ return (
       </div>
     </section>
 
-    <section className="qm-manage-panel rounded-xl border bg-card shadow-none">
+    <section className="qm-manage-panel rounded-[var(--qm-panel-radius)] border bg-card shadow-none">
       <div className="border-b p-3">
         <div className="grid gap-2 lg:grid-cols-[minmax(260px,1fr)_auto] lg:items-center">
           <div className="relative min-w-0">
             <Search className="absolute start-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
             <Input value={search} onChange={(event: ChangeEvent<HTMLInputElement>) => setSearch(event.target.value)} placeholder={t.searchIssues} className="ps-9" />
           </div>
-          <div className="flex flex-wrap items-center gap-2 lg:justify-end">
+          <div className="qm-manage-toolbar flex flex-wrap items-center gap-2 lg:justify-end">
             <Button variant={myIssuesOnly ? "secondary" : "outline"} size="sm" onClick={() => setMyIssuesOnly((value) => !value)} aria-pressed={myIssuesOnly}><UserCheck className="size-4" />{t.myIssues}</Button>
             <Button variant={filtersOpen || activeFilterCount ? "secondary" : "outline"} size="sm" onClick={() => setFiltersOpen((value) => !value)} aria-expanded={filtersOpen}><SlidersHorizontal className="size-4" />{t.filtersLabel}{activeFilterCount ? <Badge className="ms-1 px-1.5 py-0">{activeFilterCount}</Badge> : null}</Button>
             <span className="qm-toolbar-divider" aria-hidden="true" />
-            <Button variant="outline" size="icon" className="qm-view-toggle" onClick={() => setView((current) => current === "board" ? "list" : "board")} aria-label={view === "board" ? t.listView : t.boardViewLive} title={view === "board" ? t.listView : t.boardViewLive}>
+            <Button variant="outline" size="icon" className="qm-view-toggle qm-view-toggle-button" onClick={() => setView((current) => current === "board" ? "list" : "board")} aria-label={view === "board" ? t.listView : t.boardViewLive} title={view === "board" ? t.listView : t.boardViewLive}>
               {view === "board" ? <SquareKanban className="size-4" /> : <List className="size-4" />}
             </Button>
           </div>
         </div>
 
         {filtersOpen ? (
-          <div className="mt-3 grid gap-2 rounded-xl border bg-muted/10 p-3 sm:grid-cols-2 xl:grid-cols-4 2xl:grid-cols-7">
+          <div className="mt-3 grid gap-2 rounded-[var(--qm-panel-radius)] border bg-muted/10 p-3 sm:grid-cols-2 xl:grid-cols-4 2xl:grid-cols-7">
             <SimpleSelect value={typeFilter} onValueChange={setTypeFilter} items={filterItems.type} />
             <SimpleSelect value={priorityFilter} onValueChange={setPriorityFilter} items={filterItems.priority} />
             <SimpleSelect value={statusFilter} onValueChange={setStatusFilter} items={filterItems.status} />
@@ -158,9 +158,9 @@ return (
 
       <div className="p-3 sm:p-4">
         {loading ? (
-          <div className="grid min-h-56 place-items-center rounded-xl border border-dashed bg-muted/10 text-sm text-muted-foreground"><LoaderCircle className="me-2 inline size-4 animate-spin" />{t.boardLoading}</div>
+          <div className="grid min-h-56 place-items-center rounded-[var(--qm-panel-radius)] border border-dashed bg-muted/10 text-sm text-muted-foreground"><LoaderCircle className="me-2 inline size-4 animate-spin" />{t.boardLoading}</div>
         ) : !visibleIssues.length ? (
-          <div className="grid min-h-56 place-items-center rounded-xl border border-dashed bg-muted/10 px-6 text-center">
+          <div className="grid min-h-56 place-items-center rounded-[var(--qm-panel-radius)] border border-dashed bg-muted/10 px-6 text-center">
             <div className="max-w-md">
               <SlidersHorizontal className="mx-auto mb-3 size-5 text-muted-foreground" />
               <div className="text-sm font-medium text-foreground">
@@ -181,7 +181,7 @@ return (
             </div>
           </div>
         ) : view === "list" ? (
-          <div className="overflow-hidden rounded-xl border">
+          <div className="overflow-hidden rounded-[var(--qm-panel-radius)] border">
             <div className="hidden grid-cols-[34px_104px_minmax(280px,1fr)_120px_150px_145px_110px_52px] gap-3 border-b bg-muted/25 px-3 py-2 text-xs font-medium text-muted-foreground xl:grid">
               <span /><span>Key</span><span>{t.summary}</span><span>{t.status}</span><span>{t.assignee}</span><span>{t.placement}</span><span>{t.estimate}</span><span />
             </div>
@@ -205,7 +205,7 @@ return (
               return (
                 <section
                   key={group.key}
-                  className={cn("qm-board-lane min-w-[420px] flex-1 shrink-0 rounded-xl border bg-muted/18 p-3 transition-colors", group.sprint && "is-sprint", isOver && "border-primary/45 bg-primary/[0.04]")}
+                  className={cn("qm-board-lane min-w-[420px] flex-1 shrink-0 rounded-[var(--qm-panel-radius)] border bg-muted/18 p-3 transition-colors", group.sprint && "is-sprint", isOver && "border-primary/45 bg-primary/[0.04]")}
                   onDragOver={(event) => { if (draggedKey) { event.preventDefault(); event.dataTransfer.dropEffect = "move"; setOverLane(group.key) } }}
                   onDragLeave={(event) => { if (!event.currentTarget.contains(event.relatedTarget as Node | null)) setOverLane(null) }}
                   onDrop={(event) => {
@@ -219,11 +219,11 @@ return (
                   }}
                 >
                   <div className="qm-lane-heading mb-2 flex items-center gap-2 px-1">
-                    {group.sprint ? <SprintVisual sprint={group.sprint} backlogLabel={t.backlog} compact /> : <span className="inline-flex items-center gap-2 font-medium"><span className="grid size-6 place-items-center rounded-md bg-muted"><Inbox className="size-3.5" /></span>{t.backlog}</span>}
+                    {group.sprint ? <SprintVisual sprint={group.sprint} backlogLabel={t.backlog} compact /> : <span className="inline-flex items-center gap-2 font-medium"><span className="grid size-6 place-items-center rounded-[var(--qm-control-radius)] bg-muted"><Inbox className="size-3.5" /></span>{t.backlog}</span>}
                     <Badge variant="secondary" className="ms-auto">{group.entries.length}</Badge>
                   </div>
                   <div className="min-h-80 space-y-2">
-                    {!group.entries.length ? <div className={cn("qm-empty-lane grid min-h-80 place-items-center rounded-lg border border-dashed bg-background/55 px-3 text-center text-sm text-muted-foreground", isOver && "border-primary/40 bg-primary/[0.04] text-primary")}><div>{isOver ? <><CircleDot className="mx-auto mb-3 size-5" /><div className="font-medium">{t.dragHint}</div></> : <><Leaf className="mx-auto mb-3 size-5 opacity-75" /><div className="font-medium text-foreground/70">{t.emptyLane}</div><div className="mt-2 text-xs opacity-80">{locale === "fa" ? "تسک‌ها را اینجا بکش یا از ستون دیگری منتقل کن." : "Drag issues here or move them from another lane."}</div></>}</div></div> : null}
+                    {!group.entries.length ? <div className={cn("qm-empty-lane grid min-h-80 place-items-center rounded-[var(--qm-control-radius)] border border-dashed bg-background/55 px-3 text-center text-sm text-muted-foreground", isOver && "border-primary/40 bg-primary/[0.04] text-primary")}><div>{isOver ? <><CircleDot className="mx-auto mb-3 size-5" /><div className="font-medium">{t.dragHint}</div></> : <><Leaf className="mx-auto mb-3 size-5 opacity-75" /><div className="font-medium text-foreground/70">{t.emptyLane}</div><div className="mt-2 text-xs opacity-80">{locale === "fa" ? "تسک‌ها را اینجا بکش یا از ستون دیگری منتقل کن." : "Drag issues here or move them from another lane."}</div></>}</div></div> : null}
                     {group.entries.map((issue) => (
                       <LiveIssueCard
                         key={issue.key}
@@ -256,7 +256,7 @@ return (
             <FieldLabel>{locale === "fa" ? "نام نما" : "View name"}</FieldLabel>
             <Input value={saveViewName} onChange={(event: ChangeEvent<HTMLInputElement>) => setSaveViewName(event.target.value)} placeholder={locale === "fa" ? "مثلا باگ‌های بدون مسئول" : "e.g. Unassigned bugs"} autoFocus />
           </Field>
-          <div className="mt-4 rounded-xl border bg-muted/15 p-3 text-xs text-muted-foreground">
+          <div className="mt-4 rounded-[var(--qm-panel-radius)] border bg-muted/15 p-3 text-xs text-muted-foreground">
             {visibleIssues.length} {t.issues} · {activeFilterCount} {locale === "fa" ? "فیلتر فعال" : "active filters"} · {view === "board" ? (locale === "fa" ? "بورد" : "Board") : (locale === "fa" ? "لیست" : "List")}
           </div>
         </SheetBody>

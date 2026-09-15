@@ -175,17 +175,17 @@ export function LiveBulkEditSheet({
           ) : null}
           {estimation?.storyPointsFieldId ? <Field><FieldLabel>{estimation.storyPointsFieldName ?? t.storyPoints}</FieldLabel><Input type="number" min="0" step="0.5" value={storyPoints} onChange={(event: ChangeEvent<HTMLInputElement>) => setStoryPoints(event.target.value)} placeholder={t.noChange} dir="ltr" /></Field> : null}
 
-          <section className="rounded-xl border bg-muted/[0.12] p-3.5">
+          <section className="rounded-[var(--qm-panel-radius)] border bg-muted/[0.12] p-3.5">
             <div className="mb-3 flex items-start gap-3">
-              <div className="grid size-8 shrink-0 place-items-center rounded-lg bg-primary/10 text-primary"><PlusCircle className="size-4" /></div>
+              <div className="grid size-8 shrink-0 place-items-center rounded-[var(--qm-control-radius)] bg-primary/10 text-primary"><PlusCircle className="size-4" /></div>
               <div className="min-w-0 flex-1">
                 <div className="text-sm font-semibold">{t.dynamicFields}</div>
                 <div className="mt-0.5 text-xs leading-5 text-muted-foreground">{t.dynamicFieldsHint}</div>
               </div>
             </div>
 
-            {dynamicLoading ? <div className="flex items-center gap-2 rounded-lg border border-dashed px-3 py-3 text-xs text-muted-foreground"><LoaderCircle className="size-4 animate-spin" />{t.preparingPreview}</div> : null}
-            {dynamicError ? <div className="rounded-lg border border-amber-300/60 bg-amber-50/70 px-3 py-2 text-xs text-amber-900 dark:border-amber-800 dark:bg-amber-950/20 dark:text-amber-200">{dynamicError}</div> : null}
+            {dynamicLoading ? <div className="flex items-center gap-2 rounded-[var(--qm-control-radius)] border border-dashed px-3 py-3 text-xs text-muted-foreground"><LoaderCircle className="size-4 animate-spin" />{t.preparingPreview}</div> : null}
+            {dynamicError ? <div className="rounded-[var(--qm-control-radius)] border border-warning/30 bg-warning/8 px-3 py-2 text-xs text-warning">{dynamicError}</div> : null}
 
             {!dynamicLoading && addableFields.length ? (
               <div className="mt-3">
@@ -218,7 +218,7 @@ export function LiveBulkEditSheet({
           </section>
 
           {saveActionOpen ? (
-            <section className="rounded-xl border border-primary/20 bg-primary/[0.035] p-3.5">
+            <section className="rounded-[var(--qm-panel-radius)] border border-primary/20 bg-primary/[0.035] p-3.5">
               <div className="mb-2 flex items-center gap-2 text-sm font-semibold"><Save className="size-4 text-primary" />{t.saveAction}</div>
               <div className="flex flex-col gap-2 sm:flex-row">
                 <Input value={saveActionName} onChange={(event: ChangeEvent<HTMLInputElement>) => setSaveActionName(event.target.value)} placeholder={t.actionNamePlaceholder} autoFocus maxLength={80} onKeyDown={(event) => { if (event.key === "Enter" && saveActionName.trim()) { onSaveAction(saveActionName); setSaveActionOpen(false); setSaveActionName("") } }} />

@@ -182,16 +182,24 @@ export function QuickIssueScreen({
                 <EpicCombobox options={epicOptions} value={issue.epic} onValueChange={(epic) => setIssue({ ...issue, epic })} placeholder={t.epicSearch} emptyLabel={t.epicEmpty} batchLabel={t.batchEpic} jiraLabel={t.jiraEpic} clearLabel={t.noEpic} />
               </Field>
             ) : null}
-            <Field>
+            {!isEpic && placement === "backlog" ? (
+              <Field>
+                <FieldLabel>{t.labels}</FieldLabel>
+                <LabelsCombobox projectKey={payload?.project} options={labelOptions} value={issue.labels ?? []} onValueChange={(labels) => setIssue({ ...issue, labels })} placeholder={t.labelSearch} emptyLabel={t.labelEmpty} createLabel={(label) => `${t.createLabel}: ${label}`} loadingLabel={t.loadingLabels} />
+              </Field>
+            ) : null}
+            <Field className={!isEpic && placement === "backlog" ? "sm:col-span-2" : undefined}>
               <FieldLabel>{t.assignee}</FieldLabel>
               <AssigneeCombobox users={users} value={issue.assignee} onValueChange={(assignee) => setIssue({ ...issue, assignee })} placeholder={t.assigneeSearch} emptyLabel={t.assigneeEmpty} unassignedLabel={t.unassigned} />
               <SmartAssigneeSuggestions locale={locale} suggestions={assigneeSuggestions} onSelect={(identity) => setIssue({ ...issue, assignee: identity })} />
             </Field>
-            <Field>
-              <FieldLabel>{t.labels}</FieldLabel>
-              <LabelsCombobox projectKey={payload?.project} options={labelOptions} value={issue.labels ?? []} onValueChange={(labels) => setIssue({ ...issue, labels })} placeholder={t.labelSearch} emptyLabel={t.labelEmpty} createLabel={(label) => `${t.createLabel}: ${label}`} loadingLabel={t.loadingLabels} />
-            </Field>
-            {project?.components?.length ? <Field>
+            {isEpic || placement === "sprint" ? (
+              <Field>
+                <FieldLabel>{t.labels}</FieldLabel>
+                <LabelsCombobox projectKey={payload?.project} options={labelOptions} value={issue.labels ?? []} onValueChange={(labels) => setIssue({ ...issue, labels })} placeholder={t.labelSearch} emptyLabel={t.labelEmpty} createLabel={(label) => `${t.createLabel}: ${label}`} loadingLabel={t.loadingLabels} />
+              </Field>
+            ) : null}
+            {project?.components?.length ? <Field className="sm:col-span-2">
               <FieldLabel>{locale === "fa" ? "کامپوننت" : "Component"} <span className="font-normal text-muted-foreground">({t.optional})</span></FieldLabel>
               <SimpleSelect value={issue.components?.[0] || "__none"} onValueChange={(value) => setIssue({ ...issue, components: value === "__none" ? undefined : [value] })} items={[{ value: "__none", label: locale === "fa" ? "بدون کامپوننت" : "No component" }, ...project.components.map((item) => ({ value: item.name, label: item.name }))]} />
             </Field> : null}
@@ -207,7 +215,7 @@ export function QuickIssueScreen({
           <AttachmentPicker files={attachments} onChange={setAttachments} label={t.addAttachment} helper={t.attachmentHelp} addLabel={t.addAttachment} dropLabel={t.attachmentDrop} dropActiveLabel={t.attachmentDropActive} formatHint={t.attachmentTypes} className="qm-attachment-compact" />
 
           {resultItem ? (
-            <div className={cn("rounded-xl border p-3 text-sm", resultItem.ok ? "border-emerald-200 bg-emerald-50 text-emerald-800 dark:border-emerald-900 dark:bg-emerald-950/30 dark:text-emerald-200" : "border-destructive/30 bg-destructive/5 text-destructive")}>
+            <div className={cn("rounded-[var(--qm-panel-radius)] border p-3 text-sm", resultItem.ok ? "border-success/25 bg-success/8 text-success" : "border-destructive/30 bg-destructive/5 text-destructive")}>
               <div className="flex items-start gap-2">
                 {resultItem.ok ? <CheckCircle2 className="mt-0.5 size-4 shrink-0" /> : <XCircle className="mt-0.5 size-4 shrink-0" />}
                 <div className="min-w-0 flex-1">

@@ -30,16 +30,16 @@ export function WorklogIssueMiniCard({ locale, issue, selected, loggedMinutes, o
             {!compact && issue.status ? <Badge variant="outline" className={cn("max-w-24 truncate px-1.5 py-0 text-[9px] font-normal", statusTone(issue))}>{issue.status}</Badge> : null}
           </div>
           <div className="mt-1 line-clamp-2 text-xs font-semibold leading-4 text-foreground">{issue.summary}</div>
-          {issue.labels.length ? <div className="mt-2 flex flex-wrap gap-1">{issue.labels.slice(0, 2).map((label) => <span key={label} className="rounded bg-sky-50 px-1.5 py-0.5 text-[9px] font-medium text-sky-700 dark:bg-sky-950/35 dark:text-sky-300">{label}</span>)}</div> : null}
+          {issue.labels.length ? <div className="mt-2 flex flex-wrap gap-1">{issue.labels.slice(0, 2).map((label) => <span key={label} className="rounded-[var(--qm-control-radius)] bg-muted px-1.5 py-0.5 text-[9px] font-medium text-muted-foreground">{label}</span>)}</div> : null}
         </div>
-        <Button variant="outline" size="icon-sm" className={cn("qm-worklog-issue-add size-7 shrink-0 rounded-md", selected && "is-selected")} onClick={onToggle} aria-label={selected ? (isFa ? "حذف از انتخاب" : "Remove from draft") : (isFa ? "افزودن به انتخاب" : "Add to draft")}>
+        <Button variant="outline" size="icon-sm" className={cn("qm-worklog-issue-add size-7 shrink-0 rounded-[var(--qm-control-radius)]", selected && "is-selected")} onClick={onToggle} aria-label={selected ? (isFa ? "حذف از انتخاب" : "Remove from draft") : (isFa ? "افزودن به انتخاب" : "Add to draft")}>
           {selected ? <Check className="size-3.5" /> : <Plus className="size-3.5" />}
         </Button>
       </div>
       <div className="mt-2.5 flex items-center gap-2 text-[10px] text-muted-foreground">
         <span className="inline-flex min-w-0 flex-1 items-center gap-1.5">{issue.assignee ? <JiraUserAvatar name={issue.assignee} avatarUrl={issue.avatarUrl} className="size-4" /> : <span className="size-4 rounded-full bg-muted" />}<span className="truncate">{issue.assignee ?? (isFa ? "بدون مسئول" : "Unassigned")}</span></span>
         <WorklogEstimateStatus issue={issue} locale={locale} compact />
-        {loggedMinutes > 0 ? <span className="shrink-0 rounded bg-emerald-50 px-1.5 py-0.5 font-medium text-emerald-700 dark:bg-emerald-950/35 dark:text-emerald-300">{formatWorklogMinutes(loggedMinutes)}</span> : null}
+        {loggedMinutes > 0 ? <span className="shrink-0 rounded-[var(--qm-control-radius)] bg-success/10 px-1.5 py-0.5 font-medium text-success">{formatWorklogMinutes(loggedMinutes)}</span> : null}
       </div>
     </article>
   )

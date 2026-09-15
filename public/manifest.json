@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "QueueMint",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Jira companion for bug capture, evidence, fast issue creation, safe bulk actions, reusable workflows, and shortcuts.",
   "action": {
     "default_title": "Open QueueMint",
@@ -47,7 +47,10 @@
       "description": "Open the QueueMint command palette (fallback shortcut)"
     }
   },
-  "version_name": "1.1.0 Worklog Assistant",
+  "version_name": "1.2.0 Appearance Studio",
   "short_name": "QueueMint",
-  "homepage_url": "https://github.com/hamedtkd/QueueMint"
+  "homepage_url": "https://github.com/hamedtkd/QueueMint",
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net; font-src 'self' data: https://fonts.gstatic.com https://cdn.jsdelivr.net;"
+  }
 }

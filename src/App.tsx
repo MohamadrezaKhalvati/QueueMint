@@ -36,7 +36,8 @@ function App() {
     setCreating, setCreateDialogOpen, progress, setProgress, runResult, setRunResult, selectedIndex, setSelectedIndex,
     selectedForCreate, setSelectedForCreate, search, setSearch, typeFilter, setTypeFilter, placementFilter, setPlacementFilter,
     mode, setMode, locale, setLocale, theme, setTheme, accentColor, setAccentColor, reviewLayout, setReviewLayout,
-    gridColumns, setGridColumns, density, setDensity, radius, setRadius, setSettingsOpen, setBatchSettingsOpen, setJsonSheetOpen, setInspectorOpen,
+    gridColumns, setGridColumns, density, setDensity, radius, setRadius, neutralTone, setNeutralTone, bodyFont, setBodyFont, headingFont, setHeadingFont,
+    sidebarStyle, setSidebarStyle, sidebarAccent, setSidebarAccent, surfaceStyle, setSurfaceStyle, setSettingsOpen, setBatchSettingsOpen, setJsonSheetOpen, setInspectorOpen,
     setAutoSprintNote, attachmentsByIndex, setAttachmentsByIndex, quickIssue, setQuickIssue, quickPlacement, setQuickPlacement,
     quickSprintId, setQuickSprintId, quickAttachments, setQuickAttachments, setQuickCreating, setQuickResult,
     liveIssues, setLiveIssues, liveSelectedKeys, setLiveSelectedKeys, worklogSelectedKeys, setWorklogSelectedKeys, lastCreatedKeys, setLastCreatedKeys, setLiveScope,
@@ -144,12 +145,12 @@ function App() {
   }
 
   useAppLifecycle({
-    jsonText, payload, selectedBoardId, theme, locale, accentColor, reviewLayout, gridColumns, density, radius, mode,
+    jsonText, payload, selectedBoardId, theme, locale, accentColor, reviewLayout, gridColumns, density, radius, neutralTone, bodyFont, headingFont, sidebarStyle, sidebarAccent, surfaceStyle, mode,
     lastCreatedKeys, onboardingComplete, savedActions, savedViews, automationRules, activityLog, hydrated, metadata,
     issueCount, selectedIndex, sprints, selectedProjectKey, liveBulkOpen, liveSelectedKeys, liveIssues, quickIssue,
     quickSprintId, loadingProject, issueTypes, connect: connectionActions.connect, loadProjectContext: projectActions.loadProjectContext,
     loadLiveBoard: liveActions.loadLiveBoard, setJsonText, setSelectedBoardId, setLocale, setTheme, setAccentColor, setReviewLayout,
-    setGridColumns, setDensity, setRadius, setMode, setLastCreatedKeys, setLiveSelectedKeys, setSavedActions, setSavedViews, setAutomationRules,
+    setGridColumns, setDensity, setRadius, setNeutralTone, setBodyFont, setHeadingFont, setSidebarStyle, setSidebarAccent, setSurfaceStyle, setMode, setLastCreatedKeys, setLiveSelectedKeys, setSavedActions, setSavedViews, setAutomationRules,
     setActivityLog, setOnboardingComplete, setHydrated, setSelectedIndex, setSelectedForCreate, setDuplicateProjectIssues,
     setDuplicateCheckedSummary, setLiveDynamicFields, setLiveDynamicError, setLiveDynamicLoading, setCommandOpen, setQuickIssue,
     setQuickSprintId, setQuickPlacement,
@@ -198,7 +199,7 @@ function App() {
     },
     onSwitchProject: (key) => void projectActions.chooseProject(key),
     onSwitchBoard: (id) => { setLiveScope("board"); void projectActions.chooseBoard(id) },
-    onHistory: () => setBulkHistoryOpen(true), onSettings: () => setSettingsOpen(true), onBatchSettings: () => setBatchSettingsOpen(true),
+    onHistory: () => setBulkHistoryOpen(true), onSettings: () => setMode("customize"), onBatchSettings: () => setBatchSettingsOpen(true),
     onRefresh: () => void liveActions.loadLiveBoard(), onSavedAction: automationActions.loadSavedAction,
     onCopySprintSummary: () => { if (sprintShareSummary) void navigator.clipboard.writeText(sprintShareSummary.text).then(() => toast.success(locale === "fa" ? "خلاصه اسپرینت کپی شد" : "Sprint summary copied")) },
     onToggleFavorite: productivity.toggleFavoriteCommand,

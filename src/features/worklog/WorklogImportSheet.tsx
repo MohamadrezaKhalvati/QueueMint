@@ -46,7 +46,7 @@ export function WorklogImportSheet({ open, onOpenChange, locale, issues, onImpor
       <SheetContent className="sm:w-[620px] sm:max-w-none">
         <SheetHeader><SheetTitle>{isFa ? "Import Worklog JSON" : "Import worklog JSON"}</SheetTitle><SheetDescription>{isFa ? "JSON خروجی AI یا فایل خودت را وارد کن. هیچ چیزی تا مرحله Review در Jira ثبت نمیشه." : "Paste AI output or upload JSON. Nothing is written to Jira until you review and confirm."}</SheetDescription></SheetHeader>
         <SheetBody className="space-y-4">
-          <div className="rounded-xl border bg-muted/15 p-3 text-xs leading-5 text-muted-foreground">
+          <div className="rounded-[var(--qm-panel-radius)] border bg-muted/15 p-3 text-xs leading-5 text-muted-foreground">
             <div className="font-medium text-foreground">{isFa ? "فرمت پیشنهادی" : "Suggested format"}</div>
             <pre className="mt-2 overflow-x-auto whitespace-pre-wrap font-mono text-[11px]">{SAMPLE}</pre>
           </div>
@@ -56,7 +56,7 @@ export function WorklogImportSheet({ open, onOpenChange, locale, issues, onImpor
             <input ref={fileRef} type="file" accept="application/json,.json" className="hidden" onChange={(event) => void fileChanged(event)} />
           </div>
           <Textarea value={text} onChange={(event) => { setText(event.target.value); setError(null) }} rows={18} spellCheck={false} className="font-mono text-xs" placeholder={SAMPLE} />
-          {error ? <div className="rounded-lg border border-destructive/25 bg-destructive/5 px-3 py-2 text-sm text-destructive">{error}</div> : null}
+          {error ? <div className="rounded-[var(--qm-control-radius)] border border-destructive/25 bg-destructive/5 px-3 py-2 text-sm text-destructive">{error}</div> : null}
         </SheetBody>
         <SheetFooter><Button variant="outline" onClick={() => onOpenChange(false)}>{isFa ? "بستن" : "Cancel"}</Button><Button className="ms-auto" onClick={parse} disabled={!text.trim()}>{isFa ? "رفتن به Review" : "Import to review"}</Button></SheetFooter>
       </SheetContent>

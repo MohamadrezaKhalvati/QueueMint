@@ -10,7 +10,7 @@ const SheetClose = DialogPrimitive.Close
 
 function SheetContent({ className, children, side = "right", showClose = true, ...props }: React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content> & { side?: "right" | "left" | "bottom"; showClose?: boolean }) {
   const sideClass = side === "bottom"
-    ? "inset-x-0 bottom-0 max-h-[90dvh] rounded-t-2xl border-t"
+    ? "inset-x-0 bottom-0 max-h-[90dvh] rounded-t-[var(--qm-panel-radius)] border-t"
     : side === "left"
       ? "inset-y-0 left-0 h-dvh w-[min(94vw,430px)] border-r"
       : "inset-y-0 right-0 h-dvh w-[min(94vw,430px)] border-l"
@@ -32,7 +32,7 @@ function SheetContent({ className, children, side = "right", showClose = true, .
         {...props}
       >
         {showClose ? (
-          <DialogPrimitive.Close aria-label="Close" className="absolute end-3 top-3 z-10 grid size-9 place-items-center rounded-lg border border-transparent text-muted-foreground outline-none transition hover:border-border hover:bg-accent hover:text-foreground focus-visible:ring-[3px] focus-visible:ring-ring/25">
+          <DialogPrimitive.Close aria-label="Close" className="absolute end-3 top-3 z-10 grid size-9 place-items-center rounded-[var(--qm-control-radius)] border border-transparent text-muted-foreground outline-none transition hover:border-border hover:bg-accent hover:text-foreground focus-visible:ring-[3px] focus-visible:ring-ring/25">
             <X className="size-4" />
           </DialogPrimitive.Close>
         ) : null}

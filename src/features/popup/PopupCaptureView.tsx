@@ -49,9 +49,9 @@ export function PopupCaptureView({ t, locale, status, standalone, loadingMetadat
       {dataUrl ? (
         <CaptureEditor ref={editorRef} imageUrl={dataUrl} locale={locale} stateKey={activeShotId ?? undefined} initialState={editorState} onStateChange={onEditorState} />
       ) : (
-        <div className="grid min-h-64 place-items-center rounded-xl border border-dashed bg-muted/10 px-6 py-10 text-center">
+        <div className="grid min-h-64 place-items-center rounded-[var(--qm-panel-radius)] border border-dashed bg-muted/10 px-6 py-10 text-center">
           <div className="max-w-sm">
-            <span className="mx-auto grid size-12 place-items-center rounded-xl bg-muted text-muted-foreground"><ImageOff className="size-5" /></span>
+            <span className="mx-auto grid size-12 place-items-center rounded-[var(--qm-panel-radius)] bg-muted text-muted-foreground"><ImageOff className="size-5" /></span>
             <div className="mt-3 text-sm font-semibold">{t.emptyEvidence}</div>
             <div className="mt-1 text-xs leading-5 text-muted-foreground">{t.emptyEvidenceHint}</div>
             <div className="mt-4 flex flex-wrap justify-center gap-2">

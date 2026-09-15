@@ -1,4 +1,7 @@
-import type { AppLocale, AppTheme, DensityMode, RadiusMode, ReviewLayout } from "@/types"
+import type {
+  AppLocale, AppTheme, BodyFontMode, DensityMode, HeadingFontMode, NeutralTone, RadiusMode, ReviewLayout,
+  SidebarAccentMode, SidebarStyle, SurfaceStyle,
+} from "@/types"
 
 export interface SavedIssueView {
   id: string
@@ -87,7 +90,13 @@ export interface StoredState {
   gridColumns?: 2 | 3 | 4
   density?: DensityMode
   radius?: RadiusMode
-  lastMode?: "dashboard" | "quick" | "bulk" | "review" | "manage" | "worklog" | "automation"
+  neutralTone?: NeutralTone
+  bodyFont?: BodyFontMode
+  headingFont?: HeadingFontMode
+  sidebarStyle?: SidebarStyle
+  sidebarAccent?: SidebarAccentMode
+  surfaceStyle?: SurfaceStyle
+  lastMode?: "dashboard" | "quick" | "bulk" | "review" | "manage" | "worklog" | "automation" | "customize"
   lastCreatedKeys?: string[]
   onboardingComplete?: boolean
   savedActions?: SavedWorkspaceAction[]

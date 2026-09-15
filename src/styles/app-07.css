@@ -29,7 +29,7 @@
 
 .qm-review-footer [data-slot="button"] {
   min-height: 44px;
-  border-radius: 9px;
+  border-radius: var(--qm-control-radius);
   padding-inline: 18px;
 }
 
@@ -172,7 +172,7 @@ html[lang="fa"] .qm-page-title {
 
 .qm-start-card > [data-slot="button"] {
   min-height: 94px;
-  border-radius: 11px;
+  border-radius: var(--qm-panel-radius);
   padding: 16px 14px 16px 18px;
 }
 

@@ -12,12 +12,12 @@ export function IssueSelectionToggle({ selected, onToggle, label, className }: {
   return (
     <button
       type="button"
-      className={cn("issue-selection group/selection grid size-7 shrink-0 place-items-center rounded-lg outline-none transition-colors hover:bg-muted/70 focus-visible:ring-[3px] focus-visible:ring-ring/25", className)}
+      className={cn("issue-selection group/selection grid size-7 shrink-0 cursor-pointer place-items-center rounded-[var(--qm-control-radius)] outline-none transition-colors hover:bg-muted/70 focus-visible:ring-[3px] focus-visible:ring-ring/25", className)}
       onClick={(event) => { event.stopPropagation(); onToggle() }}
       aria-pressed={selected}
       aria-label={label}
     >
-      <span className={cn("grid size-5 place-items-center rounded-[6px] border shadow-xs transition-[border-color,background-color,color,box-shadow]", selected ? "border-primary bg-primary text-primary-foreground shadow-sm" : "border-input bg-background text-transparent group-hover/selection:border-primary/45")}>
+      <span className={cn("qm-checkbox-box grid size-5 place-items-center border shadow-xs transition-[border-color,background-color,color,box-shadow]", selected ? "border-primary bg-primary text-primary-foreground shadow-sm" : "border-input bg-background text-transparent group-hover/selection:border-primary/45")}>
         <Check className="size-3" />
       </span>
     </button>
@@ -69,7 +69,7 @@ export function BoardLayout({ groups, payload, selectedIndex, selectedForCreate,
         return (
           <section
             key={group.key}
-            className={cn("qm-board-lane min-w-[420px] flex-1 shrink-0 rounded-xl border bg-muted/18 p-3 transition-[border-color,background-color]", group.sprint && "is-sprint", isOver && "border-primary/45 bg-primary/[0.035]")}
+            className={cn("qm-board-lane min-w-[420px] flex-1 shrink-0 rounded-[var(--qm-panel-radius)] border bg-muted/18 p-3 transition-[border-color,background-color]", group.sprint && "is-sprint", isOver && "border-primary/45 bg-primary/[0.035]")}
             onDragOver={(event) => { if (draggingIndex !== null) { event.preventDefault(); event.dataTransfer.dropEffect = "move"; setOverLane(group.key) } }}
             onDragLeave={(event) => { if (!event.currentTarget.contains(event.relatedTarget as Node | null)) setOverLane(null) }}
             onDrop={(event) => {
@@ -80,11 +80,11 @@ export function BoardLayout({ groups, payload, selectedIndex, selectedForCreate,
             }}
           >
             <div className="qm-lane-heading mb-2 flex items-center gap-2 px-1">
-              {group.sprint ? <SprintVisual sprint={group.sprint} backlogLabel={t.backlog} compact /> : <span className="inline-flex items-center gap-2 font-semibold"><span className="grid size-7 place-items-center rounded-md bg-background"><Inbox className="size-4" /></span>{t.backlog}</span>}
+              {group.sprint ? <SprintVisual sprint={group.sprint} backlogLabel={t.backlog} compact /> : <span className="inline-flex items-center gap-2 font-semibold"><span className="grid size-7 place-items-center rounded-[var(--qm-control-radius)] bg-background"><Inbox className="size-4" /></span>{t.backlog}</span>}
               <Badge variant="secondary" className="ms-auto">{group.entries.length}</Badge>
             </div>
             <div className="min-h-44 space-y-2">
-              {!group.entries.length ? <div className={cn("qm-empty-lane grid min-h-44 place-items-center rounded-lg border border-dashed bg-background/55 px-3 text-center text-sm text-muted-foreground transition-colors", isOver && "border-primary/40 bg-primary/[0.04] text-primary")}><div>{isOver ? <><CircleDot className="mx-auto mb-3 size-5" /><div className="font-medium">{t.dragHint}</div></> : <><Leaf className="mx-auto mb-3 size-5 opacity-75" /><div className="font-medium text-foreground/70">{t.emptyLane}</div><div className="mt-2 text-xs opacity-80">{t.emptyLaneHint}</div></>}</div></div> : null}
+              {!group.entries.length ? <div className={cn("qm-empty-lane grid min-h-44 place-items-center rounded-[var(--qm-control-radius)] border border-dashed bg-background/55 px-3 text-center text-sm text-muted-foreground transition-colors", isOver && "border-primary/40 bg-primary/[0.04] text-primary")}><div>{isOver ? <><CircleDot className="mx-auto mb-3 size-5" /><div className="font-medium">{t.dragHint}</div></> : <><Leaf className="mx-auto mb-3 size-5 opacity-75" /><div className="font-medium text-foreground/70">{t.emptyLane}</div><div className="mt-2 text-xs opacity-80">{t.emptyLaneHint}</div></>}</div></div> : null}
               {group.entries.map(({ issue, index }) => (
                 <IssueCard
                   key={`${issue.ref ?? issue.summary}-${index}`}
@@ -150,7 +150,7 @@ export function IssueCard({ issue, index, payload, selected, checked, sprints, l
   return (
     <article
       className={cn(
-        "issue-card group relative cursor-pointer rounded-lg border bg-card outline-none transition-[border-color,box-shadow,background-color] duration-150 hover:border-primary/25 focus-visible:ring-[3px] focus-visible:ring-ring/20",
+        "issue-card group relative cursor-pointer rounded-[var(--qm-control-radius)] border bg-card outline-none transition-[border-color,box-shadow,background-color] duration-150 hover:border-primary/25 focus-visible:ring-[3px] focus-visible:ring-ring/20",
         selected && "border-primary bg-primary/[0.025] ring-2 ring-primary/15",
         listMode ? "flex items-center gap-3 p-3" : "p-3",
       )}
@@ -172,19 +172,19 @@ export function IssueCard({ issue, index, payload, selected, checked, sprints, l
         <div className="mb-1.5 flex flex-wrap items-center gap-2 text-[11px] text-muted-foreground">
           {draggable ? <GripVertical className="size-3.5 cursor-grab opacity-55" aria-hidden="true" /> : null}
           <span className="font-medium">{payload?.project ? `${payload.project}-${index + 1}` : `#${index + 1}`}</span>
-          <Badge variant="outline" className={cn("px-1.5 py-0", isEpic && "border-violet-200 bg-violet-50 text-violet-700 dark:border-violet-900 dark:bg-violet-950/40 dark:text-violet-300")}>{issue.type}</Badge>
+          <Badge variant="outline" className={cn("px-1.5 py-0", isEpic && "border-primary/25 bg-primary/8 text-primary")}>{issue.type}</Badge>
           {issue.ref ? <span className="truncate font-mono">{issue.ref}</span> : null}
         </div>
         <div className={cn("font-semibold leading-5", listMode ? "truncate text-sm" : "min-h-5 text-[15px]")}>{issue.summary || "—"}</div>
         <div className="mt-2 flex flex-wrap items-center gap-1.5 text-xs">
-          <span className={cn("inline-flex items-center gap-1 rounded-md px-2 py-1", tone.className, "bg-current/10")}><ToneIcon className="size-3.5" />{effectivePriority ?? "—"}</span>
+          <span className={cn("inline-flex items-center gap-1 rounded-[var(--qm-control-radius)] px-2 py-1", tone.className, "bg-current/10")}><ToneIcon className="size-3.5" />{effectivePriority ?? "—"}</span>
           {!isEpic ? (
-            sprint ? <span className="inline-flex items-center gap-1 rounded-md bg-emerald-50 px-2 py-1 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-300"><CircleDot className="size-3" />{sprint.name}</span>
-              : <span className="inline-flex items-center gap-1 rounded-md bg-muted px-2 py-1 text-muted-foreground"><Inbox className="size-3" />{t.backlog}</span>
+            sprint ? <span className="inline-flex items-center gap-1 rounded-[var(--qm-control-radius)] bg-success/10 px-2 py-1 text-success"><CircleDot className="size-3" />{sprint.name}</span>
+              : <span className="inline-flex items-center gap-1 rounded-[var(--qm-control-radius)] bg-muted px-2 py-1 text-muted-foreground"><Inbox className="size-3" />{t.backlog}</span>
           ) : null}
-          {issue.assignee ? <span className="inline-flex items-center gap-1 rounded-md bg-muted px-2 py-1 text-muted-foreground"><UserRound className="size-3" />{issue.assignee}</span> : null}
-          {!isEpic && effectiveEstimate ? <span className="inline-flex items-center gap-1 rounded-md border bg-background/70 px-2 py-1 font-mono text-muted-foreground"><Clock3 className="size-3" />{effectiveEstimate}</span> : null}
-          {worklogLabel ? <span className="inline-flex items-center gap-1 rounded-md border border-cyan-200 bg-cyan-50 px-2 py-1 font-mono text-cyan-700 dark:border-cyan-900 dark:bg-cyan-950/35 dark:text-cyan-300"><TimerReset className="size-3" />{worklogLabel}</span> : null}
+          {issue.assignee ? <span className="inline-flex items-center gap-1 rounded-[var(--qm-control-radius)] bg-muted px-2 py-1 text-muted-foreground"><UserRound className="size-3" />{issue.assignee}</span> : null}
+          {!isEpic && effectiveEstimate ? <span className="inline-flex items-center gap-1 rounded-[var(--qm-control-radius)] border bg-background/70 px-2 py-1 font-mono text-muted-foreground"><Clock3 className="size-3" />{effectiveEstimate}</span> : null}
+          {worklogLabel ? <span className="inline-flex items-center gap-1 rounded-[var(--qm-control-radius)] border border-primary/25 bg-primary/8 px-2 py-1 font-mono text-primary"><TimerReset className="size-3" />{worklogLabel}</span> : null}
         </div>
         {issue.labels?.length ? (
           <div className="mt-2 flex min-w-0 flex-wrap gap-1">
@@ -195,7 +195,7 @@ export function IssueCard({ issue, index, payload, selected, checked, sprints, l
       </div>
 
       {!listMode ? (
-        <div className="issue-card-actions absolute bottom-2 end-2 flex items-center gap-0.5 rounded-md border bg-card/95 p-0.5 opacity-0 shadow-sm backdrop-blur transition-opacity group-hover:opacity-100 group-focus-within:opacity-100">
+        <div className="issue-card-actions absolute bottom-2 end-2 flex items-center gap-0.5 rounded-[var(--qm-control-radius)] border bg-card/95 p-0.5 opacity-0 shadow-sm backdrop-blur transition-opacity group-hover:opacity-100 group-focus-within:opacity-100">
           <Button variant="ghost" size="icon-sm" onClick={(event: MouseEvent<HTMLButtonElement>) => { event.stopPropagation(); onEdit() }} aria-label={t.issueDetails}><Pencil className="size-3.5" /></Button>
           <Button variant="ghost" size="icon-sm" onClick={(event: MouseEvent<HTMLButtonElement>) => { event.stopPropagation(); onDuplicate() }} aria-label={t.duplicate}><Copy className="size-3.5" /></Button>
           <Button variant="ghost" size="icon-sm" className="text-destructive hover:text-destructive" onClick={(event: MouseEvent<HTMLButtonElement>) => { event.stopPropagation(); onDelete() }} aria-label={t.delete}><Trash2 className="size-3.5" /></Button>

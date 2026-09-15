@@ -11,6 +11,7 @@ import { WorkspaceSidebar } from "@/features/app-shell/WorkspaceSidebar"
 import { EMPTY_VALIDATION } from "@/features/bulk/bulk-utils"
 import { looksLikeJiraCandidate } from "@/features/connection/jira-candidate"
 import { BulkImportScreen } from "@/features/import/BulkImportScreen"
+import { CustomizationScreen } from "@/features/customization/CustomizationScreen"
 import { ManageJiraScreen } from "@/features/jira-manager/ManageJiraScreen"
 import { QuickIssueScreen } from "@/features/quick-issue/QuickIssueScreen"
 import { ReviewActionBar } from "@/features/review/ReviewFooter"
@@ -33,7 +34,7 @@ export function AppMainShell({ state: s, derived: d, actions: a }: Props) {
       <div className="qm-shell">
         <WorkspaceSidebar
           mode={s.mode} setMode={(mode) => { if (mode === "worklog") s.setWorklogSelectedKeys(new Set()); s.setMode(mode) }} t={t} locale={s.locale}
-          onSettings={() => s.setSettingsOpen(true)} onProjects={() => s.setBatchSettingsOpen(true)}
+          onSettings={() => s.setMode("customize")} onProjects={() => s.setBatchSettingsOpen(true)}
           onHelp={() => toast.info(t.appName, { description: t.appTagline })}
         />
         <div className="qm-workspace">
@@ -43,7 +44,7 @@ export function AppMainShell({ state: s, derived: d, actions: a }: Props) {
             onTheme={() => s.setTheme(s.theme === "dark" ? "light" : "dark")}
             onReconnect={() => s.connectionStatus?.configured ? void a.connection.connect(true) : s.setOnboardingOpen(true)}
             onConnection={() => s.metadata ? s.setConnectionSheetOpen(true) : s.setOnboardingOpen(true)}
-            onSettings={() => s.setSettingsOpen(true)} onCommands={() => s.setCommandOpen(true)}
+            onSettings={() => s.setMode("customize")} onCommands={() => s.setCommandOpen(true)}
           />
 
           {s.connectionError ? (
@@ -56,10 +57,10 @@ export function AppMainShell({ state: s, derived: d, actions: a }: Props) {
           ) : null}
 
           {s.contextMismatch ? (
-            <div className="border-b border-amber-300/60 bg-amber-50/85 px-4 py-3 text-amber-950 dark:border-amber-800/70 dark:bg-amber-950/25 dark:text-amber-100">
+            <div className="border-b border-warning/30 bg-warning/8 px-4 py-3 text-foreground">
               <div className="app-container flex flex-col gap-3 sm:flex-row sm:items-center">
                 <div className="flex min-w-0 flex-1 items-start gap-3">
-                  <div className="mt-0.5 grid size-8 shrink-0 place-items-center rounded-lg bg-amber-100 text-amber-700 dark:bg-amber-900/50 dark:text-amber-300"><ArrowLeftRight className="size-4" /></div>
+                  <div className="mt-0.5 grid size-8 shrink-0 place-items-center rounded-[var(--qm-control-radius)] bg-warning/12 text-warning"><ArrowLeftRight className="size-4" /></div>
                   <div className="min-w-0"><div className="text-sm font-semibold">{t.contextMismatchTitle}</div><div className="mt-0.5 text-xs opacity-80">{t.contextMismatchDescription} <span className="font-mono" dir="ltr">{payload?.project || "—"} → {s.contextMismatch.projectKey}</span></div></div>
                 </div>
                 <div className="flex flex-wrap gap-2">
@@ -73,7 +74,7 @@ export function AppMainShell({ state: s, derived: d, actions: a }: Props) {
             <div className="border-b bg-primary/[0.035] px-4 py-3">
               <div className="app-container flex flex-col gap-3 sm:flex-row sm:items-center">
                 <div className="flex min-w-0 flex-1 items-start gap-3">
-                  <div className="mt-0.5 grid size-8 shrink-0 place-items-center rounded-lg bg-primary/10 text-primary"><Layers3 className="size-4" /></div>
+                  <div className="mt-0.5 grid size-8 shrink-0 place-items-center rounded-[var(--qm-control-radius)] bg-primary/10 text-primary"><Layers3 className="size-4" /></div>
                   <div className="min-w-0"><div className="text-sm font-semibold">{t.skippedOnboardingTitle}</div><div className="mt-0.5 text-xs text-muted-foreground">{t.skippedOnboardingDescription}</div></div>
                 </div>
                 <div className="flex flex-wrap gap-2">
@@ -84,7 +85,7 @@ export function AppMainShell({ state: s, derived: d, actions: a }: Props) {
             </div>
           ) : null}
 
-          <main className={cn("qm-page app-container", s.mode === "review" && "qm-page-review", s.mode === "worklog" && "qm-page-worklog")}>
+          <main className={cn("qm-page app-container", s.mode === "review" && "qm-page-review", s.mode === "worklog" && "qm-page-worklog", s.mode === "customize" && "qm-page-customize")}>
             {s.mode === "dashboard" ? (
               <WorkspaceDashboard
                 t={t} locale={s.locale} project={s.project} projects={s.metadata?.projects ?? []} selectedProjectKey={payload?.project}
@@ -136,6 +137,15 @@ export function AppMainShell({ state: s, derived: d, actions: a }: Props) {
                   onProjectChange={(key) => void a.project.chooseProject(key)} onBoardChange={(id) => void a.project.chooseBoard(id)} recordActivity={a.live.recordActivity}
                 />
               </Suspense>
+            ) : s.mode === "customize" ? (
+              <CustomizationScreen
+                locale={s.locale} theme={s.theme} setTheme={s.setTheme} accentColor={s.accentColor} setAccentColor={s.setAccentColor}
+                neutralTone={s.neutralTone} setNeutralTone={s.setNeutralTone} density={s.density} setDensity={s.setDensity} radius={s.radius} setRadius={s.setRadius}
+                bodyFont={s.bodyFont} setBodyFont={s.setBodyFont} headingFont={s.headingFont} setHeadingFont={s.setHeadingFont}
+                sidebarStyle={s.sidebarStyle} setSidebarStyle={s.setSidebarStyle} sidebarAccent={s.sidebarAccent} setSidebarAccent={s.setSidebarAccent}
+                surfaceStyle={s.surfaceStyle} setSurfaceStyle={s.setSurfaceStyle} reviewLayout={s.reviewLayout} setReviewLayout={s.setReviewLayout}
+                gridColumns={s.gridColumns} setGridColumns={s.setGridColumns} onAdvanced={() => s.setSettingsOpen(true)}
+              />
             ) : s.mode === "automation" ? (
               <AutomationScreen
                 locale={s.locale} projectKey={payload?.project} boardId={s.selectedBoardId} issues={s.liveIssues} priorities={s.metadata?.priorities ?? []}

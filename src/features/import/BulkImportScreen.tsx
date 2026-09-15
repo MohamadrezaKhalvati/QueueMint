@@ -77,11 +77,11 @@ export function BulkImportScreen({
 
 function StartCard({ icon: Icon, title, description, action, secondaryAction }: { icon: typeof Upload; title: string; description: string; action: () => void; secondaryAction?: () => void }) {
   return (
-    <div className="qm-start-card group flex min-h-24 items-stretch rounded-xl border bg-card transition hover:border-primary/30 hover:bg-primary/[0.025]">
+    <div className="qm-start-card group flex min-h-24 items-stretch rounded-[var(--qm-panel-radius)] border bg-card transition hover:border-primary/30 hover:bg-primary/[0.025]">
       <Button
         variant="ghost"
         onClick={action}
-        className="h-auto min-w-0 flex-1 justify-start whitespace-normal rounded-xl p-4 text-start hover:bg-transparent"
+        className="h-auto min-w-0 flex-1 justify-start whitespace-normal rounded-[var(--qm-panel-radius)] p-4 text-start hover:bg-transparent"
       >
         <span className="qm-start-card-icon transition-transform group-hover:scale-105"><Icon className="size-[18px]" /></span>
         <span className="min-w-0 flex-1"><span className="block text-sm font-semibold">{title}</span><span className="mt-1 block text-xs text-muted-foreground">{description}</span></span>

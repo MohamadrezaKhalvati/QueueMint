@@ -101,7 +101,7 @@ export function AppOverlays({ state: s, derived: d, actions: a }: Props) {
         <AlertDialogContent>
           <AlertDialogHeader><AlertDialogTitle>{t.confirmDeleteTitle}</AlertDialogTitle><AlertDialogDescription>{t.confirmDeleteDescription}</AlertDialogDescription></AlertDialogHeader>
           <div className="mt-4 space-y-2">
-            <div className="rounded-lg border border-destructive/20 bg-destructive/5 p-3 text-sm text-destructive"><ShieldAlert className="me-2 inline size-4" />{s.liveSelectedKeys.size} {t.selectedIssues}</div>
+            <div className="rounded-[var(--qm-control-radius)] border border-destructive/20 bg-destructive/5 p-3 text-sm text-destructive"><ShieldAlert className="me-2 inline size-4" />{s.liveSelectedKeys.size} {t.selectedIssues}</div>
             <Input value={s.deleteConfirmText} onChange={(event: ChangeEvent<HTMLInputElement>) => s.setDeleteConfirmText(event.target.value)} placeholder={t.typeDelete} autoComplete="off" />
           </div>
           <AlertDialogFooter><AlertDialogCancel>{t.cancel}</AlertDialogCancel><AlertDialogAction disabled={s.deleteConfirmText !== "DELETE"} onClick={() => void a.bulk.deleteLiveSelection()}>{t.deleteNow}</AlertDialogAction></AlertDialogFooter>
@@ -111,7 +111,7 @@ export function AppOverlays({ state: s, derived: d, actions: a }: Props) {
       <AlertDialog open={s.createDialogOpen} onOpenChange={s.setCreateDialogOpen}>
         <AlertDialogContent>
           <AlertDialogHeader><AlertDialogTitle>{t.confirmCreateTitle}</AlertDialogTitle><AlertDialogDescription>{t.confirmCreateDescription}</AlertDialogDescription></AlertDialogHeader>
-          <div className="mt-4 grid grid-cols-2 gap-2 rounded-xl bg-muted/45 p-3 text-sm">
+          <div className="mt-4 grid grid-cols-2 gap-2 rounded-[var(--qm-panel-radius)] bg-muted/45 p-3 text-sm">
             <div><span className="text-muted-foreground">{t.project}</span><div className="mt-1 font-medium">{payload?.project ?? "—"}</div></div>
             <div><span className="text-muted-foreground">{t.selected}</span><div className="mt-1 font-medium">{d.creationCount}</div></div>
             <div className="col-span-2"><span className="text-muted-foreground">{t.placement}</span><div className="mt-1 font-medium">{d.contextPlacement}</div></div>

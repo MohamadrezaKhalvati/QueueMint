@@ -22,7 +22,7 @@ export function ManagePowerTools({ locale, issues, selectedKeys, currentUserIden
   ]
 
   return (
-    <section className="mb-4 rounded-xl border bg-card p-3 shadow-none">
+    <section className="mb-4 rounded-[var(--qm-panel-radius)] border bg-card p-3 shadow-none">
       <div className="mb-3 flex flex-wrap items-start gap-3">
         <div className="min-w-0 flex-1">
           <div className="flex items-center gap-2"><WandSparkles className="size-4 text-primary" /><span className="text-sm font-semibold">{isFa ? "Jira Power Tools" : "Jira Power Tools"}</span></div>
@@ -35,8 +35,8 @@ export function ManagePowerTools({ locale, issues, selectedKeys, currentUserIden
           const matches = powerToolCandidates(kind, baseIssues)
           const disabled = !matches.length || Boolean(needsUser && !currentUserIdentity)
           return (
-            <div key={kind} className={cn("rounded-xl border bg-background p-3", disabled && "opacity-65")}> 
-              <div className="flex items-start gap-2.5"><span className="grid size-8 shrink-0 place-items-center rounded-lg bg-primary/10 text-primary"><Icon className="size-4" /></span><div className="min-w-0 flex-1"><div className="flex items-center justify-between gap-2"><div className="text-sm font-medium">{title}</div><Badge variant="secondary">{matches.length}</Badge></div><div className="mt-1 text-xs leading-5 text-muted-foreground">{hint}</div></div></div>
+            <div key={kind} className={cn("rounded-[var(--qm-panel-radius)] border bg-background p-3", disabled && "opacity-65")}>
+              <div className="flex items-start gap-2.5"><span className="grid size-8 shrink-0 place-items-center rounded-[var(--qm-control-radius)] bg-primary/10 text-primary"><Icon className="size-4" /></span><div className="min-w-0 flex-1"><div className="flex items-center justify-between gap-2"><div className="text-sm font-medium">{title}</div><Badge variant="secondary">{matches.length}</Badge></div><div className="mt-1 text-xs leading-5 text-muted-foreground">{hint}</div></div></div>
               <Button variant="outline" size="sm" className="mt-3 w-full" disabled={disabled} onClick={() => onPrepare({ kind, keys: matches.map((issue) => issue.key) })}>{isFa ? "آماده برای بررسی" : "Prepare review"}</Button>
             </div>
           )

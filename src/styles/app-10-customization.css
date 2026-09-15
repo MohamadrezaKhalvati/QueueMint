@@ -12,6 +12,8 @@
   --qm-density-card-pad: 12px;
   --qm-density-row-y: 10px;
   --qm-density-gap: 10px;
+  --qm-panel-radius: 11px;
+  --qm-control-radius: 8px;
 }
 
 html[data-density="compact"] {

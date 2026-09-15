@@ -1,6 +1,6 @@
 # QueueMint Privacy Policy
 
-Last updated: 14 September 2026
+Last updated: 15 September 2026
 
 QueueMint is a browser extension that helps users work faster with Jira. It connects to Jira through the Jira session already open in the user's browser. QueueMint does not require the user to store a Jira password or Jira API token in the extension.
 
@@ -58,6 +58,14 @@ Worklog AI output is only a proposed allocation. QueueMint does not silently sub
 
 When OpenAI is used, the selected data is transmitted to OpenAI and is subject to the user's OpenAI account and applicable OpenAI terms and policies.
 
+## Appearance fonts
+
+Appearance Studio offers optional font families beyond the fonts installed on the user's operating system. QueueMint loads a selected web font only when it is needed for the active appearance or its live preview. The supported shadcn/create families, Vazirmatn, Noto Naskh Arabic, and Lalezar are requested from Google Fonts. Samim, Shabnam, Sahel, and Mikhak are requested from commit-pinned jsDelivr/GitHub font resources.
+
+These font requests contain no Jira issue content, screenshots, diagnostics, OpenAI key, or QueueMint workflow data. As with any normal web request, the font provider can receive standard network metadata such as the user's IP address and browser request headers. If a font cannot be loaded, QueueMint falls back to local/system fonts and the rest of the extension continues to work.
+
+QueueMint does not load remote JavaScript for fonts. The extension Content Security Policy keeps `script-src` self-hosted and permits only the stylesheet/font hosts required for this optional typography feature.
+
 ## Local storage and retention
 
 QueueMint uses browser-local extension storage and IndexedDB for product state and durable Capture sessions. This data stays on the user's browser profile unless the user exports a portable QueueMint backup.
@@ -72,10 +80,11 @@ Portable backups intentionally exclude Smart Assistant API keys, activity histor
 
 QueueMint does not sell user data. QueueMint does not include advertising or third-party analytics in the current release.
 
-Data is shared externally only when required by a user-initiated workflow, for example:
+Data is shared externally only when required by a user-initiated workflow or an explicitly selected appearance resource, for example:
 
 - with the Jira instance the user connected;
-- with OpenAI when the user explicitly enables Smart Assistant or Worklog AI and starts a request.
+- with OpenAI when the user explicitly enables Smart Assistant or Worklog AI and starts a request;
+- with Google Fonts or jsDelivr when a non-system Appearance Studio font needs to be loaded.
 
 ## Browser permissions
 
@@ -94,6 +103,7 @@ Users can:
 - choose the data categories included in each AI request;
 - review the disclosed Worklog AI data set and avoid using Worklog AI by choosing the local equal/estimate preparation methods instead;
 - edit or clear every prepared worklog before confirming a Jira write;
+- choose system fonts to avoid optional third-party web-font requests;
 - export/import only the supported portable preference/workflow backup;
 - remove QueueMint and its local extension storage through the browser.
 

@@ -5,7 +5,7 @@
   min-width: 0;
   padding: 10px;
   border: 1px solid color-mix(in oklab, var(--border) 88%, transparent);
-  border-radius: 12px;
+  border-radius: var(--qm-panel-radius);
   background: color-mix(in oklab, var(--card) 94%, var(--background));
   transition: border-color 160ms ease, background-color 160ms ease, box-shadow 160ms ease;
 }
@@ -16,10 +16,10 @@
   box-shadow: 0 0 0 2px color-mix(in oklab, var(--qm-field-accent) 12%, transparent);
 }
 
-.qm-popup-field-shell.is-context { --qm-field-accent: #3b82f6; }
-.qm-popup-field-shell.is-planning { --qm-field-accent: #8b5cf6; }
-.qm-popup-field-shell.is-people { --qm-field-accent: #14b8a6; }
-.qm-popup-field-shell.is-details { --qm-field-accent: #f59e0b; }
+.qm-popup-field-shell.is-context { --qm-field-accent: var(--primary); }
+.qm-popup-field-shell.is-planning { --qm-field-accent: color-mix(in oklab, var(--primary) 76%, var(--foreground) 24%); }
+.qm-popup-field-shell.is-people { --qm-field-accent: color-mix(in oklab, var(--primary) 76%, var(--success) 24%); }
+.qm-popup-field-shell.is-details { --qm-field-accent: color-mix(in oklab, var(--primary) 76%, var(--warning) 24%); }
 
 .qm-popup-field-heading {
   display: flex;
@@ -34,7 +34,7 @@
   height: 26px;
   flex: 0 0 26px;
   place-items: center;
-  border-radius: 8px;
+  border-radius: var(--qm-control-radius);
   color: var(--qm-field-accent);
   background: color-mix(in oklab, var(--qm-field-accent) 11%, var(--card));
   border: 1px solid color-mix(in oklab, var(--qm-field-accent) 18%, var(--border));
@@ -74,7 +74,7 @@
 .qm-popup-field-section {
   overflow: hidden;
   border: 1px solid color-mix(in oklab, var(--border) 92%, transparent);
-  border-radius: 14px;
+  border-radius: var(--qm-panel-radius);
   background: color-mix(in oklab, var(--card) 76%, transparent);
 }
 

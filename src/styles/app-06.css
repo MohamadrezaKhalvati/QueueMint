@@ -21,7 +21,7 @@
 .qm-context-icon {
   width: 36px;
   height: 36px;
-  border-radius: 8px;
+  border-radius: var(--qm-control-radius);
 }
 
 .qm-context-count {
@@ -75,7 +75,7 @@
 .qm-selection-check {
   width: 22px !important;
   height: 22px !important;
-  border-radius: 5px !important;
+  border-radius: min(var(--qm-control-radius), 5px) !important;
 }
 
 .review-sticky-actions {
@@ -98,7 +98,7 @@
   width: auto;
   min-width: 420px;
   border-color: var(--border) !important;
-  border-radius: 10px !important;
+  border-radius: var(--qm-panel-radius) !important;
   background: var(--qm-surface-subtle) !important;
   padding: 12px !important;
 }
@@ -122,7 +122,7 @@
 
 .issue-card {
   position: relative;
-  border-radius: 9px !important;
+  border-radius: var(--qm-panel-radius) !important;
   border-color: var(--border) !important;
   background: var(--card) !important;
   box-shadow: 0 1px 1px rgb(15 23 42 / 0.025) !important;
@@ -136,7 +136,7 @@
   display: flex;
   gap: 2px;
   border: 1px solid var(--border);
-  border-radius: 8px;
+  border-radius: var(--qm-control-radius);
   background: color-mix(in oklab, var(--card) 94%, transparent);
   padding: 2px;
   opacity: 0;
@@ -159,7 +159,7 @@
   align-items: center;
   gap: 4px;
   border: 1px solid var(--border);
-  border-radius: 10px;
+  border-radius: var(--qm-control-radius);
   background: color-mix(in oklab, var(--muted) 72%, var(--background));
   padding: 3px;
 }
@@ -169,7 +169,7 @@
   min-width: 124px;
   gap: 9px;
   border: 1px solid transparent;
-  border-radius: 7px;
+  border-radius: var(--qm-control-radius);
   color: var(--muted-foreground);
   padding-inline: 12px;
 }

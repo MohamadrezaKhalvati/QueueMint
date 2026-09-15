@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react"
 
+import { ensureAppearanceFonts } from "@/features/customization/font-loader"
 import { loadState, saveState } from "@/lib/storage"
-import type { AppLocale, AppTheme, DensityMode, RadiusMode } from "@/types"
+import type { AppLocale, AppTheme, BodyFontMode, DensityMode, HeadingFontMode, NeutralTone, RadiusMode, SidebarAccentMode, SidebarStyle, SurfaceStyle } from "@/types"
 
 function foregroundForHex(hex: string) {
   const match = /^#([0-9a-f]{6})$/i.exec(hex)
@@ -33,9 +34,15 @@ async function persistAppearance(patch: { locale?: AppLocale; theme?: AppTheme }
 export function usePopupAppearance() {
   const [locale, setLocaleState] = useState<AppLocale>("en")
   const [theme, setThemeState] = useState<AppTheme>("system")
-  const [accentColor, setAccentColor] = useState("#087b61")
+  const [accentColor, setAccentColor] = useState("#0f766e")
   const [density, setDensity] = useState<DensityMode>("comfortable")
   const [radius, setRadius] = useState<RadiusMode>("medium")
+  const [neutralTone, setNeutralTone] = useState<NeutralTone>("mist")
+  const [bodyFont, setBodyFont] = useState<BodyFontMode>("system")
+  const [headingFont, setHeadingFont] = useState<HeadingFontMode>("system")
+  const [sidebarStyle, setSidebarStyle] = useState<SidebarStyle>("soft")
+  const [sidebarAccent, setSidebarAccent] = useState<SidebarAccentMode>("subtle")
+  const [surfaceStyle, setSurfaceStyle] = useState<SurfaceStyle>("bordered")
   const [isDark, setIsDark] = useState(false)
 
   useEffect(() => {
@@ -45,6 +52,12 @@ export function usePopupAppearance() {
       if (state.accentColor) setAccentColor(state.accentColor)
       if (state.density) setDensity(state.density)
       if (state.radius) setRadius(state.radius)
+      if (state.neutralTone) setNeutralTone(state.neutralTone)
+      if (state.bodyFont) setBodyFont(state.bodyFont)
+      if (state.headingFont) setHeadingFont(state.headingFont)
+      if (state.sidebarStyle) setSidebarStyle(state.sidebarStyle)
+      if (state.sidebarAccent) setSidebarAccent(state.sidebarAccent)
+      if (state.surfaceStyle) setSurfaceStyle(state.surfaceStyle)
     })
   }, [])
 
@@ -69,7 +82,14 @@ export function usePopupAppearance() {
     document.documentElement.dir = locale === "fa" ? "rtl" : "ltr"
     document.documentElement.dataset.density = density
     document.documentElement.dataset.radius = radius
-  }, [locale, density, radius])
+    document.documentElement.dataset.tone = neutralTone
+    document.documentElement.dataset.bodyFont = bodyFont
+    document.documentElement.dataset.headingFont = headingFont
+    document.documentElement.dataset.sidebarStyle = sidebarStyle
+    document.documentElement.dataset.sidebarAccent = sidebarAccent
+    document.documentElement.dataset.surface = surfaceStyle
+    ensureAppearanceFonts(locale, bodyFont, headingFont)
+  }, [locale, density, radius, neutralTone, bodyFont, headingFont, sidebarStyle, sidebarAccent, surfaceStyle])
 
   function setLocale(next: AppLocale) {
     setLocaleState(next)

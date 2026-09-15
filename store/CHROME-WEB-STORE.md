@@ -20,6 +20,8 @@ For day-to-day Jira work, QueueMint adds Quick Issue creation, safe Bulk Edit pr
 
 Smart Assistant is optional and disabled by default. Local Smart Draft works without an external AI service. Users who enable OpenAI provide their own API key and choose the data categories included in each request.
 
+Appearance Studio can optionally load a user-selected typeface from Google Fonts or commit-pinned jsDelivr font resources. Font requests contain no Jira or QueueMint workflow content, and remote scripts remain blocked by the extension CSP.
+
 ## Permission justifications
 
 ### storage
@@ -44,7 +46,7 @@ QueueMint must support Jira Cloud and user-selected self-hosted Jira origins tha
 
 ## Data-use disclosure draft
 
-QueueMint can process website content, Jira issue/project data, screenshots/recordings, and optional diagnostics when the user invokes the corresponding workflow. Most state is stored locally. Data is sent to Jira when the user performs a Jira operation. Selected data is sent to OpenAI only when Smart Assistant is enabled and the user starts a request.
+QueueMint can process website content, Jira issue/project data, screenshots/recordings, and optional diagnostics when the user invokes the corresponding workflow. Most state is stored locally. Data is sent to Jira when the user performs a Jira operation. Selected data is sent to OpenAI only when Smart Assistant is enabled and the user starts a request. If the user selects a web font in Appearance Studio, the browser may request that font from Google Fonts or a commit-pinned jsDelivr resource; Jira/workflow content is not included in that request.
 
 QueueMint does not sell user data and does not include advertising or third-party analytics in v1.0.
 

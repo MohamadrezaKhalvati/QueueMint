@@ -6,9 +6,9 @@ import type { ActivityEntry, AutomationRule, SavedIssueView, SavedWorkspaceActio
 import type { ManageCommandPreset } from "@/features/jira-manager/manage-types"
 import { EMPTY_JSON } from "@/sample"
 import type {
-  AppLocale, AppTheme, BulkIssue, CreateRunResult, DensityMode, JiraBoard, JiraConnectionStatus,
-  JiraEditableField, JiraEpic, JiraIssueDetails, JiraIssueSearchResult, JiraLiveIssue, JiraMetadata,
-  JiraProject, JiraSprint, JiraTabContext, JiraUser, RadiusMode, ReviewLayout, ValidationResult,
+  AppLocale, AppTheme, BodyFontMode, BulkIssue, CreateRunResult, DensityMode, HeadingFontMode, JiraBoard, JiraConnectionStatus,
+  JiraEditableField, JiraEpic, JiraIssueDetails, JiraIssueSearchResult, JiraLiveIssue, JiraMetadata, NeutralTone,
+  JiraProject, JiraSprint, JiraTabContext, JiraUser, RadiusMode, ReviewLayout, SidebarAccentMode, SidebarStyle, SurfaceStyle, ValidationResult,
 } from "@/types"
 
 export function useAppState() {
@@ -52,6 +52,12 @@ export function useAppState() {
   const [gridColumns, setGridColumns] = useState<2 | 3 | 4>(3)
   const [density, setDensity] = useState<DensityMode>("comfortable")
   const [radius, setRadius] = useState<RadiusMode>("medium")
+  const [neutralTone, setNeutralTone] = useState<NeutralTone>("mist")
+  const [bodyFont, setBodyFont] = useState<BodyFontMode>("system")
+  const [headingFont, setHeadingFont] = useState<HeadingFontMode>("system")
+  const [sidebarStyle, setSidebarStyle] = useState<SidebarStyle>("soft")
+  const [sidebarAccent, setSidebarAccent] = useState<SidebarAccentMode>("subtle")
+  const [surfaceStyle, setSurfaceStyle] = useState<SurfaceStyle>("bordered")
   const [settingsOpen, setSettingsOpen] = useState(false)
   const [batchSettingsOpen, setBatchSettingsOpen] = useState(false)
   const [jsonSheetOpen, setJsonSheetOpen] = useState(false)
@@ -122,7 +128,8 @@ export function useAppState() {
     loadingProject, setLoadingProject, validating, setValidating, creating, setCreating, createDialogOpen, setCreateDialogOpen, progress, setProgress,
     runResult, setRunResult, selectedIndex, setSelectedIndex, selectedForCreate, setSelectedForCreate, search, setSearch, typeFilter, setTypeFilter,
     placementFilter, setPlacementFilter, mode, setMode, locale, setLocale, theme, setTheme, accentColor, setAccentColor, reviewLayout, setReviewLayout,
-    gridColumns, setGridColumns, density, setDensity, radius, setRadius, settingsOpen, setSettingsOpen, batchSettingsOpen, setBatchSettingsOpen, jsonSheetOpen, setJsonSheetOpen,
+    gridColumns, setGridColumns, density, setDensity, radius, setRadius, neutralTone, setNeutralTone, bodyFont, setBodyFont, headingFont, setHeadingFont,
+    sidebarStyle, setSidebarStyle, sidebarAccent, setSidebarAccent, surfaceStyle, setSurfaceStyle, settingsOpen, setSettingsOpen, batchSettingsOpen, setBatchSettingsOpen, jsonSheetOpen, setJsonSheetOpen,
     inspectorOpen, setInspectorOpen, autoSprintNote, setAutoSprintNote, copiedAiPrompt, setCopiedAiPrompt, attachmentsByIndex, setAttachmentsByIndex,
     quickIssue, setQuickIssue, quickPlacement, setQuickPlacement, quickSprintId, setQuickSprintId, quickAttachments, setQuickAttachments, quickCreating, setQuickCreating,
     quickResult, setQuickResult, liveIssues, setLiveIssues, liveSelectedKeys, setLiveSelectedKeys, worklogSelectedKeys, setWorklogSelectedKeys, lastCreatedKeys, setLastCreatedKeys, liveScope, setLiveScope,

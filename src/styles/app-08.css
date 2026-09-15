@@ -12,7 +12,7 @@
   min-width: 34px;
   min-height: 28px;
   border: 1px solid var(--qm-primary-border);
-  border-radius: 8px;
+  border-radius: var(--qm-control-radius);
   background: var(--qm-primary-soft-strong);
   color: var(--primary);
   box-shadow: none;
@@ -35,7 +35,7 @@
   height: auto !important;
   width: 100% !important;
   border-style: dashed !important;
-  border-radius: 9px !important;
+  border-radius: var(--qm-control-radius) !important;
   background: var(--qm-surface-subtle) !important;
   padding: 9px 12px !important;
 }
@@ -89,7 +89,7 @@
 .qm-view-toggle {
   width: 42px !important;
   height: 42px !important;
-  border-radius: 8px !important;
+  border-radius: var(--qm-control-radius) !important;
 }
 
 .qm-filter-row .inline-flex [data-slot="button"][data-variant="secondary"] {

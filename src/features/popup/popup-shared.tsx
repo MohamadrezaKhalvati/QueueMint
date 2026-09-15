@@ -4,7 +4,7 @@ import { getJiraAvatarDataUrl } from "@/lib/jira"
 import type { JiraUser } from "@/types"
 
 export function PopupLogo() {
-  return <img src="/brand/queuemint-mark.png" alt="QueueMint" className="size-8 rounded-lg" />
+  return <img src="/brand/queuemint-mark.png" alt="QueueMint" className="size-8 rounded-[var(--qm-control-radius)]" />
 }
 
 export function openFullWorkspace() {

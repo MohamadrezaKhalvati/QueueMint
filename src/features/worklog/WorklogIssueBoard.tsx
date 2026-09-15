@@ -42,8 +42,8 @@ export function WorklogIssueBoard({ locale, issues, columns, columnsSource, colu
             const laneIssues = column.id === "other" ? unmatched : issuesForColumn(column, issues)
             const tone = laneTone(column.name)
             return <section key={column.id} className="qm-worklog-lane">
-              <div className={cn("qm-worklog-lane-head", `is-${tone}`)}><span className="qm-worklog-lane-dot" /><span className="min-w-0 flex-1 truncate text-xs font-semibold">{column.name}</span><span className="rounded-md bg-background/70 px-1.5 py-0.5 text-[10px] font-semibold tabular-nums">{laneIssues.length}</span></div>
-              <div className="qm-worklog-lane-body">{laneIssues.length ? laneIssues.map((issue) => <WorklogIssueMiniCard key={issue.key} compact locale={locale} issue={issue} selected={selectedKeys.has(issue.key)} loggedMinutes={loggedMinutesByIssue[issue.key] ?? 0} onToggle={() => onToggle(issue.key)} />) : <div className="grid min-h-28 place-items-center rounded-lg border border-dashed bg-background/55 px-4 text-center text-[11px] text-muted-foreground">{isFa ? "تسکی در این ستون نیست" : "No issues in this column"}</div>}</div>
+              <div className={cn("qm-worklog-lane-head", `is-${tone}`)}><span className="qm-worklog-lane-dot" /><span className="min-w-0 flex-1 truncate text-xs font-semibold">{column.name}</span><span className="rounded-[var(--qm-control-radius)] bg-background/70 px-1.5 py-0.5 text-[10px] font-semibold tabular-nums">{laneIssues.length}</span></div>
+              <div className="qm-worklog-lane-body">{laneIssues.length ? laneIssues.map((issue) => <WorklogIssueMiniCard key={issue.key} compact locale={locale} issue={issue} selected={selectedKeys.has(issue.key)} loggedMinutes={loggedMinutesByIssue[issue.key] ?? 0} onToggle={() => onToggle(issue.key)} />) : <div className="grid min-h-28 place-items-center rounded-[var(--qm-control-radius)] border border-dashed bg-background/55 px-4 text-center text-[11px] text-muted-foreground">{isFa ? "تسکی در این ستون نیست" : "No issues in this column"}</div>}</div>
             </section>
           })}
         </div>

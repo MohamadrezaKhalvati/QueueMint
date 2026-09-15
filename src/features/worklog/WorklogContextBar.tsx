@@ -31,7 +31,7 @@ export function WorklogContextBar({ locale, projects, projectKey, boards, boardI
     <section className="qm-worklog-scope">
       <div className="qm-worklog-scope-field is-summary">
         <span className="qm-worklog-scope-label">{isFa ? "محدوده" : "Scope"}</span>
-        <div className="qm-worklog-scope-summary"><span className="grid size-7 place-items-center rounded-md bg-violet-100 text-violet-700 dark:bg-violet-950/50 dark:text-violet-300"><Route className="size-3.5" /></span><span className="truncate text-xs font-semibold">{scopeLabel}</span></div>
+        <div className="qm-worklog-scope-summary"><span className="grid size-7 place-items-center rounded-[var(--qm-control-radius)] bg-primary/10 text-primary"><Route className="size-3.5" /></span><span className="truncate text-xs font-semibold">{scopeLabel}</span></div>
       </div>
       <label className="qm-worklog-scope-field"><span className="qm-worklog-scope-label"><Layers3 className="size-3.5" />{isFa ? "پروژه" : "Project"}</span><ProjectCombobox projects={projects} value={projectKey} onValueChange={onProjectChange} placeholder={isFa ? "انتخاب پروژه" : "Choose project"} emptyLabel={isFa ? "پروژه‌ای پیدا نشد" : "No projects found"} disabled={loading} /></label>
       <label className="qm-worklog-scope-field"><span className="qm-worklog-scope-label"><SquareKanban className="size-3.5" />{isFa ? "بورد" : "Board"}</span><BoardSelect boards={boards} value={boardId} onValueChange={onBoardChange} disabled={loading || !boards.length} /></label>

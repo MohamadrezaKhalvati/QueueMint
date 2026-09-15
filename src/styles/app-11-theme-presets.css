@@ -1,0 +1,214 @@
+:root {
+  --app-font-heading: var(--app-font-sans);
+  --qm-surface-shadow: none;
+}
+
+:is(html, .qm-custom-preview)[data-tone="mist"] {
+  --background: #f8fafb;
+  --foreground: #17202b;
+  --card: #ffffff;
+  --card-foreground: #17202b;
+  --popover: #ffffff;
+  --popover-foreground: #17202b;
+  --sidebar: #fbfcfd;
+  --sidebar-foreground: #26313f;
+  --secondary: #f1f4f6;
+  --secondary-foreground: #26313f;
+  --muted: #f2f5f7;
+  --muted-foreground: #697789;
+  --border: #e1e7ec;
+  --input: #d8e0e6;
+}
+
+:is(html, .qm-custom-preview)[data-tone="slate"] {
+  --background: #f6f8fa;
+  --foreground: #18212d;
+  --card: #ffffff;
+  --card-foreground: #18212d;
+  --popover: #ffffff;
+  --popover-foreground: #18212d;
+  --sidebar: #f8fafc;
+  --sidebar-foreground: #273444;
+  --secondary: #eef2f6;
+  --secondary-foreground: #273444;
+  --muted: #f0f3f6;
+  --muted-foreground: #647286;
+  --border: #dce3e9;
+  --input: #d1dae3;
+}
+
+:is(html, .qm-custom-preview)[data-tone="stone"] {
+  --background: #faf9f7;
+  --foreground: #292524;
+  --card: #fffefd;
+  --card-foreground: #292524;
+  --popover: #fffefd;
+  --popover-foreground: #292524;
+  --sidebar: #fbfaf8;
+  --sidebar-foreground: #3f3a36;
+  --secondary: #f3f0ec;
+  --secondary-foreground: #3f3a36;
+  --muted: #f4f1ed;
+  --muted-foreground: #756d66;
+  --border: #e6e0d9;
+  --input: #dbd4cc;
+}
+
+:is(html, .qm-custom-preview)[data-tone="paper"] {
+  --background: #ffffff;
+  --foreground: #171717;
+  --card: #ffffff;
+  --card-foreground: #171717;
+  --popover: #ffffff;
+  --popover-foreground: #171717;
+  --sidebar: #ffffff;
+  --sidebar-foreground: #262626;
+  --secondary: #f5f5f5;
+  --secondary-foreground: #262626;
+  --muted: #f7f7f7;
+  --muted-foreground: #737373;
+  --border: #e5e5e5;
+  --input: #d4d4d4;
+}
+
+:is(html, .qm-custom-preview).dark[data-tone="mist"] {
+  --background: #0f141b;
+  --foreground: #f3f6f8;
+  --card: #151c25;
+  --card-foreground: #f3f6f8;
+  --popover: #18212b;
+  --popover-foreground: #f3f6f8;
+  --sidebar: #111820;
+  --sidebar-foreground: #dfe6ed;
+  --secondary: #1d2732;
+  --secondary-foreground: #e8edf2;
+  --muted: #1a232d;
+  --muted-foreground: #96a3b3;
+  --border: #2b3744;
+  --input: #344252;
+}
+
+:is(html, .qm-custom-preview).dark[data-tone="slate"] {
+  --background: #0b1016;
+  --foreground: #f1f5f9;
+  --card: #111821;
+  --card-foreground: #f1f5f9;
+  --popover: #151e28;
+  --popover-foreground: #f1f5f9;
+  --sidebar: #0e151d;
+  --sidebar-foreground: #dce5ee;
+  --secondary: #1a2430;
+  --secondary-foreground: #e8eef5;
+  --muted: #17212b;
+  --muted-foreground: #93a2b3;
+  --border: #283644;
+  --input: #344555;
+}
+
+:is(html, .qm-custom-preview).dark[data-tone="stone"] {
+  --background: #141210;
+  --foreground: #f5f2ee;
+  --card: #1b1815;
+  --card-foreground: #f5f2ee;
+  --popover: #211d19;
+  --popover-foreground: #f5f2ee;
+  --sidebar: #171411;
+  --sidebar-foreground: #e7e0d8;
+  --secondary: #27221e;
+  --secondary-foreground: #eee8e2;
+  --muted: #221e1a;
+  --muted-foreground: #a79d94;
+  --border: #39312a;
+  --input: #463c34;
+}
+
+:is(html, .qm-custom-preview).dark[data-tone="paper"] {
+  --background: #0d0d0d;
+  --foreground: #f5f5f5;
+  --card: #141414;
+  --card-foreground: #f5f5f5;
+  --popover: #181818;
+  --popover-foreground: #f5f5f5;
+  --sidebar: #101010;
+  --sidebar-foreground: #e5e5e5;
+  --secondary: #202020;
+  --secondary-foreground: #eeeeee;
+  --muted: #1d1d1d;
+  --muted-foreground: #a3a3a3;
+  --border: #303030;
+  --input: #3a3a3a;
+}
+
+:is(html, .qm-custom-preview)[data-body-font="system"] { --app-font-sans: "Segoe UI Variable Text", "Segoe UI Variable", "Segoe UI", Inter, ui-sans-serif, system-ui, sans-serif; }
+:is(html, .qm-custom-preview)[data-body-font="humanist"] { --app-font-sans: "Trebuchet MS", "Segoe UI", Tahoma, "Vazirmatn", "Samim", ui-sans-serif, sans-serif; }
+:is(html, .qm-custom-preview)[data-body-font="geometric"] { --app-font-sans: "Avenir Next", Avenir, "Century Gothic", "Segoe UI", "Vazirmatn", sans-serif; }
+:is(html, .qm-custom-preview)[data-body-font="rounded"] { --app-font-sans: "Arial Rounded MT Bold", "Avenir Next", "Trebuchet MS", "Vazirmatn", sans-serif; }
+:is(html, .qm-custom-preview)[data-body-font="serif"] { --app-font-sans: Georgia, "Times New Roman", "Noto Naskh Arabic", "Amiri", serif; }
+:is(html, .qm-custom-preview)[data-body-font="mono"] { --app-font-sans: "SFMono-Regular", Consolas, "Liberation Mono", "DejaVu Sans Mono", monospace; }
+:is(html, .qm-custom-preview)[data-body-font="vazirmatn"] { --app-font-sans: "Vazirmatn", "Vazir", Tahoma, "Segoe UI", sans-serif; }
+:is(html, .qm-custom-preview)[data-body-font="mikhak"] { --app-font-sans: "Mikhak", "Vazirmatn", Tahoma, "Segoe UI", sans-serif; }
+:is(html, .qm-custom-preview)[data-body-font="samim"] { --app-font-sans: "Samim", "Vazirmatn", Tahoma, "Segoe UI", sans-serif; }
+:is(html, .qm-custom-preview)[data-body-font="shabnam"] { --app-font-sans: "Shabnam", "Vazirmatn", Tahoma, "Segoe UI", sans-serif; }
+:is(html, .qm-custom-preview)[data-body-font="sahel"] { --app-font-sans: "Sahel", "Vazirmatn", Tahoma, "Segoe UI", sans-serif; }
+:is(html, .qm-custom-preview)[data-body-font="naskh"] { --app-font-sans: "Noto Naskh Arabic", "Amiri", "Scheherazade New", "Vazirmatn", serif; }
+
+:is(html[lang="fa"], .qm-custom-preview[lang="fa"])[data-body-font="system"] { --app-font-sans: "Vazirmatn", "Vazir", Tahoma, "Segoe UI", "Samim", Arial, sans-serif; }
+:is(html[lang="fa"], .qm-custom-preview[lang="fa"])[data-body-font="humanist"] { --app-font-sans: "Vazirmatn", "Samim", Tahoma, "Segoe UI", sans-serif; }
+:is(html[lang="fa"], .qm-custom-preview[lang="fa"])[data-body-font="geometric"] { --app-font-sans: "Vazirmatn", "Mikhak", Tahoma, "Segoe UI", sans-serif; }
+:is(html[lang="fa"], .qm-custom-preview[lang="fa"])[data-body-font="rounded"] { --app-font-sans: "Mikhak", "Vazirmatn", Tahoma, "Segoe UI", sans-serif; }
+:is(html[lang="fa"], .qm-custom-preview[lang="fa"])[data-body-font="serif"] { --app-font-sans: "Noto Naskh Arabic", "Amiri", "Vazirmatn", Tahoma, serif; }
+
+:is(html, .qm-custom-preview)[data-heading-font="system"] { --app-font-heading: var(--app-font-sans); }
+:is(html, .qm-custom-preview)[data-heading-font="display"] { --app-font-heading: "Segoe UI Variable Display", "Arial Narrow", "Segoe UI", "Vazirmatn", sans-serif; }
+:is(html, .qm-custom-preview)[data-heading-font="geometric"] { --app-font-heading: "Avenir Next", Avenir, "Century Gothic", "Segoe UI", "Vazirmatn", sans-serif; }
+:is(html, .qm-custom-preview)[data-heading-font="rounded"] { --app-font-heading: "Arial Rounded MT Bold", "Avenir Next", "Trebuchet MS", "Mikhak", "Vazirmatn", sans-serif; }
+:is(html, .qm-custom-preview)[data-heading-font="serif"] { --app-font-heading: Georgia, "Times New Roman", "Noto Naskh Arabic", "Amiri", serif; }
+:is(html, .qm-custom-preview)[data-heading-font="mono"] { --app-font-heading: "SFMono-Regular", Consolas, "Liberation Mono", "DejaVu Sans Mono", monospace; }
+:is(html, .qm-custom-preview)[data-heading-font="vazirmatn"] { --app-font-heading: "Vazirmatn", "Vazir", Tahoma, sans-serif; }
+:is(html, .qm-custom-preview)[data-heading-font="mikhak"] { --app-font-heading: "Mikhak", "Vazirmatn", Tahoma, sans-serif; }
+:is(html, .qm-custom-preview)[data-heading-font="samim"] { --app-font-heading: "Samim", "Vazirmatn", Tahoma, sans-serif; }
+:is(html, .qm-custom-preview)[data-heading-font="shabnam"] { --app-font-heading: "Shabnam", "Vazirmatn", Tahoma, sans-serif; }
+:is(html, .qm-custom-preview)[data-heading-font="sahel"] { --app-font-heading: "Sahel", "Vazirmatn", Tahoma, sans-serif; }
+:is(html, .qm-custom-preview)[data-heading-font="naskh"] { --app-font-heading: "Noto Naskh Arabic", "Amiri", "Scheherazade New", serif; }
+:is(html, .qm-custom-preview)[data-heading-font="lalezar"] { --app-font-heading: "Lalezar", "Vazirmatn", Tahoma, sans-serif; }
+
+:where(h1, h2, h3, .qm-page-title, .qm-brand-name, .qm-custom-heading h1, .qm-custom-preview-heading h3) { font-family: var(--app-font-heading); }
+
+html[data-sidebar-style="solid"] .qm-sidebar,
+.qm-custom-preview[data-sidebar-style="solid"] .qm-custom-preview-sidebar {
+  border-color: color-mix(in oklab, #ffffff 14%, transparent);
+  background: color-mix(in oklab, var(--foreground) 94%, #111827 6%);
+  color: var(--background);
+}
+html.dark[data-sidebar-style="solid"] .qm-sidebar,
+.qm-custom-preview.dark[data-sidebar-style="solid"] .qm-custom-preview-sidebar { background: color-mix(in oklab, var(--background) 72%, #000000 28%); color: var(--foreground); }
+html[data-sidebar-style="solid"] :where(.qm-brand-name, .qm-sidebar-link),
+.qm-custom-preview[data-sidebar-style="solid"] :where(.qm-custom-preview-nav-item, .qm-custom-preview-brand) { color: inherit; }
+html[data-sidebar-style="solid"] .qm-brand,
+.qm-custom-preview[data-sidebar-style="solid"] .qm-custom-preview-brand { border-color: color-mix(in oklab, currentColor 14%, transparent); }
+html[data-sidebar-style="solid"] .qm-sidebar-footer::before { background: color-mix(in oklab, currentColor 14%, transparent); }
+html[data-sidebar-style="solid"] .qm-sidebar-link:hover,
+.qm-custom-preview[data-sidebar-style="solid"] .qm-custom-preview-nav-item:hover { background: color-mix(in oklab, var(--primary) 22%, transparent); color: color-mix(in oklab, var(--primary) 72%, white 28%); }
+
+html[data-sidebar-style="outline"] .qm-sidebar,
+.qm-custom-preview[data-sidebar-style="outline"] .qm-custom-preview-sidebar { background: var(--card); }
+html[data-sidebar-style="outline"] .qm-sidebar-link,
+.qm-custom-preview[data-sidebar-style="outline"] .qm-custom-preview-nav-item { border: 1px solid transparent; }
+html[data-sidebar-style="outline"] .qm-sidebar-link.is-active,
+.qm-custom-preview[data-sidebar-style="outline"] .qm-custom-preview-nav-item.is-active { border-color: var(--qm-primary-border); background: transparent; }
+
+html[data-sidebar-accent="filled"] .qm-sidebar-link.is-active,
+.qm-custom-preview[data-sidebar-accent="filled"] .qm-custom-preview-nav-item.is-active { border-color: transparent; background: var(--primary); color: var(--primary-foreground); }
+html[data-sidebar-accent="filled"] .qm-sidebar-link.is-active:hover,
+.qm-custom-preview[data-sidebar-accent="filled"] .qm-custom-preview-nav-item.is-active:hover { background: var(--primary); color: var(--primary-foreground); }
+
+:is(html, .qm-custom-preview)[data-surface="flat"] { --qm-surface-shadow: none; }
+:is(html, .qm-custom-preview)[data-surface="bordered"] { --qm-surface-shadow: none; }
+:is(html, .qm-custom-preview)[data-surface="raised"] { --qm-surface-shadow: 0 10px 30px rgb(15 23 42 / 0.08); }
+:is(html, .qm-custom-preview).dark[data-surface="raised"] { --qm-surface-shadow: 0 14px 34px rgb(0 0 0 / 0.28); }
+
+html[data-surface] :where([data-slot="card"], .qm-form-card, .qm-editor-card, .qm-review-panel, .qm-manage-panel, .qm-review-summary, .qm-manage-summary, .qm-worklog-kpi, .qm-worklog-stepper, .qm-worklog-scope, .qm-worklog-issues-panel, .qm-worklog-draft-sidebar, .qm-popup-page-card, .qm-popup-action-card) { box-shadow: var(--qm-surface-shadow); }
+html[data-surface="flat"] :where([data-slot="card"], .qm-form-card, .qm-editor-card, .qm-review-panel, .qm-manage-panel, .qm-worklog-kpi, .qm-worklog-stepper, .qm-worklog-scope, .qm-worklog-issues-panel, .qm-worklog-draft-sidebar, .qm-popup-page-card, .qm-popup-action-card) { border-color: transparent; }
+html[data-surface="raised"] :where([data-slot="card"], .qm-form-card, .qm-editor-card, .qm-review-panel, .qm-manage-panel, .qm-worklog-kpi, .qm-worklog-stepper, .qm-worklog-scope, .qm-worklog-issues-panel, .qm-worklog-draft-sidebar, .qm-popup-page-card, .qm-popup-action-card) { border-color: color-mix(in oklab, var(--border) 72%, transparent); }
+.qm-custom-preview[data-surface] :where(.qm-custom-preview-card, .qm-custom-preview-table) { box-shadow: var(--qm-surface-shadow); }
+.qm-custom-preview[data-surface="flat"] :where(.qm-custom-preview-card, .qm-custom-preview-table) { border-color: transparent; }
