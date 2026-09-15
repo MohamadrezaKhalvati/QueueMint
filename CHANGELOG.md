@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.1.0 candidate - Appearance Studio V5.4 final audit
+## 1.2.0 - Appearance Studio
 
 - Added on-demand delivery for every shadcn/create font exposed by Appearance Studio, plus Persian/Arabic web-font sources. Google Fonts serves the shadcn families, Vazirmatn, Noto Naskh Arabic, and Lalezar; Samim, Shabnam, Sahel, and Mikhak use commit-pinned jsDelivr/GitHub resources. Local/system stacks remain the offline fallback.
 - Kept extension JavaScript fully local. The Manifest V3 CSP explicitly blocks remote scripts while allowing only the font stylesheet/font hosts needed by Appearance Studio. Privacy and Chrome Web Store disclosures now describe these optional font requests.
