@@ -1,0 +1,40 @@
+.qm-workspace, .qm-page, .qm-screen { color: var(--foreground); }
+.qm-eyebrow { color: color-mix(in oklab, var(--primary) 72%, var(--muted-foreground) 28%); }
+.qm-topbar {
+  border-color: var(--border);
+  background: color-mix(in oklab, var(--card) 96%, var(--primary) 4%);
+  color: var(--foreground);
+  box-shadow: var(--qm-surface-shadow);
+}
+.dark .qm-topbar { background: color-mix(in oklab, var(--card) 95%, var(--primary) 5%); }
+.qm-topbar-tagline, .qm-topbar-icon, .qm-user-menu { color: var(--muted-foreground); }
+.qm-topbar-icon:hover, .qm-user-menu:hover { background: var(--accent) !important; color: var(--accent-foreground); }
+.qm-user-avatar { border-color: var(--border); background: var(--muted); color: var(--foreground); }
+
+html[data-radius] :where(.qm-start-card, .qm-json-shell, .qm-form-context, .qm-review-summary, .qm-manage-summary, .qm-scope-switch, .review-sticky-actions, .qm-custom-toolbar) { border-radius: var(--qm-panel-radius); }
+html[data-radius] :where(.qm-view-toggle, .qm-entity-icon, .qm-context-icon, .qm-start-card-icon, .qm-topbar-icon, .qm-user-menu) { border-radius: var(--qm-control-radius) !important; }
+
+html[data-density="compact"] .qm-start-card { min-height: 82px; gap: 12px; padding: 11px 13px; }
+html[data-density="spacious"] .qm-start-card { min-height: 108px; gap: 18px; padding: 20px 22px; }
+html[data-density="compact"] .qm-screen :where(section, div)[class*="rounded-[var(--qm-panel-radius)]"][class~="border"][class~="bg-card"] { padding: 12px !important; }
+html[data-density="spacious"] .qm-screen :where(section, div)[class*="rounded-[var(--qm-panel-radius)]"][class~="border"][class~="bg-card"] { padding: 20px !important; }
+
+html[data-surface] :where(.qm-topbar, .qm-start-card, .qm-json-shell, .qm-custom-toolbar, .qm-review-footer, .review-sticky-actions) { box-shadow: var(--qm-surface-shadow) !important; }
+html[data-surface] .qm-screen :where(section, div, button)[class*="rounded-[var(--qm-panel-radius)]"][class~="border"] { box-shadow: var(--qm-surface-shadow); }
+html[data-surface="flat"] :where(.qm-topbar, .qm-start-card, .qm-json-shell, .qm-custom-toolbar) { border-color: transparent; }
+html[data-surface="flat"] .qm-screen :where(section, div, button)[class*="rounded-[var(--qm-panel-radius)]"][class~="border"] { border-color: transparent; }
+html[data-surface="raised"] .qm-screen :where(section, div, button)[class*="rounded-[var(--qm-panel-radius)]"][class~="border"] { border-color: color-mix(in oklab, var(--border) 72%, transparent); }
+html[data-surface="raised"] :where(.qm-topbar, .qm-start-card, .qm-json-shell, .qm-custom-toolbar) { border-color: color-mix(in oklab, var(--border) 72%, transparent); }
+
+.qm-form-card, .qm-editor-card, .qm-review-panel, .qm-manage-panel, .qm-review-summary, .qm-manage-summary,
+.qm-start-card, .qm-json-shell, .qm-worklog-scope, .qm-worklog-issues-panel, .qm-worklog-draft-sidebar, .qm-worklog-kpi, .qm-worklog-stepper { color: var(--card-foreground); }
+.qm-json-gutter, .qm-worklog-filter-panel { background: var(--muted); color: var(--muted-foreground); }
+.qm-worklog-board-scroll, .qm-worklog-lane { background: color-mix(in oklab, var(--background) 88%, var(--card) 12%); }
+.qm-worklog-step.is-complete .qm-worklog-step-icon { background: color-mix(in oklab, var(--success) 12%, var(--card)); color: var(--success); box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--success) 24%, var(--border)); }
+
+html[data-sidebar-style="solid"] .qm-brand-mark { box-shadow: 0 0 0 1px color-mix(in oklab, currentColor 16%, transparent); }
+html[data-sidebar-style="outline"] .qm-brand { background: var(--card); }
+
+@media (prefers-reduced-transparency: reduce) {
+  .qm-topbar, .qm-review-footer, .review-sticky-actions { backdrop-filter: none; background: var(--card); }
+}

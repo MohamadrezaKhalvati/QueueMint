@@ -10,7 +10,7 @@ function Toaster(props: ToasterProps) {
       closeButton
       toastOptions={{
         classNames: {
-          toast: "!rounded-xl !border-border !bg-popover !text-popover-foreground !shadow-lg",
+          toast: "!rounded-[var(--qm-panel-radius)] !border-border !bg-popover !text-popover-foreground !shadow-lg",
           description: "!text-muted-foreground",
           actionButton: "!bg-primary !text-primary-foreground",
           cancelButton: "!bg-muted !text-muted-foreground",

@@ -23,7 +23,7 @@
 
 .qm-form-footer [data-slot="button"] {
   min-height: 42px;
-  border-radius: 8px;
+  border-radius: var(--qm-control-radius);
 }
 
 .qm-attachment-compact {
@@ -33,7 +33,7 @@
 .qm-attachment-compact > :first-child {
   min-height: 48px !important;
   border-style: solid !important;
-  border-radius: 9px !important;
+  border-radius: var(--qm-control-radius) !important;
   background: var(--qm-surface-subtle) !important;
 }
 
@@ -50,7 +50,7 @@
   align-items: center;
   gap: 16px;
   border: 1px solid var(--border);
-  border-radius: 11px;
+  border-radius: var(--qm-panel-radius);
   background: var(--card);
   padding: 16px 18px;
   color: var(--foreground);
@@ -71,7 +71,7 @@
 .qm-start-card-icon {
   width: 48px;
   height: 48px;
-  border-radius: 10px;
+  border-radius: var(--qm-control-radius);
 }
 
 .qm-start-card-title {
@@ -121,7 +121,7 @@
   grid-template-columns: 54px minmax(0, 1fr);
   overflow: hidden;
   border: 1px solid var(--border);
-  border-radius: 8px;
+  border-radius: var(--qm-control-radius);
   background: var(--card);
 }
 

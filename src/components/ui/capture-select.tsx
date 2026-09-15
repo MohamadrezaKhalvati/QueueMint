@@ -81,7 +81,7 @@ function SelectTrigger({ className, children, disabled: triggerDisabled, onClick
       aria-expanded={open}
       disabled={disabled || triggerDisabled}
       className={cn(
-        "flex h-10 w-full items-center justify-between gap-2 rounded-lg border border-input bg-background px-3 py-2 text-sm shadow-none outline-none transition-[color,box-shadow,border-color,background-color] hover:bg-accent/35 focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/20 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 data-[state=open]:border-ring data-[state=open]:ring-[3px] data-[state=open]:ring-ring/15",
+        "flex h-10 w-full items-center justify-between gap-2 rounded-[var(--qm-control-radius)] border border-input bg-background px-3 py-2 text-sm shadow-none outline-none transition-[color,box-shadow,border-color,background-color] hover:bg-accent/35 focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/20 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 data-[state=open]:border-ring data-[state=open]:ring-[3px] data-[state=open]:ring-ring/15",
         className,
       )}
       onClick={(event) => {
@@ -202,7 +202,7 @@ function SelectContent({ className, children }: { className?: string; children: 
       data-slot="select-content"
       role="listbox"
       className={cn(
-        "fixed z-[2147483000] overflow-y-auto overscroll-contain rounded-xl border bg-popover p-1.5 text-popover-foreground shadow-xl outline-none",
+        "fixed z-[2147483000] overflow-y-auto overscroll-contain rounded-[var(--qm-panel-radius)] border bg-popover p-1.5 text-popover-foreground shadow-xl outline-none",
         className,
       )}
       style={position ? {
@@ -253,7 +253,7 @@ function SelectItem({ className, children, value, disabled, onClick, onKeyDown, 
       data-disabled={disabled ? "true" : "false"}
       disabled={disabled}
       className={cn(
-        "relative flex min-h-9 w-full select-none items-center gap-2 rounded-lg px-2.5 py-2 pe-8 text-start text-sm outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground disabled:pointer-events-none disabled:opacity-50",
+        "relative flex min-h-9 w-full select-none items-center gap-2 rounded-[var(--qm-control-radius)] px-2.5 py-2 pe-8 text-start text-sm outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground disabled:pointer-events-none disabled:opacity-50",
         selected && "bg-accent/65 text-accent-foreground",
         className,
       )}

@@ -26,7 +26,7 @@ export function ReviewActionBar({ t, issueCount, selectedCount, creationCount, v
         <div className="flex min-w-0 items-center gap-3 text-xs text-muted-foreground">
           <span className="font-medium text-foreground">{selectedCount}/{issueCount} {t.selected}</span>
           <span className="hidden sm:inline">•</span>
-          <span className={validation.errors.length ? "text-destructive" : validation.valid ? "text-emerald-600" : ""}>{validation.valid ? <CheckCircle2 className="me-1 inline size-3.5" /> : null}{validation.errors.length} {t.errors}</span>
+          <span className={validation.errors.length ? "text-destructive" : validation.valid ? "text-success" : ""}>{validation.valid ? <CheckCircle2 className="me-1 inline size-3.5" /> : null}{validation.errors.length} {t.errors}</span>
         </div>
         {creating ? <div className="min-w-0 flex-1 sm:mx-4"><Progress value={progressValue} /></div> : <div className="flex-1" />}
         <div className="flex items-center gap-2">
@@ -63,10 +63,10 @@ export function RunResultsSheet({ t, locale, runResult, successCount, failureCou
           {!runResult ? <div className="py-12 text-center text-sm text-muted-foreground">{t.noResults}</div> : (
             <div className="space-y-2">
               {runResult.results.map((item) => (
-                <div key={`${item.index}-${item.key ?? item.summary}`} className="rounded-xl border p-3 text-sm">
+                <div key={`${item.index}-${item.key ?? item.summary}`} className="rounded-[var(--qm-panel-radius)] border p-3 text-sm">
                   <div className="flex items-start gap-2">
-                    {item.ok ? <CheckCircle2 className="mt-0.5 size-4 shrink-0 text-emerald-600" /> : <XCircle className="mt-0.5 size-4 shrink-0 text-destructive" />}
-                    <div className="min-w-0 flex-1"><div className="font-medium">{item.summary}</div><div className="mt-1 text-xs text-muted-foreground">{item.key ?? item.error}</div>{item.sprintError ? <div className="mt-1 text-xs text-amber-600">{item.sprintError}</div> : null}{item.estimateError ? <div className="mt-1 text-xs text-amber-600">{t.estimateApplyFailed}: {item.estimateError}</div> : null}{item.attachmentError ? <div className="mt-1 text-xs text-amber-600">{t.attachmentsFailed}: {item.attachmentError}</div> : null}{item.worklogError ? <div className="mt-1 text-xs text-amber-600">Worklog: {item.worklogError}</div> : null}</div>
+                    {item.ok ? <CheckCircle2 className="mt-0.5 size-4 shrink-0 text-success" /> : <XCircle className="mt-0.5 size-4 shrink-0 text-destructive" />}
+                    <div className="min-w-0 flex-1"><div className="font-medium">{item.summary}</div><div className="mt-1 text-xs text-muted-foreground">{item.key ?? item.error}</div>{item.sprintError ? <div className="mt-1 text-xs text-warning">{item.sprintError}</div> : null}{item.estimateError ? <div className="mt-1 text-xs text-warning">{t.estimateApplyFailed}: {item.estimateError}</div> : null}{item.attachmentError ? <div className="mt-1 text-xs text-warning">{t.attachmentsFailed}: {item.attachmentError}</div> : null}{item.worklogError ? <div className="mt-1 text-xs text-warning">Worklog: {item.worklogError}</div> : null}</div>
                     {item.key ? <Button variant="ghost" size="icon-sm" onClick={() => window.open(jiraBrowseUrl(item.key as string), "_blank")} aria-label={t.viewIssue}><ExternalLink className="size-3.5" /></Button> : null}
                   </div>
                 </div>
@@ -82,5 +82,5 @@ export function RunResultsSheet({ t, locale, runResult, successCount, failureCou
 }
 
 function Stat({ value, label, tone }: { value: number; label: string; tone: "success" | "danger" | "warning" }) {
-  return <div className="rounded-lg bg-muted/35 p-2.5"><div className={cn("text-base font-semibold", tone === "success" ? "text-emerald-600" : tone === "danger" ? "text-destructive" : "text-amber-600")}>{value}</div><div className="mt-0.5 text-muted-foreground">{label}</div></div>
+  return <div className="rounded-[var(--qm-control-radius)] bg-muted/35 p-2.5"><div className={cn("text-base font-semibold", tone === "success" ? "text-success" : tone === "danger" ? "text-destructive" : "text-warning")}>{value}</div><div className="mt-0.5 text-muted-foreground">{label}</div></div>
 }

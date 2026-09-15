@@ -1,6 +1,7 @@
 import { loadState, saveState, type StoredState } from "@/lib/storage"
 import { loadWorklogSettings, saveWorklogSettings } from "@/features/worklog/worklog-storage"
 import type { WorklogSettings } from "@/types"
+import { SHADCN_FONT_VALUES } from "@/features/customization/font-options"
 
 const PRODUCTIVITY_KEY = "queuemint-productivity-v1"
 const BACKUP_KIND = "queuemint-portable-backup"
@@ -83,7 +84,15 @@ function sanitizePortableState(value: unknown): Partial<StoredState> {
   if (value.gridColumns === 2 || value.gridColumns === 3 || value.gridColumns === 4) state.gridColumns = value.gridColumns
   if (value.density === "compact" || value.density === "comfortable" || value.density === "spacious") state.density = value.density
   if (["none", "small", "medium", "large"].includes(String(value.radius))) state.radius = value.radius as StoredState["radius"]
-  if (["dashboard", "quick", "bulk", "review", "manage", "worklog", "automation"].includes(String(value.lastMode))) state.lastMode = value.lastMode as StoredState["lastMode"]
+  if (["mist", "slate", "zinc", "gray", "neutral", "stone", "sand", "paper"].includes(String(value.neutralTone))) state.neutralTone = value.neutralTone as StoredState["neutralTone"]
+  const bodyFonts = ["system", "humanist", "geometric", "rounded", "serif", "mono", ...SHADCN_FONT_VALUES, "vazirmatn", "mikhak", "samim", "shabnam", "sahel", "naskh"]
+  const headingFonts = ["system", "display", "humanist", "geometric", "rounded", "serif", "mono", ...SHADCN_FONT_VALUES, "vazirmatn", "mikhak", "samim", "shabnam", "sahel", "naskh", "lalezar"]
+  if (bodyFonts.includes(String(value.bodyFont))) state.bodyFont = value.bodyFont as StoredState["bodyFont"]
+  if (headingFonts.includes(String(value.headingFont))) state.headingFont = value.headingFont as StoredState["headingFont"]
+  if (["soft", "solid", "outline"].includes(String(value.sidebarStyle))) state.sidebarStyle = value.sidebarStyle as StoredState["sidebarStyle"]
+  if (["subtle", "filled"].includes(String(value.sidebarAccent))) state.sidebarAccent = value.sidebarAccent as StoredState["sidebarAccent"]
+  if (["flat", "bordered", "raised"].includes(String(value.surfaceStyle))) state.surfaceStyle = value.surfaceStyle as StoredState["surfaceStyle"]
+  if (["dashboard", "quick", "bulk", "review", "manage", "worklog", "automation", "customize"].includes(String(value.lastMode))) state.lastMode = value.lastMode as StoredState["lastMode"]
   if (Array.isArray(value.savedActions)) state.savedActions = value.savedActions.slice(0, 200) as StoredState["savedActions"]
   if (Array.isArray(value.savedViews)) state.savedViews = value.savedViews.slice(0, 200) as StoredState["savedViews"]
   if (Array.isArray(value.automationRules)) state.automationRules = value.automationRules.slice(0, 200) as StoredState["automationRules"]
@@ -101,6 +110,12 @@ function portableState(state: Partial<StoredState>): Partial<StoredState> {
     gridColumns: state.gridColumns,
     density: state.density,
     radius: state.radius,
+    neutralTone: state.neutralTone,
+    bodyFont: state.bodyFont,
+    headingFont: state.headingFont,
+    sidebarStyle: state.sidebarStyle,
+    sidebarAccent: state.sidebarAccent,
+    surfaceStyle: state.surfaceStyle,
     lastMode: state.lastMode,
     savedActions: state.savedActions,
     savedViews: state.savedViews,

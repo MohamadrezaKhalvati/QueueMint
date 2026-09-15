@@ -1,0 +1,229 @@
+/* Final theme contract. Keep this file last so older page-specific CSS cannot bypass Appearance Studio tokens. */
+html[data-density] .qm-quick-action[data-slot="button"] {
+  height: auto !important;
+  min-height: max(var(--qm-density-control-h), 54px) !important;
+  align-items: flex-start;
+}
+html[data-density="compact"] .qm-quick-action[data-slot="button"] { min-height: 48px !important; padding-block: 8px !important; }
+html[data-density="spacious"] .qm-quick-action[data-slot="button"] { min-height: 62px !important; padding-block: 14px !important; }
+.qm-quick-action-copy { overflow: hidden; }
+.qm-quick-action-description {
+  display: -webkit-box !important;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+html[data-radius] :where(
+  .qm-board-lane,
+  .qm-empty-lane,
+  .issue-card,
+  .live-issue-card,
+  .qm-worklog-lane,
+  .qm-worklog-issue-card,
+  .qm-jira-connected-card,
+  .qm-jira-tab-card,
+  .qm-jira-empty-card,
+  .review-sticky-actions,
+  [data-slot="card"],
+  [data-slot="alert"],
+  [data-slot="select-content"],
+  [data-slot="combobox-content"],
+  [data-slot="popover-content"],
+  [data-slot="alert-dialog-content"],
+  [data-slot="sheet-content"]
+) { border-radius: var(--qm-panel-radius) !important; }
+
+html[data-radius] :where(
+  .issue-card-actions,
+  .qm-scope-switch,
+  .qm-jira-tab-icon,
+  .qm-brand-mark,
+  .qm-entity-icon,
+  .qm-start-card-icon,
+  .qm-view-toggle,
+  .qm-selection-check,
+  .qm-worklog-kpi-icon,
+  .qm-worklog-scope-summary,
+  [data-slot="input"],
+  [data-slot="textarea"],
+  [data-slot="badge"],
+  [data-slot="select-trigger"],
+  [data-slot="select-item"],
+  [data-slot="button-group"],
+  [data-slot="combobox-input-group"]
+) { border-radius: var(--qm-control-radius) !important; }
+
+html[data-radius] [data-slot="calendar"] button:not(.rounded-full) { border-radius: var(--qm-control-radius) !important; }
+
+.qm-review-footer [data-slot="button"][data-variant="default"] {
+  border-color: var(--primary) !important;
+  background: var(--primary) !important;
+  color: var(--primary-foreground) !important;
+}
+.qm-review-footer [data-slot="button"][data-variant="default"]:hover { background: color-mix(in oklab, var(--primary) 88%, #000 12%) !important; }
+.qm-review-footer [data-slot="button"][data-variant="outline"] {
+  border-color: var(--border) !important;
+  background: var(--background) !important;
+  color: var(--foreground) !important;
+}
+.qm-review-footer [data-slot="button"][data-variant="outline"]:hover { border-color: var(--qm-primary-border) !important; background: var(--accent) !important; color: var(--accent-foreground) !important; }
+
+html[data-surface] :where(.qm-board-lane, .issue-card, .live-issue-card, .qm-worklog-lane, .qm-worklog-issue-card, .qm-jira-connected-card, .qm-jira-tab-card, .qm-popup-page-card, .qm-popup-action-card, .qm-smart-card, .qm-preflight-card, .capture-canvas-shell, .qm-popup-field-shell, .qm-popup-field-section) { box-shadow: var(--qm-surface-shadow) !important; }
+html[data-surface="flat"] :where(.qm-board-lane, .issue-card, .live-issue-card, .qm-worklog-lane, .qm-worklog-issue-card, .qm-jira-connected-card, .qm-jira-tab-card, .qm-popup-page-card, .qm-popup-action-card, .qm-smart-card, .qm-preflight-card, .capture-canvas-shell, .qm-popup-field-shell, .qm-popup-field-section) { border-color: transparent !important; }
+html[data-surface="raised"] :where(.qm-board-lane, .issue-card, .live-issue-card, .qm-worklog-lane, .qm-worklog-issue-card, .qm-jira-connected-card, .qm-jira-tab-card, .qm-popup-page-card, .qm-popup-action-card, .qm-smart-card, .qm-preflight-card, .capture-canvas-shell, .qm-popup-field-shell, .qm-popup-field-section) { border-color: color-mix(in oklab, var(--border) 72%, transparent) !important; }
+
+/* Interactive controls share one radius/cursor contract across every screen. */
+html[data-radius] :where(.qm-checkbox-box, .qm-selection-checkbox, input[type="checkbox"]) {
+  border-radius: min(var(--qm-control-radius), 5px) !important;
+}
+
+.qm-selection-checkbox {
+  appearance: none;
+  display: grid;
+  place-content: center;
+  border: 1px solid var(--input);
+  background: var(--background);
+  color: var(--primary-foreground);
+  box-shadow: 0 1px 1px rgb(15 23 42 / 0.04);
+  transition: border-color 120ms ease, background-color 120ms ease, box-shadow 120ms ease;
+}
+.qm-selection-checkbox::before {
+  content: "";
+  width: 9px;
+  height: 9px;
+  transform: scale(0);
+  transform-origin: center;
+  background: currentColor;
+  clip-path: polygon(14% 44%, 0 59%, 39% 100%, 100% 18%, 84% 3%, 38% 64%);
+  transition: transform 100ms ease;
+}
+.qm-selection-checkbox:checked,
+.qm-selection-checkbox[data-indeterminate="true"] {
+  border-color: var(--primary);
+  background: var(--primary);
+}
+.qm-selection-checkbox:checked::before { transform: scale(1); }
+.qm-selection-checkbox[data-indeterminate="true"]::before {
+  width: 8px;
+  height: 2px;
+  transform: scale(1);
+  clip-path: none;
+}
+.qm-selection-checkbox:focus-visible { outline: 2px solid color-mix(in oklab, var(--ring) 55%, transparent); outline-offset: 2px; }
+
+:where(
+  button:not(:disabled),
+  a[href],
+  input[type="checkbox"]:not(:disabled),
+  input[type="radio"]:not(:disabled),
+  [role="button"]:not([aria-disabled="true"]),
+  [role="checkbox"]:not([aria-disabled="true"]),
+  [data-slot="select-trigger"]:not([data-disabled]),
+  [data-slot="select-item"]:not([data-disabled]),
+  [data-slot="combobox-item"]:not([data-disabled])
+) { cursor: pointer; }
+
+/* Upload/drop zones are theme controls, not page-specific exceptions. */
+html[data-radius] :where(.qm-attachment-picker, .qm-attachment-file) { border-radius: var(--qm-panel-radius) !important; }
+html[data-radius] .qm-upload-control { border-radius: var(--qm-control-radius) !important; }
+.qm-upload-control {
+  border-color: var(--border) !important;
+  background: var(--qm-surface-subtle) !important;
+  color: var(--muted-foreground) !important;
+  box-shadow: var(--qm-surface-shadow) !important;
+}
+.qm-upload-control:hover,
+.qm-upload-control[data-drag-active="true"] {
+  border-color: var(--qm-primary-border) !important;
+  background: var(--qm-primary-soft) !important;
+  color: var(--foreground) !important;
+}
+
+/* V5.3 alignment and shape pass. Functional dots/avatars stay circular; containers follow the appearance radius. */
+html[data-radius] :where(
+  .qm-worklog-status-badge,
+  .qm-worklog-step-icon,
+  .qm-worklog-method,
+  .qm-worklog-method-check,
+  .qm-worklog-empty-picker,
+  .qm-placement-toggle,
+  .qm-view-toggle-group
+) { border-radius: var(--qm-control-radius) !important; }
+
+html[data-radius] .qm-worklog-empty-picker { border-radius: var(--qm-panel-radius) !important; }
+
+.qm-worklog-date-actions,
+.qm-date-toolbar {
+  display: flex;
+  align-items: stretch;
+  gap: 6px;
+}
+.qm-worklog-date-actions { flex-wrap: nowrap; }
+.qm-date-toolbar [data-slot="button"],
+.qm-worklog-date-sync[data-slot="button"] {
+  width: var(--qm-density-control-h) !important;
+  height: var(--qm-density-control-h) !important;
+  min-width: var(--qm-density-control-h) !important;
+  min-height: var(--qm-density-control-h) !important;
+  padding: 0 !important;
+}
+.qm-date-picker-trigger[data-slot="button"] {
+  width: auto !important;
+  min-width: 188px !important;
+  height: var(--qm-density-control-h) !important;
+  min-height: var(--qm-density-control-h) !important;
+  padding-inline: 12px !important;
+}
+
+.qm-review-toolbar > *,
+.qm-manage-toolbar > * { align-self: stretch; }
+.qm-review-toolbar [data-slot="input"],
+.qm-review-toolbar [data-slot="select-trigger"],
+.qm-manage-toolbar [data-slot="button"],
+.qm-manage-toolbar [data-slot="input"] {
+  height: var(--qm-density-control-h) !important;
+  min-height: var(--qm-density-control-h) !important;
+}
+.qm-view-toggle-group {
+  height: var(--qm-density-control-h);
+  align-items: center;
+  gap: 2px;
+  padding: 3px;
+}
+.qm-view-toggle-group [data-slot="button"] {
+  width: calc(var(--qm-density-control-h) - 6px) !important;
+  height: calc(var(--qm-density-control-h) - 6px) !important;
+  min-width: calc(var(--qm-density-control-h) - 6px) !important;
+  min-height: calc(var(--qm-density-control-h) - 6px) !important;
+  padding: 0 !important;
+}
+
+.qm-selection-row .qm-selection-control,
+.qm-manage-selection :where([data-slot="button"], [data-slot="select-trigger"]) {
+  height: var(--qm-density-control-sm-h) !important;
+  min-height: var(--qm-density-control-sm-h) !important;
+}
+
+.qm-manage-heading-actions { align-items: flex-start; }
+.qm-scope-switch {
+  height: var(--qm-density-control-h);
+  min-height: var(--qm-density-control-h);
+  padding: 3px !important;
+}
+.qm-scope-switch [data-slot="button"] {
+  height: calc(var(--qm-density-control-h) - 6px) !important;
+  min-height: calc(var(--qm-density-control-h) - 6px) !important;
+}
+.qm-manage-heading-actions > [data-slot="button"] {
+  height: var(--qm-density-control-h) !important;
+  min-height: var(--qm-density-control-h) !important;
+}
+
+.qm-context-item,
+.qm-context-count { min-height: 58px; }
+.qm-context-icon { align-self: center; }
+
+html[data-radius] :where(.qm-scope-switch [data-slot="button"], .qm-context-icon, .qm-entity-icon) {
+  border-radius: var(--qm-control-radius) !important;
+}

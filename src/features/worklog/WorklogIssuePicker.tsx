@@ -84,7 +84,7 @@ export function WorklogIssuePicker({ locale, date, issues, selectedKeys, current
       <div className="qm-worklog-issues-head">
         <div><h2 className="text-base font-semibold">{isFa ? "انتخاب تسک های Jira" : "Select Jira issues"}</h2><p className="mt-0.5 text-xs text-muted-foreground">{isFa ? "تسک ها رو ببین و فقط مواردی که روی اونها کار کردی انتخاب کن." : "Browse and select issues to log time. Board columns come from Jira."}</p></div>
         <div className="flex flex-wrap items-center gap-2">
-          <div className="inline-flex overflow-hidden rounded-lg border bg-background p-0.5">{views.map(({ id, icon: Icon, label }) => <Button key={id} variant="ghost" size="sm" aria-pressed={view === id} title={label} onClick={() => setView(id)} className={cn("h-8 rounded-md px-2.5", view === id && "bg-primary/8 text-primary")}><Icon className="size-3.5" /><span className="hidden 2xl:inline">{label}</span></Button>)}</div>
+          <div className="inline-flex overflow-hidden rounded-[var(--qm-control-radius)] border bg-background p-0.5">{views.map(({ id, icon: Icon, label }) => <Button key={id} variant="ghost" size="sm" aria-pressed={view === id} title={label} onClick={() => setView(id)} className={cn("h-8 rounded-[var(--qm-control-radius)] px-2.5", view === id && "bg-primary/8 text-primary")}><Icon className="size-3.5" /><span className="hidden 2xl:inline">{label}</span></Button>)}</div>
         </div>
       </div>
 

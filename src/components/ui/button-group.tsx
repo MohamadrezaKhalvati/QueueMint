@@ -7,7 +7,7 @@ function ButtonGroup({ className, ...props }: React.HTMLAttributes<HTMLDivElemen
     <div
       role="group"
       data-slot="button-group"
-      className={cn("inline-flex overflow-hidden rounded-lg border bg-background [&>*]:rounded-none [&>*]:border-0 [&>*]:border-e [&>*:last-child]:border-e-0", className)}
+      className={cn("inline-flex overflow-hidden rounded-[var(--qm-control-radius)] border bg-background [&>*]:rounded-none [&>*]:border-0 [&>*]:border-e [&>*:last-child]:border-e-0", className)}
       {...props}
     />
   )

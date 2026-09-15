@@ -83,7 +83,7 @@ body.qm-popup-page {
 .qm-popup-action-card {
   width: 100%;
   border: 1px solid var(--border);
-  border-radius: 14px;
+  border-radius: var(--qm-panel-radius);
   background: var(--card);
   padding: 12px;
   box-shadow: 0 1px 0 rgb(15 23 42 / 0.025);
@@ -119,7 +119,7 @@ body.qm-popup-page {
   height: 40px;
   flex: 0 0 40px;
   place-items: center;
-  border-radius: 12px;
+  border-radius: var(--qm-control-radius);
   background: var(--accent);
   color: var(--primary);
 }
@@ -143,7 +143,7 @@ body.qm-popup-page {
   place-items: center;
   overflow: auto;
   border: 1px solid var(--border);
-  border-radius: 14px;
+  border-radius: var(--qm-panel-radius);
   background-image:
     linear-gradient(45deg, color-mix(in oklab, var(--muted) 72%, transparent) 25%, transparent 25%),
     linear-gradient(-45deg, color-mix(in oklab, var(--muted) 72%, transparent) 25%, transparent 25%),
@@ -180,7 +180,7 @@ body.qm-popup-page {
 .qm-smart-card,
 .qm-preflight-card {
   border: 1px solid color-mix(in oklab, var(--primary) 18%, var(--border));
-  border-radius: 14px;
+  border-radius: var(--qm-panel-radius);
   background: color-mix(in oklab, var(--primary) 3%, var(--card));
   padding: 12px;
 }

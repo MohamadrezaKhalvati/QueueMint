@@ -29,11 +29,11 @@ export function CaptureEditorToolbar({ tool, labels, canUndo, canRedo, onTool, o
 }) {
   const tools = Object.entries(TOOL_ICONS) as Array<[CaptureTool, typeof MousePointer2]>
   return (
-    <div className="flex items-center gap-1 overflow-x-auto rounded-xl border bg-card p-1.5">
+    <div className="flex items-center gap-1 overflow-x-auto rounded-[var(--qm-panel-radius)] border bg-card p-1.5">
       {tools.map(([value, Icon]) => <button
         key={value}
         type="button"
-        className={cn("grid size-8 shrink-0 place-items-center rounded-lg text-muted-foreground transition hover:bg-accent hover:text-foreground", tool === value && "bg-accent text-primary")}
+        className={cn("grid size-8 shrink-0 place-items-center rounded-[var(--qm-control-radius)] text-muted-foreground transition hover:bg-accent hover:text-foreground", tool === value && "bg-accent text-primary")}
         title={labels[value]}
         aria-label={labels[value]}
         onClick={() => onTool(value)}

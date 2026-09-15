@@ -31,7 +31,7 @@ export function PriorityVisual({ name, compact = false, inherited = false, inher
 
   return (
     <span className={cn("inline-flex min-w-0 items-center gap-2", className)}>
-      <span className={cn("grid shrink-0 place-items-center rounded-md bg-current/10", compact ? "size-6" : "size-7", tone.className)}>
+      <span className={cn("grid shrink-0 place-items-center rounded-[var(--qm-control-radius)] bg-current/10", compact ? "size-6" : "size-7", tone.className)}>
         <Icon className={compact ? "size-3.5" : "size-4"} />
       </span>
       <span className="min-w-0 truncate">

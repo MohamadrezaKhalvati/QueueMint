@@ -30,8 +30,8 @@ export function JiraConnectionSheet({
           <SheetDescription>{t.chooseJiraTabHint}</SheetDescription>
         </SheetHeader>
         <SheetBody className="space-y-4">
-          <div className="rounded-2xl border bg-gradient-to-br from-muted/45 to-background p-4 shadow-xs">
-            <div className="flex items-center gap-2 text-xs font-medium text-muted-foreground"><CircleDot className="size-3.5 text-emerald-600" />{t.connectedSite}</div>
+          <div className="qm-jira-connected-card rounded-[var(--qm-panel-radius)] border bg-gradient-to-br from-muted/45 to-background p-4 shadow-xs">
+            <div className="flex items-center gap-2 text-xs font-medium text-muted-foreground"><CircleDot className="size-3.5 text-success" />{t.connectedSite}</div>
             <div className="mt-1.5 truncate text-sm font-semibold" dir="ltr" title={status?.origin ?? ""}>{status?.origin ?? "—"}</div>
           </div>
           {status?.tabs?.length ? (
@@ -44,12 +44,12 @@ export function JiraConnectionSheet({
                     type="button"
                     onClick={() => onSelect(tab.id)}
                     className={cn(
-                      "w-full rounded-2xl border p-3.5 text-start shadow-xs transition-[border-color,background-color,box-shadow] focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/20",
+                      "qm-jira-tab-card w-full rounded-[var(--qm-panel-radius)] border p-3.5 text-start shadow-xs transition-[border-color,background-color,box-shadow] focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/20",
                       selected ? "border-primary/35 bg-primary/[0.045] shadow-sm" : "bg-card hover:border-primary/20 hover:bg-muted/25",
                     )}
                   >
                     <div className="flex items-start gap-3">
-                      <div className={cn("mt-0.5 grid size-8 shrink-0 place-items-center rounded-lg", selected ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground")}>
+                      <div className={cn("qm-jira-tab-icon mt-0.5 grid size-8 shrink-0 place-items-center rounded-[var(--qm-control-radius)]", selected ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground")}>
                         {selected ? <Check className="size-4" /> : <SquareKanban className="size-4" />}
                       </div>
                       <div className="min-w-0 flex-1">
@@ -65,7 +65,7 @@ export function JiraConnectionSheet({
               })}
             </div>
           ) : (
-            <div className="rounded-xl border border-dashed p-6 text-center text-sm text-muted-foreground">{t.noJiraTabs}</div>
+            <div className="qm-jira-empty-card rounded-[var(--qm-panel-radius)] border border-dashed p-6 text-center text-sm text-muted-foreground">{t.noJiraTabs}</div>
           )}
         </SheetBody>
         <SheetFooter className="grid grid-cols-2 sm:flex sm:justify-end">

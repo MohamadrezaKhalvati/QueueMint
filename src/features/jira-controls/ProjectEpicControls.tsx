@@ -49,9 +49,9 @@ export function EpicCombobox({ options, value, onValueChange, placeholder, empty
   options: EpicOption[]; value?: string; onValueChange: (value: string | undefined) => void; placeholder: string; emptyLabel: string; batchLabel?: string; jiraLabel?: string; clearLabel?: string
 }) {
   const map = useMemo(() => new Map(options.map((item): [string, EpicOption] => [item.value, item])), [options])
-  return <SearchableSingle items={options.map((item) => item.value)} value={value} onValueChange={(next) => onValueChange(next ?? undefined)} itemLabel={(key) => map.get(key)?.label ?? key} placeholder={placeholder} emptyLabel={emptyLabel} allowClear clearLabel={clearLabel} leading={<Zap className="size-4 shrink-0 text-violet-500" />} renderItem={(key) => {
+  return <SearchableSingle items={options.map((item) => item.value)} value={value} onValueChange={(next) => onValueChange(next ?? undefined)} itemLabel={(key) => map.get(key)?.label ?? key} placeholder={placeholder} emptyLabel={emptyLabel} allowClear clearLabel={clearLabel} leading={<Zap className="size-4 shrink-0 text-primary" />} renderItem={(key) => {
     const option = map.get(key)
-    return <div className="flex min-w-0 items-center gap-2"><span className={cn("size-2 shrink-0 rounded-full", option?.source === "batch" ? "bg-violet-500" : "bg-blue-500")} /><span className="min-w-0 flex-1 truncate">{option?.label ?? key}</span><Badge variant="outline" className="shrink-0 px-1.5 py-0 text-[10px]">{option?.source === "batch" ? batchLabel : jiraLabel}</Badge></div>
+    return <div className="flex min-w-0 items-center gap-2"><span className={cn("size-2 shrink-0 rounded-full", option?.source === "batch" ? "bg-primary" : "bg-muted-foreground")} /><span className="min-w-0 flex-1 truncate">{option?.label ?? key}</span><Badge variant="outline" className="shrink-0 px-1.5 py-0 text-[10px]">{option?.source === "batch" ? batchLabel : jiraLabel}</Badge></div>
   }} />
 }
 
@@ -61,9 +61,9 @@ export function BulkEpicCombobox({ options, value, onValueChange, placeholder, e
   const noChange = "__bulk_epic_no_change__"; const clearEpic = "__bulk_epic_clear__"
   const map = useMemo(() => new Map(options.map((item): [string, EpicOption] => [item.value, item])), [options])
   const encoded = value === undefined ? noChange : value === null ? clearEpic : value
-  return <SearchableSingle items={[noChange, clearEpic, ...options.map((item) => item.value)]} value={encoded} onValueChange={(next) => { if (!next || next === noChange) onValueChange(undefined); else if (next === clearEpic) onValueChange(null); else onValueChange(next) }} itemLabel={(key) => key === noChange ? noChangeLabel : key === clearEpic ? clearLabel : map.get(key)?.label ?? key} placeholder={placeholder} emptyLabel={emptyLabel} leading={<Zap className="size-4 shrink-0 text-violet-500" />} renderItem={(key) => {
+  return <SearchableSingle items={[noChange, clearEpic, ...options.map((item) => item.value)]} value={encoded} onValueChange={(next) => { if (!next || next === noChange) onValueChange(undefined); else if (next === clearEpic) onValueChange(null); else onValueChange(next) }} itemLabel={(key) => key === noChange ? noChangeLabel : key === clearEpic ? clearLabel : map.get(key)?.label ?? key} placeholder={placeholder} emptyLabel={emptyLabel} leading={<Zap className="size-4 shrink-0 text-primary" />} renderItem={(key) => {
     if (key === noChange) return <span className="text-muted-foreground">{noChangeLabel}</span>
     if (key === clearEpic) return <span className="text-muted-foreground">{clearLabel}</span>
-    return <div className="flex min-w-0 items-center gap-2"><span className="size-2 shrink-0 rounded-full bg-violet-500" /><span className="min-w-0 flex-1 truncate">{map.get(key)?.label ?? key}</span></div>
+    return <div className="flex min-w-0 items-center gap-2"><span className="size-2 shrink-0 rounded-full bg-primary" /><span className="min-w-0 flex-1 truncate">{map.get(key)?.label ?? key}</span></div>
   }} />
 }

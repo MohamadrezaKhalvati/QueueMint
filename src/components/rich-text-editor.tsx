@@ -157,7 +157,7 @@ export function RichTextEditor({ value, onChange, placeholder, className, minHei
   ]
 
   return (
-    <div className={cn("overflow-hidden rounded-xl border bg-background", className)}>
+    <div className={cn("overflow-hidden rounded-[var(--qm-panel-radius)] border bg-background", className)}>
       <div className="flex flex-wrap items-center gap-1 border-b bg-muted/35 p-1.5">
         {tools.map(({ id, label, icon: Icon, action }) => (
           <Button
@@ -189,7 +189,7 @@ export function RichTextEditor({ value, onChange, placeholder, className, minHei
         onPaste={handlePaste}
         onBlur={handleBlur}
         onClick={(event) => { if ((event.target as HTMLElement).closest("a")) event.preventDefault() }}
-        className="max-h-[420px] overflow-y-auto px-3 py-3 text-sm leading-7 outline-none empty:before:pointer-events-none empty:before:text-muted-foreground empty:before:content-[attr(data-placeholder)] [&_a]:font-medium [&_a]:text-primary [&_a]:underline [&_blockquote]:border-s-2 [&_blockquote]:ps-3 [&_blockquote]:italic [&_blockquote]:text-muted-foreground [&_code]:rounded [&_code]:bg-muted [&_code]:px-1 [&_code]:py-0.5 [&_code]:font-mono [&_h1]:text-lg [&_h1]:font-semibold [&_h2]:text-base [&_h2]:font-semibold [&_h3]:font-semibold [&_ol]:ms-6 [&_ol]:list-decimal [&_ul]:ms-6 [&_ul]:list-disc"
+        className="max-h-[420px] overflow-y-auto px-3 py-3 text-sm leading-7 outline-none empty:before:pointer-events-none empty:before:text-muted-foreground empty:before:content-[attr(data-placeholder)] [&_a]:font-medium [&_a]:text-primary [&_a]:underline [&_blockquote]:border-s-2 [&_blockquote]:ps-3 [&_blockquote]:italic [&_blockquote]:text-muted-foreground [&_code]:rounded-[var(--qm-control-radius)] [&_code]:bg-muted [&_code]:px-1 [&_code]:py-0.5 [&_code]:font-mono [&_h1]:text-lg [&_h1]:font-semibold [&_h2]:text-base [&_h2]:font-semibold [&_h3]:font-semibold [&_ol]:ms-6 [&_ol]:list-decimal [&_ul]:ms-6 [&_ul]:list-disc"
         style={{ minHeight }}
       />
     </div>

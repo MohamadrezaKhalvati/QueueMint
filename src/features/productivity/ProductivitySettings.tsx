@@ -47,11 +47,11 @@ export function ProductivitySettingsPanel({ locale }: { locale: AppLocale }) {
   return (
     <section>
       <div className="mb-2 flex items-center gap-2 text-sm font-medium"><Download className="size-4 text-muted-foreground" />{tx.title}</div>
-      <div className="rounded-xl border bg-muted/10 p-3.5">
+      <div className="rounded-[var(--qm-panel-radius)] border bg-muted/10 p-3.5">
         <p className="text-xs leading-5 text-muted-foreground">{tx.hint}</p>
         <div className="mt-3 flex flex-wrap gap-2"><Button type="button" size="sm" variant="outline" disabled={busy} onClick={() => void exportBackup()}><Download className="size-3.5" />{tx.export}</Button><Button type="button" size="sm" variant="outline" disabled={busy} onClick={() => inputRef.current?.click()}><Upload className="size-3.5" />{tx.import}</Button></div>
         <input ref={inputRef} type="file" accept="application/json,.json" className="hidden" onChange={(event) => void importBackup(event)} />
-        <div className="mt-3 flex items-start gap-2 rounded-lg border bg-background p-2.5 text-[11px] leading-5 text-muted-foreground"><ShieldCheck className="mt-0.5 size-4 shrink-0 text-emerald-600" /><span>{tx.safe}</span></div>
+        <div className="mt-3 flex items-start gap-2 rounded-[var(--qm-control-radius)] border bg-background p-2.5 text-[11px] leading-5 text-muted-foreground"><ShieldCheck className="mt-0.5 size-4 shrink-0 text-success" /><span>{tx.safe}</span></div>
       </div>
     </section>
   )

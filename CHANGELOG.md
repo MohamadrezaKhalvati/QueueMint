@@ -1,5 +1,75 @@
 # Changelog
 
+## 1.1.0 candidate - Appearance Studio V5.4 final audit
+
+- Added on-demand delivery for every shadcn/create font exposed by Appearance Studio, plus Persian/Arabic web-font sources. Google Fonts serves the shadcn families, Vazirmatn, Noto Naskh Arabic, and Lalezar; Samim, Shabnam, Sahel, and Mikhak use commit-pinned jsDelivr/GitHub resources. Local/system stacks remain the offline fallback.
+- Kept extension JavaScript fully local. The Manifest V3 CSP explicitly blocks remote scripts while allowing only the font stylesheet/font hosts needed by Appearance Studio. Privacy and Chrome Web Store disclosures now describe these optional font requests.
+- Completed a repository-wide theme audit. Non-semantic fixed radius utilities and fixed pixel corner radii now use QueueMint radius tokens across screens, overlays, popup surfaces, boards, cards, controls, and uploaders. Intentional circles such as avatars, status dots, and progress pills remain circular.
+- Replaced remaining non-semantic fixed UI palette colors with QueueMint primary, muted, success, warning, and destructive tokens. Jira priority colors and neutral modal backdrops remain intentionally semantic/infrastructure-specific.
+- Extended surface-style coverage so flat, bordered, and raised modes consistently control panel borders and shadows after the radius migration.
+- Added regression checks for radius-token compliance, semantic color-token compliance, font-source coverage, CSP safety, and the Rounded typography preset.
+- Removed the obsolete manual Samim installer now that font delivery is handled directly by Appearance Studio.
+
+## 1.1.0 candidate - Appearance Studio V5.3 alignment and tone library
+
+- Made Worklog draft status chips, step icons, method cards, empty pickers, placement toggles, and other non-semantic shape containers follow the active Appearance Studio radius. True status dots and avatars remain circular where the shape carries meaning.
+- Aligned the Worklog date picker, previous/next controls, and refresh action to one density-aware toolbar height, and normalized Review/Manage filter and action rows to the same control sizing rules.
+- Reworked Quick Issue backlog layout so Epic and Labels share the row while Assignee moves below at full width, eliminating the large empty column created when Sprint is absent.
+- Expanded Neutral tone presets from four to eight with Zinc, Gray, Neutral, and Sand alongside Mist, Slate, Stone, and Paper, including matching dark-mode palettes and portable backup/preset support.
+- Redesigned the Appearance Studio accent picker into compact themed color tiles plus a dedicated custom-color row instead of the previous loose circular swatches.
+- Added regression coverage for V5.3 shape/alignment contracts and the expanded neutral-tone sanitizer.
+
+## 1.1.0 candidate - Appearance Studio V5.2 selection/theme consistency
+
+- Moved Review list/table select-all into the table header, matching Worklog, while keeping the explicit Select all/Clear selection action only in Cards and Board views.
+- Fixed Review select-all to operate on the currently visible filtered issues without dropping hidden selections, and added regression coverage for select/clear behavior.
+- Added a shared themed selection checkbox used by Worklog and Review, and made Jira manager/review selection boxes follow the active corner-radius token instead of retaining fixed rounded corners.
+- Moved Button, Input, Textarea, Card, Select, Combobox, and Badge radius defaults onto the shared Appearance Studio radius variables so page CSS has fewer opportunities to drift from the active theme.
+- Added pointer cursors to enabled buttons, links, checkboxes, radios, select items, and other interactive controls.
+- Made the shared attachment uploader/drop zone follow radius, surface, border, hover, and accent tokens, removing the remaining fixed 9px upload radius overrides.
+
+## 1.1.0 candidate - Appearance Studio V5.1 build hotfix
+
+- Fixed the Appearance Studio heading-font option contract so the legacy Humanist heading choice is represented in the sanitizer and TypeScript build.
+- Re-synchronized `package-lock.json` with the dependency versions already merged into `main`, including Radix Select 2.3.7, Lucide 1.45.0, Vite 8.3.0, and the matching transitive lock entries.
+- Added a regression test that verifies every exact direct dependency in `package.json` matches its installed-package entry in `package-lock.json`, preventing another partially updated lockfile from reaching a source bundle.
+
+## 1.1.0 candidate - Appearance Studio V5
+
+- Fixed Workspace Quick Actions under Compact/Comfortable/Spacious density. Density no longer forces a fixed button height onto multi-line action cards, so descriptions cannot overlap neighboring actions.
+- Made Jira manager/review board lanes, issue cards, Worklog lanes/cards, Jira connection cards, shared controls, overlays, and review actions follow the selected corner-radius tokens. Semantic circles/pills stay circular where shape communicates meaning.
+- Hardened Review Validate/Create styling so both buttons derive radius, border, hover, and primary color from the active Appearance Studio theme instead of page-local fixed values.
+- Extended Tailwind/shadcn radius tokens through QueueMint's shared `--qm-control-radius` and `--qm-panel-radius` values, reducing page-specific theme drift.
+- Added the complete shadcn/create font menu families as body and heading choices, grouped into Sans, Mono, and Serif, while preserving QueueMint presets and Persian/Arabic choices. Font stacks remain local-first so QueueMint does not silently contact a third-party font CDN.
+- Kept Appearance Studio hover isolated to the live preview and retained explicit Apply/Discard behavior.
+
+## 1.1.0 candidate - Appearance Studio V4
+
+- Fixed the Appearance Studio hover-preview regression by isolating hover state inside the live preview instead of mutating the document root while the pointer is moving through a menu. The settings rail no longer shifts, flickers, or loses the hovered option.
+- Converted Theme, Neutral tone, typography, Corner radius, Density, Menu style, Menu accent, Surface style, default issue view, and card columns to the same shadcn-inspired dropdown pattern. Only one appearance menu stays open at a time.
+- Changed Appearance Studio selection behavior so draft choices stay inside the live preview until Apply is pressed. Discard leaves the active QueueMint interface untouched.
+- Expanded Persian/Arabic-oriented local font stacks with Vazirmatn/Vazir, Mikhak, Samim, Shabnam, Sahel, Arabic Naskh, and Lalezar for headings. QueueMint does not bundle third-party font binaries and falls back safely when a family is not installed locally.
+- Extended semantic appearance coverage across the top header, workspace/automation surfaces, import cards, Jira manager surfaces, Worklog structural surfaces, shared corner radius, density, and Flat/Bordered/Raised surface modes.
+- Made the top header derive its tint, borders, text, hover states, and surface depth from the same QueueMint theme tokens.
+
+## 1.1.0 candidate - Appearance Studio V2
+
+- Changed Appearance Studio to a staged workflow: choices preview immediately, but persistent QueueMint settings only change after Apply. Discard restores the last saved appearance.
+- Added hover preview for appearance controls and shadcn-inspired popover menus for typography, neutral tone, sidebar style, and surface style.
+- Expanded body and heading typography with System, Humanist, Geometric, Rounded, Serif, Mono, and Display choices where appropriate, using resilient local/system font stacks.
+- Audited Worklog accent usage so active steps, selection, KPI accents, context controls, and primary actions derive from the selected QueueMint accent instead of fixed blue or violet values.
+- Kept semantic success, warning, destructive, Jira status, and issue-type colors distinct where color communicates meaning.
+- Updated the compact settings sheet to preview changes first and expose explicit Apply and Cancel actions.
+
+## 1.1.0 candidate - Appearance Studio V1
+
+- Added a dedicated Appearance Studio page inspired by shadcn-style live theming, with a compact control rail and a live QueueMint dashboard preview.
+- Added persisted neutral tone, body font, heading font, sidebar style, sidebar accent, and surface style tokens alongside theme, accent, density, radius, and default issue view.
+- Added Reset and Shuffle actions plus portable Appearance Preset JSON download/import and copyable preset codes.
+- Applied the new semantic appearance tokens to the main workspace and extension popup without adding a runtime theme dependency.
+- Kept advanced settings, Smart Assistant, productivity backup, and existing Jira workflows available through the secondary settings sheet.
+- Added regression tests for preset sanitization and import/export round trips.
+
 ## 1.1.0 candidate - Customizable UI and page-scroll recovery V9
 
 - Restored normal document scrolling for Worklog while keeping the draft sidebar sticky and internally scrollable on desktop. Board and table views now use local horizontal scrolling without creating a second vertical workspace scrollbar.

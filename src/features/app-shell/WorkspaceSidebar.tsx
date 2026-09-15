@@ -40,7 +40,7 @@ export function WorkspaceSidebar({ mode, setMode, t, locale, onSettings, onProje
       </nav>
       <div className="qm-sidebar-footer">
         {mode === "bulk" ? <button type="button" className="qm-sidebar-link" onClick={onProjects}><Layers3 className="qm-sidebar-icon" /><span>{t.sidebarProjects}</span></button> : null}
-        <button type="button" className="qm-sidebar-link" onClick={onSettings}><Settings2 className="qm-sidebar-icon" /><span>{t.sidebarSettings}</span></button>
+        <button type="button" className={cn("qm-sidebar-link", mode === "customize" && "is-active")} onClick={onSettings} aria-current={mode === "customize" ? "page" : undefined}><Settings2 className="qm-sidebar-icon" /><span>{t.sidebarSettings}</span></button>
         <button type="button" className="qm-sidebar-link" onClick={onHelp}><CircleHelp className="qm-sidebar-icon" /><span>{t.helpSupport}</span></button>
       </div>
     </aside>

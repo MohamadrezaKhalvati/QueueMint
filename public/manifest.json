@@ -49,5 +49,8 @@
   },
   "version_name": "1.1.0 Worklog Assistant",
   "short_name": "QueueMint",
-  "homepage_url": "https://github.com/hamedtkd/QueueMint"
+  "homepage_url": "https://github.com/hamedtkd/QueueMint",
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net; font-src 'self' data: https://fonts.gstatic.com https://cdn.jsdelivr.net;"
+  }
 }

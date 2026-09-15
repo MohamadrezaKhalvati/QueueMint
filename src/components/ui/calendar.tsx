@@ -61,7 +61,7 @@ export function Calendar({ selected, month, onMonthChange, onSelect, locale = "e
               disabled={isDisabled}
               onClick={() => onSelect(date)}
               className={cn(
-                "grid size-9 place-items-center rounded-lg text-xs outline-none transition hover:bg-accent focus-visible:ring-[3px] focus-visible:ring-ring/25 disabled:pointer-events-none disabled:opacity-30",
+                "grid size-9 place-items-center rounded-[var(--qm-control-radius)] text-xs outline-none transition hover:bg-accent focus-visible:ring-[3px] focus-visible:ring-ring/25 disabled:pointer-events-none disabled:opacity-30",
                 outside && "text-muted-foreground/45",
                 isToday && !isSelected && "font-semibold text-primary",
                 isSelected && "bg-primary font-semibold text-primary-foreground hover:bg-primary/92",

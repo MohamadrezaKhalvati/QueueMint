@@ -84,7 +84,7 @@ export function CaptureRecorder({ standalone, labels, onRecorded, onOpenFullscre
   }
 
   return (
-    <div className="rounded-xl border bg-card p-3">
+    <div className="rounded-[var(--qm-panel-radius)] border bg-card p-3">
       <div className="flex flex-wrap items-center gap-2">
         {recording ? <Button variant="destructive" onClick={stop}><CircleStop className="size-4" />{labels.stop} · {seconds}s</Button> : <Button variant="outline" onClick={() => void start()}><Video className="size-4" />{labels.record}</Button>}
         <Button variant={micEnabled ? "secondary" : "ghost"} size="sm" disabled={recording} onClick={() => setMicEnabled((value) => !value)} title={micEnabled ? labels.microphone : labels.noMicrophone}>{micEnabled ? <Mic className="size-4" /> : <MicOff className="size-4" />}{micEnabled ? labels.microphone : labels.noMicrophone}</Button>

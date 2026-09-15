@@ -3,23 +3,27 @@ import { useEffect } from "react"
 import type { LocalAttachment } from "@/components/attachment-picker"
 import { accentForDarkMode, foregroundForHex, type DynamicFieldDraft, type Mode, type Placement } from "@/features/bulk/bulk-utils"
 import { getBulkEditableFields } from "@/lib/jira"
+import { ensureAppearanceFonts } from "@/features/customization/font-loader"
 import { loadState, saveState, type ActivityEntry, type AutomationRule, type SavedIssueView, type SavedWorkspaceAction } from "@/lib/storage"
 import { LEGACY_SAMPLE_JSON } from "@/sample"
 import type {
-  AppLocale, AppTheme, BulkIssue, BulkPayload, CreateRunResult, DensityMode, JiraEditableField,
-  JiraIssueSearchResult, JiraLiveIssue, JiraMetadata, JiraSprint, RadiusMode, ReviewLayout,
+  AppLocale, AppTheme, BodyFontMode, BulkIssue, BulkPayload, CreateRunResult, DensityMode, HeadingFontMode, JiraEditableField,
+  JiraIssueSearchResult, JiraLiveIssue, JiraMetadata, JiraSprint, NeutralTone, RadiusMode, ReviewLayout, SidebarAccentMode, SidebarStyle, SurfaceStyle,
 } from "@/types"
 import type { StateSetter } from "./types"
 
 type LifecycleOptions = {
   jsonText: string; payload: BulkPayload | undefined; selectedBoardId: number | null; theme: AppTheme; locale: AppLocale; accentColor: string
-  reviewLayout: ReviewLayout; gridColumns: 2 | 3 | 4; density: DensityMode; radius: RadiusMode; mode: Mode; lastCreatedKeys: string[]; onboardingComplete: boolean
+  reviewLayout: ReviewLayout; gridColumns: 2 | 3 | 4; density: DensityMode; radius: RadiusMode; neutralTone: NeutralTone; bodyFont: BodyFontMode; headingFont: HeadingFontMode
+  sidebarStyle: SidebarStyle; sidebarAccent: SidebarAccentMode; surfaceStyle: SurfaceStyle; mode: Mode; lastCreatedKeys: string[]; onboardingComplete: boolean
   savedActions: SavedWorkspaceAction[]; savedViews: SavedIssueView[]; automationRules: AutomationRule[]; activityLog: ActivityEntry[]; hydrated: boolean
   metadata: JiraMetadata | null; issueCount: number; selectedIndex: number; sprints: JiraSprint[]; selectedProjectKey: string | undefined
   liveBulkOpen: boolean; liveSelectedKeys: Set<string>; liveIssues: JiraLiveIssue[]; quickIssue: BulkIssue; quickSprintId: number | null | undefined; loadingProject: boolean
   issueTypes: Array<{ name: string }>; connect: (showFeedback?: boolean) => Promise<boolean>; loadProjectContext: (key: string) => Promise<void>; loadLiveBoard: () => Promise<void>
   setJsonText: StateSetter<string>; setSelectedBoardId: StateSetter<number | null>; setLocale: StateSetter<AppLocale>; setTheme: StateSetter<AppTheme>
-  setAccentColor: StateSetter<string>; setReviewLayout: StateSetter<ReviewLayout>; setGridColumns: StateSetter<2 | 3 | 4>; setDensity: StateSetter<DensityMode>; setRadius: StateSetter<RadiusMode>; setMode: StateSetter<Mode>
+  setAccentColor: StateSetter<string>; setReviewLayout: StateSetter<ReviewLayout>; setGridColumns: StateSetter<2 | 3 | 4>; setDensity: StateSetter<DensityMode>; setRadius: StateSetter<RadiusMode>
+  setNeutralTone: StateSetter<NeutralTone>; setBodyFont: StateSetter<BodyFontMode>; setHeadingFont: StateSetter<HeadingFontMode>; setSidebarStyle: StateSetter<SidebarStyle>
+  setSidebarAccent: StateSetter<SidebarAccentMode>; setSurfaceStyle: StateSetter<SurfaceStyle>; setMode: StateSetter<Mode>
   setLastCreatedKeys: StateSetter<string[]>; setLiveSelectedKeys: StateSetter<Set<string>>; setSavedActions: StateSetter<SavedWorkspaceAction[]>; setSavedViews: StateSetter<SavedIssueView[]>
   setAutomationRules: StateSetter<AutomationRule[]>; setActivityLog: StateSetter<ActivityEntry[]>; setOnboardingComplete: StateSetter<boolean>; setHydrated: StateSetter<boolean>
   setSelectedIndex: StateSetter<number>; setSelectedForCreate: StateSetter<Set<number>>; setDuplicateProjectIssues: StateSetter<JiraIssueSearchResult[]>; setDuplicateCheckedSummary: StateSetter<string>
@@ -35,7 +39,9 @@ export function useAppLifecycle(options: LifecycleOptions) {
       if (state.jsonText && !legacyBundledSample) o.setJsonText(state.jsonText)
       if (state.selectedBoardId && !legacyBundledSample) o.setSelectedBoardId(state.selectedBoardId)
       if (state.locale) o.setLocale(state.locale); if (state.theme) o.setTheme(state.theme); if (state.accentColor) o.setAccentColor(state.accentColor)
-      if (state.reviewLayout) o.setReviewLayout(state.reviewLayout); if (state.gridColumns) o.setGridColumns(state.gridColumns); if (state.density) o.setDensity(state.density); if (state.radius) o.setRadius(state.radius); if (state.lastMode) o.setMode(state.lastMode)
+      if (state.reviewLayout) o.setReviewLayout(state.reviewLayout); if (state.gridColumns) o.setGridColumns(state.gridColumns); if (state.density) o.setDensity(state.density); if (state.radius) o.setRadius(state.radius)
+      if (state.neutralTone) o.setNeutralTone(state.neutralTone); if (state.bodyFont) o.setBodyFont(state.bodyFont); if (state.headingFont) o.setHeadingFont(state.headingFont)
+      if (state.sidebarStyle) o.setSidebarStyle(state.sidebarStyle); if (state.sidebarAccent) o.setSidebarAccent(state.sidebarAccent); if (state.surfaceStyle) o.setSurfaceStyle(state.surfaceStyle); if (state.lastMode) o.setMode(state.lastMode)
       if (state.lastCreatedKeys?.length) { o.setLastCreatedKeys(state.lastCreatedKeys); o.setLiveSelectedKeys(new Set(state.lastCreatedKeys)) }
       if (state.savedActions?.length) o.setSavedActions(state.savedActions); if (state.savedViews?.length) o.setSavedViews(state.savedViews)
       if (state.automationRules?.length) o.setAutomationRules(state.automationRules); if (state.activityLog?.length) o.setActivityLog(state.activityLog)
@@ -57,18 +63,23 @@ export function useAppLifecycle(options: LifecycleOptions) {
   }, [o.theme, o.accentColor])
 
   useEffect(() => {
-    document.documentElement.lang = o.locale; document.documentElement.dir = o.locale === "fa" ? "rtl" : "ltr"; document.documentElement.dataset.density = o.density; document.documentElement.dataset.radius = o.radius
-  }, [o.locale, o.density, o.radius])
+    const root = document.documentElement
+    root.lang = o.locale; root.dir = o.locale === "fa" ? "rtl" : "ltr"; root.dataset.density = o.density; root.dataset.radius = o.radius
+    root.dataset.tone = o.neutralTone; root.dataset.bodyFont = o.bodyFont; root.dataset.headingFont = o.headingFont
+    root.dataset.sidebarStyle = o.sidebarStyle; root.dataset.sidebarAccent = o.sidebarAccent; root.dataset.surface = o.surfaceStyle
+    ensureAppearanceFonts(o.locale, o.bodyFont, o.headingFont)
+  }, [o.locale, o.density, o.radius, o.neutralTone, o.bodyFont, o.headingFont, o.sidebarStyle, o.sidebarAccent, o.surfaceStyle])
 
   useEffect(() => {
     const timer = window.setTimeout(() => void saveState({
       jsonText: o.jsonText, selectedProject: o.payload?.project, selectedBoardId: o.selectedBoardId ?? undefined,
       theme: o.theme, locale: o.locale, accentColor: o.accentColor, reviewLayout: o.reviewLayout, gridColumns: o.gridColumns,
-      density: o.density, radius: o.radius, lastMode: o.mode, lastCreatedKeys: o.lastCreatedKeys, onboardingComplete: o.onboardingComplete,
+      density: o.density, radius: o.radius, neutralTone: o.neutralTone, bodyFont: o.bodyFont, headingFont: o.headingFont, sidebarStyle: o.sidebarStyle,
+      sidebarAccent: o.sidebarAccent, surfaceStyle: o.surfaceStyle, lastMode: o.mode, lastCreatedKeys: o.lastCreatedKeys, onboardingComplete: o.onboardingComplete,
       savedActions: o.savedActions, savedViews: o.savedViews, automationRules: o.automationRules, activityLog: o.activityLog,
     }), 250)
     return () => window.clearTimeout(timer)
-  }, [o.jsonText, o.payload?.project, o.selectedBoardId, o.theme, o.locale, o.accentColor, o.reviewLayout, o.gridColumns, o.density, o.radius, o.mode, o.lastCreatedKeys, o.onboardingComplete, o.savedActions, o.savedViews, o.automationRules, o.activityLog])
+  }, [o.jsonText, o.payload?.project, o.selectedBoardId, o.theme, o.locale, o.accentColor, o.reviewLayout, o.gridColumns, o.density, o.radius, o.neutralTone, o.bodyFont, o.headingFont, o.sidebarStyle, o.sidebarAccent, o.surfaceStyle, o.mode, o.lastCreatedKeys, o.onboardingComplete, o.savedActions, o.savedViews, o.automationRules, o.activityLog])
 
   useEffect(() => { if (o.hydrated) void o.connect(false) }, [o.hydrated])
   useEffect(() => {

@@ -26,7 +26,7 @@ export function DynamicBulkFieldEditor({ field, draft, t, onChange, onRemove }: 
   }
 
   function renderEditor() {
-    if (draft.mode === "clear") return <div className="rounded-lg border border-dashed bg-background px-3 py-2 text-xs text-muted-foreground">{t.clearValue}</div>
+    if (draft.mode === "clear") return <div className="rounded-[var(--qm-control-radius)] border border-dashed bg-background px-3 py-2 text-xs text-muted-foreground">{t.clearValue}</div>
 
     if (allowed.length && !isArray) {
       const encoded = allowed.findIndex((value) => JSON.stringify(allowedValuePayload(value)) === JSON.stringify(draft.value))
@@ -36,7 +36,7 @@ export function DynamicBulkFieldEditor({ field, draft, t, onChange, onRemove }: 
     if (allowed.length && isArray) {
       const selected = Array.isArray(draft.value) ? draft.value : []
       return (
-        <div className="max-h-44 overflow-auto rounded-lg border bg-background p-2">
+        <div className="max-h-44 overflow-auto rounded-[var(--qm-control-radius)] border bg-background p-2">
           <div className="flex flex-wrap gap-1.5">
             {allowed.map((raw, index) => {
               const payload = allowedValuePayload(raw)
@@ -62,7 +62,7 @@ export function DynamicBulkFieldEditor({ field, draft, t, onChange, onRemove }: 
   }
 
   return (
-    <div className="rounded-xl border bg-background p-3">
+    <div className="rounded-[var(--qm-panel-radius)] border bg-background p-3">
       <div className="mb-2 flex items-start gap-2">
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-2"><span className="text-sm font-medium">{field.name}</span>{field.required ? <Badge variant="secondary" className="px-1.5 py-0 text-[10px]">{t.fieldRequired}</Badge> : null}</div>
@@ -70,7 +70,7 @@ export function DynamicBulkFieldEditor({ field, draft, t, onChange, onRemove }: 
         </div>
         <Button type="button" variant="ghost" size="icon-sm" onClick={onRemove} aria-label={t.removeField}><XCircle className="size-4" /></Button>
       </div>
-      <div className="mb-2 inline-flex rounded-lg border bg-muted/20 p-1">
+      <div className="mb-2 inline-flex rounded-[var(--qm-control-radius)] border bg-muted/20 p-1">
         <Button type="button" size="sm" variant={draft.mode === "set" ? "secondary" : "ghost"} onClick={() => setMode("set")}>{t.setValue}</Button>
         <Button type="button" size="sm" variant={draft.mode === "clear" ? "secondary" : "ghost"} disabled={field.required} onClick={() => setMode("clear")}>{t.clearValue}</Button>
       </div>

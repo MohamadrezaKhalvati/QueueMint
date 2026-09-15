@@ -1,0 +1,79 @@
+/* Exact font families exposed by the shadcn/create font menu. Selected web fonts load on demand; these stacks remain the offline/system fallback. */
+:is(html, .qm-custom-preview)[data-body-font="geist"] { --app-font-sans: "Geist", Inter, ui-sans-serif, system-ui, sans-serif; }
+:is(html, .qm-custom-preview)[data-heading-font="geist"] { --app-font-heading: "Geist", Inter, ui-sans-serif, system-ui, sans-serif; }
+:is(html, .qm-custom-preview)[data-body-font="inter"] { --app-font-sans: "Inter", ui-sans-serif, system-ui, sans-serif; }
+:is(html, .qm-custom-preview)[data-heading-font="inter"] { --app-font-heading: "Inter", ui-sans-serif, system-ui, sans-serif; }
+:is(html, .qm-custom-preview)[data-body-font="noto-sans"] { --app-font-sans: "Noto Sans", ui-sans-serif, system-ui, sans-serif; }
+:is(html, .qm-custom-preview)[data-heading-font="noto-sans"] { --app-font-heading: "Noto Sans", ui-sans-serif, system-ui, sans-serif; }
+:is(html, .qm-custom-preview)[data-body-font="nunito-sans"] { --app-font-sans: "Nunito Sans", ui-sans-serif, system-ui, sans-serif; }
+:is(html, .qm-custom-preview)[data-heading-font="nunito-sans"] { --app-font-heading: "Nunito Sans", ui-sans-serif, system-ui, sans-serif; }
+:is(html, .qm-custom-preview)[data-body-font="figtree"] { --app-font-sans: "Figtree", ui-sans-serif, system-ui, sans-serif; }
+:is(html, .qm-custom-preview)[data-heading-font="figtree"] { --app-font-heading: "Figtree", ui-sans-serif, system-ui, sans-serif; }
+:is(html, .qm-custom-preview)[data-body-font="roboto"] { --app-font-sans: "Roboto", Arial, ui-sans-serif, sans-serif; }
+:is(html, .qm-custom-preview)[data-heading-font="roboto"] { --app-font-heading: "Roboto", Arial, ui-sans-serif, sans-serif; }
+:is(html, .qm-custom-preview)[data-body-font="raleway"] { --app-font-sans: "Raleway", ui-sans-serif, system-ui, sans-serif; }
+:is(html, .qm-custom-preview)[data-heading-font="raleway"] { --app-font-heading: "Raleway", ui-sans-serif, system-ui, sans-serif; }
+:is(html, .qm-custom-preview)[data-body-font="dm-sans"] { --app-font-sans: "DM Sans", ui-sans-serif, system-ui, sans-serif; }
+:is(html, .qm-custom-preview)[data-heading-font="dm-sans"] { --app-font-heading: "DM Sans", ui-sans-serif, system-ui, sans-serif; }
+:is(html, .qm-custom-preview)[data-body-font="public-sans"] { --app-font-sans: "Public Sans", ui-sans-serif, system-ui, sans-serif; }
+:is(html, .qm-custom-preview)[data-heading-font="public-sans"] { --app-font-heading: "Public Sans", ui-sans-serif, system-ui, sans-serif; }
+:is(html, .qm-custom-preview)[data-body-font="outfit"] { --app-font-sans: "Outfit", ui-sans-serif, system-ui, sans-serif; }
+:is(html, .qm-custom-preview)[data-heading-font="outfit"] { --app-font-heading: "Outfit", ui-sans-serif, system-ui, sans-serif; }
+:is(html, .qm-custom-preview)[data-body-font="oxanium"] { --app-font-sans: "Oxanium", ui-sans-serif, system-ui, sans-serif; }
+:is(html, .qm-custom-preview)[data-heading-font="oxanium"] { --app-font-heading: "Oxanium", ui-sans-serif, system-ui, sans-serif; }
+:is(html, .qm-custom-preview)[data-body-font="manrope"] { --app-font-sans: "Manrope", ui-sans-serif, system-ui, sans-serif; }
+:is(html, .qm-custom-preview)[data-heading-font="manrope"] { --app-font-heading: "Manrope", ui-sans-serif, system-ui, sans-serif; }
+:is(html, .qm-custom-preview)[data-body-font="space-grotesk"] { --app-font-sans: "Space Grotesk", ui-sans-serif, system-ui, sans-serif; }
+:is(html, .qm-custom-preview)[data-heading-font="space-grotesk"] { --app-font-heading: "Space Grotesk", ui-sans-serif, system-ui, sans-serif; }
+:is(html, .qm-custom-preview)[data-body-font="montserrat"] { --app-font-sans: "Montserrat", ui-sans-serif, system-ui, sans-serif; }
+:is(html, .qm-custom-preview)[data-heading-font="montserrat"] { --app-font-heading: "Montserrat", ui-sans-serif, system-ui, sans-serif; }
+:is(html, .qm-custom-preview)[data-body-font="ibm-plex-sans"] { --app-font-sans: "IBM Plex Sans", ui-sans-serif, system-ui, sans-serif; }
+:is(html, .qm-custom-preview)[data-heading-font="ibm-plex-sans"] { --app-font-heading: "IBM Plex Sans", ui-sans-serif, system-ui, sans-serif; }
+:is(html, .qm-custom-preview)[data-body-font="source-sans-3"] { --app-font-sans: "Source Sans 3", ui-sans-serif, system-ui, sans-serif; }
+:is(html, .qm-custom-preview)[data-heading-font="source-sans-3"] { --app-font-heading: "Source Sans 3", ui-sans-serif, system-ui, sans-serif; }
+:is(html, .qm-custom-preview)[data-body-font="instrument-sans"] { --app-font-sans: "Instrument Sans", ui-sans-serif, system-ui, sans-serif; }
+:is(html, .qm-custom-preview)[data-heading-font="instrument-sans"] { --app-font-heading: "Instrument Sans", ui-sans-serif, system-ui, sans-serif; }
+:is(html, .qm-custom-preview)[data-body-font="geist-mono"] { --app-font-sans: "Geist Mono", "SFMono-Regular", Consolas, ui-monospace, monospace; }
+:is(html, .qm-custom-preview)[data-heading-font="geist-mono"] { --app-font-heading: "Geist Mono", "SFMono-Regular", Consolas, ui-monospace, monospace; }
+:is(html, .qm-custom-preview)[data-body-font="jetbrains-mono"] { --app-font-sans: "JetBrains Mono", "SFMono-Regular", Consolas, ui-monospace, monospace; }
+:is(html, .qm-custom-preview)[data-heading-font="jetbrains-mono"] { --app-font-heading: "JetBrains Mono", "SFMono-Regular", Consolas, ui-monospace, monospace; }
+:is(html, .qm-custom-preview)[data-body-font="noto-serif"] { --app-font-sans: "Noto Serif", Georgia, serif; }
+:is(html, .qm-custom-preview)[data-heading-font="noto-serif"] { --app-font-heading: "Noto Serif", Georgia, serif; }
+:is(html, .qm-custom-preview)[data-body-font="roboto-slab"] { --app-font-sans: "Roboto Slab", Georgia, serif; }
+:is(html, .qm-custom-preview)[data-heading-font="roboto-slab"] { --app-font-heading: "Roboto Slab", Georgia, serif; }
+:is(html, .qm-custom-preview)[data-body-font="merriweather"] { --app-font-sans: "Merriweather", Georgia, serif; }
+:is(html, .qm-custom-preview)[data-heading-font="merriweather"] { --app-font-heading: "Merriweather", Georgia, serif; }
+:is(html, .qm-custom-preview)[data-body-font="lora"] { --app-font-sans: "Lora", Georgia, serif; }
+:is(html, .qm-custom-preview)[data-heading-font="lora"] { --app-font-heading: "Lora", Georgia, serif; }
+:is(html, .qm-custom-preview)[data-body-font="playfair-display"] { --app-font-sans: "Playfair Display", Georgia, serif; }
+:is(html, .qm-custom-preview)[data-heading-font="playfair-display"] { --app-font-heading: "Playfair Display", Georgia, serif; }
+:is(html, .qm-custom-preview)[data-body-font="eb-garamond"] { --app-font-sans: "EB Garamond", Garamond, Georgia, serif; }
+:is(html, .qm-custom-preview)[data-heading-font="eb-garamond"] { --app-font-heading: "EB Garamond", Garamond, Georgia, serif; }
+:is(html, .qm-custom-preview)[data-body-font="instrument-serif"] { --app-font-sans: "Instrument Serif", Georgia, serif; }
+:is(html, .qm-custom-preview)[data-heading-font="instrument-serif"] { --app-font-heading: "Instrument Serif", Georgia, serif; }
+.qm-custom-menu-sample.is-font-geist { font-family: "Geist", Inter, ui-sans-serif, system-ui, sans-serif; }
+.qm-custom-menu-sample.is-font-inter { font-family: "Inter", ui-sans-serif, system-ui, sans-serif; }
+.qm-custom-menu-sample.is-font-noto-sans { font-family: "Noto Sans", ui-sans-serif, system-ui, sans-serif; }
+.qm-custom-menu-sample.is-font-nunito-sans { font-family: "Nunito Sans", ui-sans-serif, system-ui, sans-serif; }
+.qm-custom-menu-sample.is-font-figtree { font-family: "Figtree", ui-sans-serif, system-ui, sans-serif; }
+.qm-custom-menu-sample.is-font-roboto { font-family: "Roboto", Arial, ui-sans-serif, sans-serif; }
+.qm-custom-menu-sample.is-font-raleway { font-family: "Raleway", ui-sans-serif, system-ui, sans-serif; }
+.qm-custom-menu-sample.is-font-dm-sans { font-family: "DM Sans", ui-sans-serif, system-ui, sans-serif; }
+.qm-custom-menu-sample.is-font-public-sans { font-family: "Public Sans", ui-sans-serif, system-ui, sans-serif; }
+.qm-custom-menu-sample.is-font-outfit { font-family: "Outfit", ui-sans-serif, system-ui, sans-serif; }
+.qm-custom-menu-sample.is-font-oxanium { font-family: "Oxanium", ui-sans-serif, system-ui, sans-serif; }
+.qm-custom-menu-sample.is-font-manrope { font-family: "Manrope", ui-sans-serif, system-ui, sans-serif; }
+.qm-custom-menu-sample.is-font-space-grotesk { font-family: "Space Grotesk", ui-sans-serif, system-ui, sans-serif; }
+.qm-custom-menu-sample.is-font-montserrat { font-family: "Montserrat", ui-sans-serif, system-ui, sans-serif; }
+.qm-custom-menu-sample.is-font-ibm-plex-sans { font-family: "IBM Plex Sans", ui-sans-serif, system-ui, sans-serif; }
+.qm-custom-menu-sample.is-font-source-sans-3 { font-family: "Source Sans 3", ui-sans-serif, system-ui, sans-serif; }
+.qm-custom-menu-sample.is-font-instrument-sans { font-family: "Instrument Sans", ui-sans-serif, system-ui, sans-serif; }
+.qm-custom-menu-sample.is-font-geist-mono { font-family: "Geist Mono", "SFMono-Regular", Consolas, ui-monospace, monospace; }
+.qm-custom-menu-sample.is-font-jetbrains-mono { font-family: "JetBrains Mono", "SFMono-Regular", Consolas, ui-monospace, monospace; }
+.qm-custom-menu-sample.is-font-noto-serif { font-family: "Noto Serif", Georgia, serif; }
+.qm-custom-menu-sample.is-font-roboto-slab { font-family: "Roboto Slab", Georgia, serif; }
+.qm-custom-menu-sample.is-font-merriweather { font-family: "Merriweather", Georgia, serif; }
+.qm-custom-menu-sample.is-font-lora { font-family: "Lora", Georgia, serif; }
+.qm-custom-menu-sample.is-font-playfair-display { font-family: "Playfair Display", Georgia, serif; }
+.qm-custom-menu-sample.is-font-eb-garamond { font-family: "EB Garamond", Garamond, Georgia, serif; }
+.qm-custom-menu-sample.is-font-instrument-serif { font-family: "Instrument Serif", Georgia, serif; }

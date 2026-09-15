@@ -45,10 +45,10 @@ export function JiraOnboardingSheet({
               type="button"
               onClick={() => onConnect(candidateOrigin, status?.candidate?.tabId)}
               disabled={loading}
-              className="w-full rounded-xl border bg-card p-4 text-start shadow-xs transition hover:border-primary/40 hover:bg-muted/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              className="w-full rounded-[var(--qm-panel-radius)] border bg-card p-4 text-start shadow-xs transition hover:border-primary/40 hover:bg-muted/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
               <div className="flex items-start gap-3">
-                <div className="grid size-10 shrink-0 place-items-center rounded-lg bg-primary/10 text-primary"><SquareKanban className="size-5" /></div>
+                <div className="grid size-10 shrink-0 place-items-center rounded-[var(--qm-control-radius)] bg-primary/10 text-primary"><SquareKanban className="size-5" /></div>
                 <div className="min-w-0">
                   <div className="font-medium">{t.currentJiraTab}</div>
                   <div className="mt-1 truncate text-sm text-muted-foreground" dir="ltr">{status?.candidate?.title || candidateOrigin}</div>

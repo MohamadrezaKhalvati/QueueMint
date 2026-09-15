@@ -41,3 +41,7 @@ QueueMint diagnostics remain lightweight and opt-in. Do not add Chrome `debugger
 ## Release gate
 
 `npm run check:release` verifies the intended required permission set, rejects static `host_permissions`, rejects selected high-risk permissions, and verifies that the public privacy/security documents exist.
+
+## Appearance font delivery
+
+Appearance Studio can load a selected font as an ordinary HTTPS stylesheet/font subresource from Google Fonts or a commit-pinned jsDelivr GitHub resource. This does not add a browser `host_permission`, and the extension CSP keeps executable scripts restricted to `self`. System/local fallbacks remain available when the network is unavailable.

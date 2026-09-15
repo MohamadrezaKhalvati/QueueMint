@@ -33,19 +33,19 @@ export function AutomationQuickStart({ tx, priorities, canAssignToMe, onCreateQu
   }
 
   return (
-    <section className="rounded-2xl border bg-card p-4 sm:p-5">
+    <section className="rounded-[var(--qm-panel-radius)] border bg-card p-4 sm:p-5">
       <div className="mb-4 flex items-start gap-3">
-        <div className="grid size-9 shrink-0 place-items-center rounded-lg bg-primary/10 text-primary"><Sparkles className="size-4" /></div>
+        <div className="grid size-9 shrink-0 place-items-center rounded-[var(--qm-control-radius)] bg-primary/10 text-primary"><Sparkles className="size-4" /></div>
         <div><h2 className="text-base font-semibold">{tx.quickStartTitle}</h2><p className="mt-1 max-w-2xl text-xs leading-5 text-muted-foreground">{tx.quickStartHint}</p></div>
       </div>
 
       <div className="mb-4 grid gap-2 sm:grid-cols-3">
         {[{ text: tx.flowAction, icon: Plus }, { text: tx.flowRule, icon: SlidersHorizontal }, { text: tx.flowReview, icon: ListChecks }].map(({ text, icon: Icon }) => (
-          <div key={text} className="flex items-center gap-2 rounded-xl border bg-muted/10 px-3 py-2.5 text-xs font-medium"><Icon className="size-3.5 text-primary" />{text}</div>
+          <div key={text} className="flex items-center gap-2 rounded-[var(--qm-panel-radius)] border bg-muted/10 px-3 py-2.5 text-xs font-medium"><Icon className="size-3.5 text-primary" />{text}</div>
         ))}
       </div>
 
-      <div className="rounded-xl border bg-background p-3.5">
+      <div className="rounded-[var(--qm-panel-radius)] border bg-background p-3.5">
         <div className="grid gap-2 sm:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_auto]">
           <SimpleSelect value={kind} onValueChange={(value) => setKind(value as QuickAutomationActionKind)} items={actions} />
           {kind === "set-priority" ? (

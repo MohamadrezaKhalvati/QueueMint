@@ -9,7 +9,6 @@
     "typecheck": "tsc -b",
     "test": "node --experimental-strip-types --test",
     "preview": "vite preview",
-    "font:install": "node ./scripts/install-samim.mjs",
     "check:architecture": "node ./scripts/check-file-size.mjs",
     "check": "npm run check:architecture && npm run typecheck && npm test",
     "verify": "npm run check:architecture && npm run typecheck && npm test && npm run build && npm run check:release",

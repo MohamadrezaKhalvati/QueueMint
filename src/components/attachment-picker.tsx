@@ -105,7 +105,7 @@ export function AttachmentPicker({ files, onChange, label, helper, addLabel, dro
 
   return (
     <div
-      className={cn("space-y-3 rounded-xl transition-[background-color,border-color,box-shadow]", dragActive && "bg-primary/5 ring-2 ring-primary/25", className)}
+      className={cn("qm-attachment-picker space-y-3 rounded-[var(--qm-panel-radius)] transition-[background-color,border-color,box-shadow]", dragActive && "bg-primary/5 ring-2 ring-primary/25", className)}
       onDragEnter={beginDrag}
       onDragOver={continueDrag}
       onDragLeave={endDrag}
@@ -119,7 +119,7 @@ export function AttachmentPicker({ files, onChange, label, helper, addLabel, dro
       {files.length ? (
         <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
           {files.map((item) => (
-            <div key={item.id} className="group relative overflow-hidden rounded-lg border bg-muted/30">
+            <div key={item.id} className="qm-attachment-file group relative overflow-hidden rounded-[var(--qm-control-radius)] border bg-muted/30">
               <div className="aspect-[4/3] overflow-hidden bg-muted/40">
                 {item.previewUrl ? (
                   <img src={item.previewUrl} alt="" className="h-full w-full object-cover" />
@@ -149,13 +149,13 @@ export function AttachmentPicker({ files, onChange, label, helper, addLabel, dro
         type="button"
         variant="outline"
         className={cn(
-          "min-h-24 h-auto w-full cursor-pointer justify-start whitespace-normal border-dashed bg-muted/15 px-4 text-muted-foreground transition-colors hover:border-primary/45 hover:bg-primary/5 hover:text-foreground",
+          "qm-upload-control min-h-24 h-auto w-full cursor-pointer justify-start whitespace-normal border-dashed bg-muted/15 px-4 text-muted-foreground transition-colors hover:border-primary/45 hover:bg-primary/5 hover:text-foreground",
           dragActive && "border-primary bg-primary/10 text-foreground",
         )}
         data-drag-active={dragActive ? "true" : undefined}
         onClick={() => inputRef.current?.click()}
       >
-        <span className="grid size-9 shrink-0 place-items-center rounded-lg bg-background shadow-xs"><UploadCloud className="size-4" /></span>
+        <span className="grid size-9 shrink-0 place-items-center rounded-[var(--qm-control-radius)] bg-background shadow-xs"><UploadCloud className="size-4" /></span>
         <span className="min-w-0 text-start">
           <span className="block font-medium text-foreground">{dragActive ? dropActiveLabel ?? "Drop to attach" : dropLabel ?? addLabel}</span>
           <span className="mt-0.5 block text-xs">{formatHint ?? FILE_HINT}</span>

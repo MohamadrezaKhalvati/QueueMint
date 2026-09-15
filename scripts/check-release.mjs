@@ -27,6 +27,13 @@ const forbidden = new Set(["debugger", "webRequest", "webRequestBlocking", "tabs
 for (const permission of manifest.permissions ?? []) if (forbidden.has(permission)) fail(`High-risk permission must not be required: ${permission}`)
 if (Array.isArray(manifest.host_permissions) && manifest.host_permissions.length) fail("Static host_permissions are not allowed; QueueMint uses optional runtime host access.")
 
+const extensionCsp = String(manifest.content_security_policy?.extension_pages ?? "")
+if (extensionCsp && !/script-src\s+'self'/.test(extensionCsp)) fail("Extension CSP must keep scripts self-hosted.")
+if (/script-src[^;]*https?:\/\//.test(extensionCsp)) fail("Extension CSP must not allow remote scripts.")
+for (const host of ["https://fonts.googleapis.com", "https://fonts.gstatic.com", "https://cdn.jsdelivr.net"]) {
+  if (!extensionCsp.includes(host)) fail(`Appearance font CSP source is missing: ${host}`)
+}
+
 const optionalHosts = new Set(manifest.optional_host_permissions ?? [])
 for (const required of ["https://*/*", "http://*/*"]) if (!optionalHosts.has(required)) fail(`Missing runtime-discovered optional host pattern: ${required}`)
 if (optionalHosts.has("<all_urls>")) fail("Use scheme-specific optional host patterns instead of <all_urls>.")
@@ -84,6 +91,7 @@ note(`Manifest ${manifestVersion}${manifest.version_name ? ` (${manifest.version
 note(`Required permissions: ${(manifest.permissions ?? []).join(", ")}`)
 note(`Optional hosts: ${(manifest.optional_host_permissions ?? []).join(", ")}`)
 note("Security regression tests and scheduled dependency audit are present.")
+note("Appearance fonts load on demand from font-only remote resources; remote scripts remain blocked by CSP.")
 note("MIT license file is present.")
 
 if (failures.length) {

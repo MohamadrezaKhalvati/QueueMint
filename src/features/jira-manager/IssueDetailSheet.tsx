@@ -130,9 +130,9 @@ export function IssueDetailSheet({
         </SheetHeader>
         <SheetBody className="space-y-5">
           {loading ? (
-            <div className="grid min-h-56 place-items-center rounded-xl border border-dashed text-sm text-muted-foreground"><LoaderCircle className="me-2 inline size-4 animate-spin" />{locale === "fa" ? "در حال دریافت اطلاعات از Jira..." : "Loading issue from Jira..."}</div>
+            <div className="grid min-h-56 place-items-center rounded-[var(--qm-panel-radius)] border border-dashed text-sm text-muted-foreground"><LoaderCircle className="me-2 inline size-4 animate-spin" />{locale === "fa" ? "در حال دریافت اطلاعات از Jira..." : "Loading issue from Jira..."}</div>
           ) : error ? (
-            <div className="rounded-xl border border-destructive/25 bg-destructive/5 p-4 text-sm text-destructive">{error}</div>
+            <div className="rounded-[var(--qm-panel-radius)] border border-destructive/25 bg-destructive/5 p-4 text-sm text-destructive">{error}</div>
           ) : details ? (
             <>
               <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
@@ -142,17 +142,17 @@ export function IssueDetailSheet({
               </div>
 
               <div className="grid gap-3 sm:grid-cols-2">
-                <div className="rounded-xl border p-3">
+                <div className="rounded-[var(--qm-panel-radius)] border p-3">
                   <div className="text-xs text-muted-foreground">{locale === "fa" ? "مسئول" : "Assignee"}</div>
                   <div className="mt-2 flex items-center gap-2 text-sm font-medium">{assigneeName ? <><JiraUserAvatar name={assigneeName} avatarUrl={assigneeAvatar} className="size-7" /><span className="truncate">{assigneeName}</span></> : <span className="text-muted-foreground">{locale === "fa" ? "بدون مسئول" : "Unassigned"}</span>}</div>
                 </div>
-                <div className="rounded-xl border p-3">
+                <div className="rounded-[var(--qm-panel-radius)] border p-3">
                   <div className="text-xs text-muted-foreground">{locale === "fa" ? "گزارش‌دهنده" : "Reporter"}</div>
                   <div className="mt-2 flex items-center gap-2 text-sm font-medium">{reporterName ? <><JiraUserAvatar name={reporterName} avatarUrl={reporterAvatar} className="size-7" /><span className="truncate">{reporterName}</span></> : <span className="text-muted-foreground">-</span>}</div>
                 </div>
               </div>
 
-              <div className="rounded-xl border p-4">
+              <div className="rounded-[var(--qm-panel-radius)] border p-4">
                 <div className="mb-2 text-xs font-medium text-muted-foreground">{locale === "fa" ? "توضیحات" : "Description"}</div>
                 <div className="whitespace-pre-wrap break-words text-sm leading-6">{details.description?.trim() || (locale === "fa" ? "توضیحی ثبت نشده است." : "No description.")}</div>
               </div>
@@ -165,7 +165,7 @@ export function IssueDetailSheet({
               </div>
 
               {(details.labels.length || details.components.length || details.fixVersions.length) ? (
-                <div className="space-y-3 rounded-xl border p-4">
+                <div className="space-y-3 rounded-[var(--qm-panel-radius)] border p-4">
                   {details.labels.length ? <div><div className="mb-2 text-xs text-muted-foreground">Labels</div><div className="flex flex-wrap gap-1.5">{details.labels.map((label) => <Badge key={label} variant="secondary">{label}</Badge>)}</div></div> : null}
                   {details.components.length ? <div><div className="mb-2 text-xs text-muted-foreground">Components</div><div className="flex flex-wrap gap-1.5">{details.components.map((component) => <Badge key={component.id ?? component.name} variant="outline">{component.name}</Badge>)}</div></div> : null}
                   {details.fixVersions.length ? <div><div className="mb-2 text-xs text-muted-foreground">Fix versions</div><div className="flex flex-wrap gap-1.5">{details.fixVersions.map((version) => <Badge key={version.id ?? version.name} variant="outline">{version.name}</Badge>)}</div></div> : null}
@@ -177,23 +177,23 @@ export function IssueDetailSheet({
                 <DetailMetric label={locale === "fa" ? "آخرین تغییر" : "Updated"} value={formatDate(details.updated)} />
               </div>
 
-              <div className="rounded-xl border p-4">
+              <div className="rounded-[var(--qm-panel-radius)] border p-4">
                 <div className="mb-3 flex items-center justify-between gap-3"><div className="font-semibold">{locale === "fa" ? "آخرین نظرها" : "Recent comments"}</div><Badge variant="secondary">{details.comments.length}</Badge></div>
                 {details.comments.length ? <div className="space-y-3">{details.comments.slice(-5).reverse().map((comment) => {
                   const author = comment.author?.displayName ?? comment.author?.name ?? comment.author?.key ?? (locale === "fa" ? "کاربر Jira" : "Jira user")
                   const avatar = comment.author?.avatarUrls?.["24x24"] ?? comment.author?.avatarUrls?.["32x32"]
-                  return <div key={comment.id} className="rounded-lg bg-muted/20 p-3"><div className="mb-2 flex items-center gap-2"><JiraUserAvatar name={author} avatarUrl={avatar} className="size-6" /><span className="text-xs font-medium">{author}</span><span className="ms-auto text-[11px] text-muted-foreground">{formatDate(comment.created)}</span></div><div className="whitespace-pre-wrap text-sm leading-5">{comment.body || "-"}</div></div>
+                  return <div key={comment.id} className="rounded-[var(--qm-control-radius)] bg-muted/20 p-3"><div className="mb-2 flex items-center gap-2"><JiraUserAvatar name={author} avatarUrl={avatar} className="size-6" /><span className="text-xs font-medium">{author}</span><span className="ms-auto text-[11px] text-muted-foreground">{formatDate(comment.created)}</span></div><div className="whitespace-pre-wrap text-sm leading-5">{comment.body || "-"}</div></div>
                 })}</div> : <div className="text-sm text-muted-foreground">{locale === "fa" ? "نظری ثبت نشده است." : "No comments yet."}</div>}
               </div>
 
               {details.attachments.length ? (
-                <div className="rounded-xl border p-4">
+                <div className="rounded-[var(--qm-panel-radius)] border p-4">
                   <div className="mb-3 flex items-center justify-between gap-3"><div className="font-semibold">{locale === "fa" ? "فایل‌ها" : "Attachments"}</div><Badge variant="secondary">{details.attachments.length}</Badge></div>
-                  <div className="space-y-2">{details.attachments.map((attachment) => <div key={attachment.id} className="flex min-w-0 items-center gap-2 rounded-lg bg-muted/20 px-3 py-2"><Clipboard className="size-4 shrink-0 text-muted-foreground" /><span className="min-w-0 flex-1 truncate text-sm">{attachment.filename}</span>{typeof attachment.size === "number" ? <span className="text-[11px] text-muted-foreground">{Math.max(1, Math.round(attachment.size / 1024))} KB</span> : null}</div>)}</div>
+                  <div className="space-y-2">{details.attachments.map((attachment) => <div key={attachment.id} className="flex min-w-0 items-center gap-2 rounded-[var(--qm-control-radius)] bg-muted/20 px-3 py-2"><Clipboard className="size-4 shrink-0 text-muted-foreground" /><span className="min-w-0 flex-1 truncate text-sm">{attachment.filename}</span>{typeof attachment.size === "number" ? <span className="text-[11px] text-muted-foreground">{Math.max(1, Math.round(attachment.size / 1024))} KB</span> : null}</div>)}</div>
                 </div>
               ) : null}
 
-              <div className="rounded-xl border bg-muted/10 p-4">
+              <div className="rounded-[var(--qm-panel-radius)] border bg-muted/10 p-4">
                 <div className="flex flex-wrap items-center gap-2">
                   <Button variant="outline" onClick={() => window.open(jiraBrowseUrl(details.key), "_blank")}><ExternalLink className="size-4" />{locale === "fa" ? "باز کردن در Jira" : "Open in Jira"}</Button>
                   <Button variant="outline" onClick={() => setCloneMode((value) => !value)}><Copy className="size-4" />{locale === "fa" ? "کپی تسک" : "Clone issue"}</Button>
@@ -205,7 +205,7 @@ export function IssueDetailSheet({
                     <Field><FieldLabel>{locale === "fa" ? "پروژه مقصد" : "Target project"}</FieldLabel><ProjectCombobox projects={projects} value={cloneProjectKey} onValueChange={setCloneProjectKey} placeholder={locale === "fa" ? "انتخاب پروژه" : "Choose project"} emptyLabel={locale === "fa" ? "پروژه‌ای پیدا نشد" : "No projects found"} /></Field>
                     <Field><FieldLabel>{locale === "fa" ? "نوع تسک" : "Issue type"}</FieldLabel><SimpleSelect value={cloneIssueType} onValueChange={setCloneIssueType} disabled={cloneProjectLoading || !targetIssueTypes.length} items={targetIssueTypes.map((item) => ({ value: item.name, label: item.name }))} /></Field>
                     <Field><FieldLabel>{locale === "fa" ? "عنوان کپی" : "Clone summary"}</FieldLabel><Input value={cloneSummary} onChange={(event: ChangeEvent<HTMLInputElement>) => setCloneSummary(event.target.value)} /></Field>
-                    <div className="rounded-lg bg-muted/25 p-3 text-xs text-muted-foreground">{locale === "fa" ? "برای سازگاری بین پروژه‌ها، عنوان، توضیحات، اولویت و برچسب‌ها کپی می‌شوند. فایل‌ها، کامنت‌ها و فیلدهای وابسته به پروژه کپی نمی‌شوند." : "For cross-project safety, QueueMint copies summary, description, priority, and labels. Attachments, comments, and project-specific fields are not duplicated."}</div>
+                    <div className="rounded-[var(--qm-control-radius)] bg-muted/25 p-3 text-xs text-muted-foreground">{locale === "fa" ? "برای سازگاری بین پروژه‌ها، عنوان، توضیحات، اولویت و برچسب‌ها کپی می‌شوند. فایل‌ها، کامنت‌ها و فیلدهای وابسته به پروژه کپی نمی‌شوند." : "For cross-project safety, QueueMint copies summary, description, priority, and labels. Attachments, comments, and project-specific fields are not duplicated."}</div>
                     <div className="flex justify-end"><Button onClick={() => void createClone()} disabled={cloneLoading || cloneProjectLoading || !cloneProjectKey || !cloneIssueType || !cloneSummary.trim()}>{cloneLoading ? <LoaderCircle className="size-4 animate-spin" /> : <Copy className="size-4" />}{locale === "fa" ? "ساخت کپی" : "Create clone"}</Button></div>
                   </div>
                 ) : null}
@@ -219,5 +219,5 @@ export function IssueDetailSheet({
 }
 
 function DetailMetric({ label, value }: { label: string; value: string }) {
-  return <div className="min-w-0 rounded-xl border bg-muted/10 p-3"><div className="text-[11px] text-muted-foreground">{label}</div><div className="mt-1 truncate text-sm font-semibold" title={value}>{value}</div></div>
+  return <div className="min-w-0 rounded-[var(--qm-panel-radius)] border bg-muted/10 p-3"><div className="text-[11px] text-muted-foreground">{label}</div><div className="mt-1 truncate text-sm font-semibold" title={value}>{value}</div></div>
 }

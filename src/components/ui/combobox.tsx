@@ -17,7 +17,7 @@ function ComboboxContent({ className, align = "start", sideOffset = 6, ...props 
         sideOffset={sideOffset}
         collisionPadding={12}
         className={cn(
-          "z-[270] w-[var(--radix-popover-trigger-width)] min-w-[240px] rounded-xl border bg-popover p-2 text-popover-foreground shadow-xl outline-none data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95",
+          "z-[270] w-[var(--radix-popover-trigger-width)] min-w-[240px] rounded-[var(--qm-panel-radius)] border bg-popover p-2 text-popover-foreground shadow-xl outline-none data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95",
           className,
         )}
         {...props}
@@ -46,7 +46,7 @@ function ComboboxOption({ className, selected, children, ...props }: React.Compo
       role="option"
       aria-selected={selected}
       className={cn(
-        "relative flex min-h-9 w-full cursor-pointer items-center gap-2 rounded-lg px-2.5 py-2 pe-8 text-start text-sm outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:bg-accent focus-visible:ring-[2px] focus-visible:ring-ring/20",
+        "relative flex min-h-9 w-full cursor-pointer items-center gap-2 rounded-[var(--qm-control-radius)] px-2.5 py-2 pe-8 text-start text-sm outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:bg-accent focus-visible:ring-[2px] focus-visible:ring-ring/20",
         selected && "bg-accent/70",
         className,
       )}
