@@ -3,7 +3,7 @@ import { toast } from "sonner"
 import type { AppCopy } from "@/features/app-shell/app-copy"
 import {
   getAssignableUsers, getBoardsForProject, getEpicsForBoard, getProject, getProjectEpics,
-  getProjectLabels, getSprintsForBoard,
+  getProjectLabels, getSprintsForBoard, jiraErrorMessage,
 } from "@/lib/jira"
 import type { BulkPayload, JiraBoard, JiraEpic, JiraProject, JiraSprint, JiraUser } from "@/types"
 import type { StateSetter } from "./types"
@@ -40,16 +40,27 @@ export function useProjectContext(options: ProjectContextOptions) {
     setLiveIssues, setLiveSelectedKeys,
   } = options
 
+  async function loadEpics(boardId: number, projectKey: string) {
+    try { return { epics: await getEpicsForBoard(boardId), warning: "" } }
+    catch (boardError) {
+      try { return { epics: await getProjectEpics(projectKey), warning: jiraErrorMessage(boardError, "Board Epic metadata was unavailable; using project Epics instead.") } }
+      catch (projectError) { return { epics: [] as JiraEpic[], warning: jiraErrorMessage(projectError, "Jira Epic metadata could not be loaded.") } }
+    }
+  }
+
   async function loadProjectContext(projectKey: string) {
     setLoadingProject(true)
     setRemoteNote(null)
     setAutoSprintNote(false)
     try {
-      const [projectInfo, projectBoards, labels, users] = await Promise.all([
-        getProject(projectKey), getBoardsForProject(projectKey), getProjectLabels(projectKey).catch(() => []),
-        getAssignableUsers(projectKey, "", 200).catch(() => []),
+      const [projectInfo, projectBoards, labelsResult, usersResult] = await Promise.all([
+        getProject(projectKey), getBoardsForProject(projectKey),
+        getProjectLabels(projectKey).then((value) => ({ value, error: "" })).catch((error) => ({ value: [] as string[], error: jiraErrorMessage(error, "Jira labels could not be loaded.") })),
+        getAssignableUsers(projectKey, "", 200).then((value) => ({ value, error: "" })).catch((error) => ({ value: [] as JiraUser[], error: jiraErrorMessage(error, "Jira assignees could not be loaded.") })),
       ])
-      setProject(projectInfo); setBoards(projectBoards); setProjectLabels(labels); setAssignableUsers(users)
+      setProject(projectInfo); setBoards(projectBoards); setProjectLabels(labelsResult.value); setAssignableUsers(usersResult.value)
+      const optionWarnings = [labelsResult.error, usersResult.error].filter(Boolean)
+      if (optionWarnings.length) setRemoteNote(`Some Jira options could not be loaded. ${optionWarnings[0]}`)
       let preferred = projectBoards.find((board) => board.id === selectedBoardId)
       const sprintCache = new Map<number, JiraSprint[]>()
       if (!preferred && projectBoards.length > 1) {
@@ -68,11 +79,12 @@ export function useProjectContext(options: ProjectContextOptions) {
         return
       }
       setSelectedBoardId(preferred.id)
-      const [nextSprints, nextEpics] = await Promise.all([
+      const [nextSprints, epicResult] = await Promise.all([
         sprintCache.has(preferred.id) ? Promise.resolve(sprintCache.get(preferred.id) ?? []) : getSprintsForBoard(preferred.id),
-        getEpicsForBoard(preferred.id).catch(() => getProjectEpics(projectKey).catch(() => [])),
+        loadEpics(preferred.id, projectKey),
       ])
-      setSprints(nextSprints); setJiraEpics(nextEpics)
+      setSprints(nextSprints); setJiraEpics(epicResult.epics)
+      if (epicResult.warning) setRemoteNote(`Some Jira options could not be loaded. ${epicResult.warning}`)
       const currentDefaultSprint = parsedPayload?.project === projectKey ? parsedPayload.defaults?.sprint : undefined
       const activeSprints = nextSprints.filter((sprint) => sprint.state === "active")
       if (currentDefaultSprint === undefined && activeSprints.length === 1 && parsedPayload?.project === projectKey) {
@@ -83,7 +95,7 @@ export function useProjectContext(options: ProjectContextOptions) {
       }
     } catch (error) {
       setProject(null); setBoards([]); setSprints([]); setJiraEpics([]); setProjectLabels([]); setAssignableUsers([])
-      setRemoteNote(error instanceof Error ? error.message : "Unable to load project metadata.")
+      setRemoteNote(jiraErrorMessage(error, "Unable to load project metadata."))
     } finally { setLoadingProject(false) }
   }
 
@@ -97,16 +109,17 @@ export function useProjectContext(options: ProjectContextOptions) {
     setSelectedBoardId(boardId); setLiveIssues([]); setLiveSelectedKeys(new Set()); setAutoSprintNote(false); setLoadingProject(true)
     try {
       const projectKey = payload?.project
-      const [nextSprints, nextEpics] = await Promise.all([
-        getSprintsForBoard(boardId), getEpicsForBoard(boardId).catch(() => projectKey ? getProjectEpics(projectKey).catch(() => []) : []),
+      const [nextSprints, epicResult] = await Promise.all([
+        getSprintsForBoard(boardId), projectKey ? loadEpics(boardId, projectKey) : Promise.resolve({ epics: [] as JiraEpic[], warning: "" }),
       ])
-      setSprints(nextSprints); setJiraEpics(nextEpics)
+      setSprints(nextSprints); setJiraEpics(epicResult.epics)
+      if (epicResult.warning) setRemoteNote(`Some Jira options could not be loaded. ${epicResult.warning}`)
       const activeSprints = nextSprints.filter((sprint) => sprint.state === "active")
       if (activeSprints.length === 1) { updateDefaults({ sprint: activeSprints[0].id }); setAutoSprintNote(true) }
       else updateDefaults({ sprint: undefined })
     } catch (error) {
       setSprints([]); setJiraEpics([])
-      setRemoteNote(error instanceof Error ? error.message : "Unable to load board metadata.")
+      setRemoteNote(jiraErrorMessage(error, "Unable to load board metadata."))
     } finally { setLoadingProject(false) }
   }
 

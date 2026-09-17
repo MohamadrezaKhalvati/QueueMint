@@ -134,7 +134,7 @@ export function AppMainShell({ state: s, derived: d, actions: a }: Props) {
                 <WorklogScreen
                   locale={s.locale} issues={s.liveIssues} selectedKeys={s.worklogSelectedKeys} onSelectedKeysChange={s.setWorklogSelectedKeys} currentUser={s.metadata?.user}
                   projectKey={s.project?.key ?? payload?.project} projects={s.metadata?.projects ?? []} boards={s.boards} boardId={s.selectedBoardId} sprints={s.sprints} contextLoading={s.loadingProject}
-                  onProjectChange={(key) => void a.project.chooseProject(key)} onBoardChange={(id) => void a.project.chooseBoard(id)} recordActivity={a.live.recordActivity}
+                  onProjectChange={(key) => void a.project.chooseProject(key)} onBoardChange={(id) => void a.project.chooseBoard(id)} onMoveIssueStatus={a.live.transitionLiveIssue} recordActivity={a.live.recordActivity}
                 />
               </Suspense>
             ) : s.mode === "customize" ? (

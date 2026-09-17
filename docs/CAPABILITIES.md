@@ -2,7 +2,7 @@
 
 Current stable release: v1.0.2.
 
-Current release line: v1.2.1. Appearance Studio and Worklog UX fixes are included in the supported release.
+Current release line: v1.3.0. Appearance Studio and Worklog Board Sync are included in the supported release.
 
 This document describes what is implemented today. It intentionally separates current capability from the future roadmap.
 
@@ -183,6 +183,10 @@ QueueMint does not intend to replace Jira's dashboard/reporting system.
 - Labels.
 - Original estimate.
 - Remaining estimate.
+- Original/Remaining time-tracking writes are verified against Jira after update. When both are changed, Remaining Estimate is applied last if Jira requires separate writes, and partial per-issue failures are surfaced instead of being treated as success.
+- QueueMint preflights Jira edit metadata for every selected issue before Review. A field must be editable across the full selection before it can be applied; Remaining Estimate requires Time Tracking on every selected issue's Edit screen. Dynamic field operations and allowed values are intersected across the selection.
+- Jira failures are normalized into actionable messages for authentication, permissions, rate limits, conflicts, missing issues, browser-bridge/network problems, and screen/field restrictions. Partial delete/update failures remain identifiable for retry.
+- Optional Jira metadata used by the popup and clone flow degrades transparently: available controls remain usable, failed option sources show a warning, and unsafe clone actions stay disabled until target-project metadata loads. Placement-only Bulk Edit does not depend on edit metadata.
 - Story Points.
 - supported dynamic Jira fields.
 - short-lived undo/history snapshots for QueueMint bulk operations.
@@ -193,17 +197,21 @@ QueueMint includes a preview-first time logging workflow while keeping Jira work
 
 - Configurable daily target stored locally in QueueMint, defaulting to 7h 30m.
 - Reads current-user worklogs for today through Jira worklog JQL, explicit Data Center user identities, paginated issue worklogs, an optional Tempo Data Center read, and a direct current-board scan merged by issue/worklog id.
+- Scope worklog reads use settled per-issue requests. If only some issues fail, QueueMint keeps the successful data but warns that the total may be incomplete instead of silently treating failures as zero.
 - Global daily time and current-board daily time are shown separately so scope is visible.
 - Project, Board, Sprint/Backlog, Assignee, Status, Issue Type, Activity, Estimate, and key/summary search filters live directly in Worklog.
-- Worklog issue selection supports Table, Cards, and Board views. The Board view reads the selected Jira board configuration so each board keeps its own workflow columns, with exact-status fallback when that configuration is unavailable.
+- Worklog issue selection supports Table, Cards, and Board views. The Board view reads the selected Jira board configuration so each board keeps its own workflow columns, with exact-status fallback when that configuration is unavailable. Board cards can be dragged to another status column when Jira exposes a valid direct transition; QueueMint refreshes from Jira after a successful move and does not fake unsupported transitions locally.
 - Review before Jira mirrors the same selection model: List/Table keeps select-all inside the table header with an indeterminate state, while Cards and Board expose the explicit Select all/Clear selection action. Select-all follows the current visible filter set.
 - Assignee avatars and familiar type/status/filter icons are reused across Worklog filters and issue views.
 - Active filters are shown as visible chips rather than hidden selection rules.
 - Worklog selection is independent from Manage Jira; explicit Manage Jira and Command Layer actions can copy a current selection into Worklog when desired.
+- The selected worklog date is available in both the top toolbar and the draft sidebar. Changing only the date preserves the current selection and draft instead of resetting the workflow.
+- Estimate only continuously recomputes from the actual selected issue keys and their Jira remaining/original estimate values as selection changes or Jira data refreshes. At medium or constrained work-area widths the desktop draft column collapses early into an always-available side sheet so it cannot squeeze or overlap Board/Table content.
 - The relevant-today filter requires evidence from today: an existing worklog, an update today, or completion today. In Progress by itself is not enough. At most eight issues are ranked.
 - Estimates never decide what the user worked on. After selection, they can either weight a chosen target duration or be used exactly through Estimate only mode, which uses Jira remaining estimate and does not stretch worklogs to the daily target.
 - Each issue row exposes status, assignee, sprint/backlog, estimate, time already logged today, and last update.
 - Worklog context can be copied/downloaded as an AI-ready JSON package with selected/visible issue metadata and already-logged time.
+- Worklog descriptions never submit blank: per-issue descriptions override the shared draft description, and otherwise QueueMint generates `Worked on ISSUE-KEY: issue summary` with a final issue-key-only fallback in the Jira writer.
 - AI-produced JSON can be pasted or uploaded and is converted into the same editable review table before any Jira write.
 - Optional OpenAI allocation uses only the explicit selected issue set plus the user's work note and disclosed context.
 - Every prepared entry exposes editable minutes and an optional worklog comment before submit.

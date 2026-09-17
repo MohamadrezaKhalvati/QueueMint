@@ -7,8 +7,8 @@ import {
   type PendingBulkPreview,
 } from "@/features/bulk/bulk-utils"
 import {
-  assignIssueKeysToSprint, bulkEditIssues, deleteJiraIssues, getIssueFieldSnapshots,
-  getProjectPermissions, moveIssueKeysToBacklog, restoreIssueFieldSnapshots,
+  assignIssueKeysToSprint, bulkEditIssues, canSetOriginalEstimateViaBoard, deleteJiraIssues, getBulkFieldSupport, getIssueFieldSnapshots,
+  getProjectPermissions, jiraErrorMessage, moveIssueKeysToBacklog, restoreIssueFieldSnapshots, summarizeBatchFailures,
 } from "@/lib/jira"
 import type { ActivityEntry, AutomationRule } from "@/lib/storage"
 import type { BulkPayload, JiraEditableField, JiraLiveIssue, JiraMetadata, JiraSprint, JiraUser } from "@/types"
@@ -37,6 +37,29 @@ export function useBulkEditFlow(options: BulkEditFlowOptions) {
     setBulkApplying, setBulkHistory, setActiveAutomationRuleId, setUndoingHistoryId, setLastCreatedKeys,
     setLiveSelectedKeys, setDeleteDialogOpen, setDeleteConfirmText,
   } = options
+
+  async function verifyBulkEditability(keys: string[], patch: import("@/types").JiraBulkEditPatch) {
+    const fieldIds = Array.from(new Set([
+      ...(patch.priority !== undefined ? ["priority"] : []), ...(patch.assignee !== undefined ? ["assignee"] : []),
+      ...(patch.issueType !== undefined ? ["issuetype"] : []), ...(patch.epicLink?.fieldId ? [patch.epicLink.fieldId] : []),
+      ...(patch.originalEstimate !== undefined ? ["timeoriginalestimate"] : []), ...(patch.remainingEstimate !== undefined ? ["timeestimate"] : []),
+      ...(patch.storyPoints?.fieldId ? [patch.storyPoints.fieldId] : []), ...Object.keys(patch.dynamicFields ?? {}),
+    ]))
+    if (!fieldIds.length) return
+    const support = await getBulkFieldSupport(keys, fieldIds)
+    const boardCanSetOriginal = patch.originalEstimate !== undefined && await canSetOriginalEstimateViaBoard(selectedBoardId)
+    const blocked = support.filter((item) => item.availableOn !== item.total && !(item.fieldId === "timeoriginalestimate" && boardCanSetOriginal))
+    if (!blocked.length) return
+    const first = blocked[0]
+    const labels: Record<string, string> = { priority: t.editPriority, assignee: t.editAssignee, issuetype: t.editIssueType, timeoriginalestimate: t.originalEstimate, timeestimate: t.remainingEstimate }
+    const dynamic = liveDynamicFields.find((field) => field.id === first.fieldId)?.name
+    const label = labels[first.fieldId] ?? dynamic ?? first.fieldId
+    const count = first.total - first.availableOn
+    const base = t.fieldNotEditable.replace("{field}", label).replace("{count}", String(count))
+    const hint = first.fieldId === "timeestimate" ? ` ${t.timeTrackingScreenHint}` : ""
+    const examples = first.missingKeys.slice(0, 3).join(", ")
+    throw new Error(`${base}${hint}${examples ? ` Affected: ${examples}${first.missingKeys.length > 3 ? ", …" : ""}.` : ""}`)
+  }
 
   function buildLiveBulkPatch() {
     const patch: import("@/types").JiraBulkEditPatch = {}
@@ -67,7 +90,7 @@ export function useBulkEditFlow(options: BulkEditFlowOptions) {
     if (!keys.length || !payload?.project) return
     let patch: import("@/types").JiraBulkEditPatch
     try { patch = buildLiveBulkPatch() }
-    catch (error) { toast.error(t.updatePartial, { description: error instanceof Error ? error.message : t.updatePartial }); return }
+    catch (error) { toast.error(t.updatePartial, { description: jiraErrorMessage(error, t.updatePartial) }); return }
     if (!Object.keys(patch).length && liveBulkPlacement === "keep") return
     if (liveBulkPlacement === "sprint" && !liveBulkSprintId) return
 
@@ -77,6 +100,7 @@ export function useBulkEditFlow(options: BulkEditFlowOptions) {
       const permissions = await getProjectPermissions(payload.project)
       const editsFields = patch.priority !== undefined || patch.issueType !== undefined || patch.epicLink !== undefined || patch.originalEstimate !== undefined || patch.remainingEstimate !== undefined || patch.storyPoints !== undefined || Boolean(Object.keys(patch.dynamicFields ?? {}).length)
       if ((editsFields && !permissions.edit) || (patch.assignee !== undefined && !permissions.assign)) throw new Error(t.permissionsDenied)
+      await verifyBulkEditability(keys, patch)
       const fieldIds = Array.from(new Set([
         ...(patch.priority !== undefined ? ["priority"] : []), ...(patch.assignee !== undefined ? ["assignee"] : []),
         ...(patch.issueType !== undefined ? ["issuetype"] : []), ...(patch.epicLink?.fieldId ? [patch.epicLink.fieldId] : []),
@@ -107,7 +131,7 @@ export function useBulkEditFlow(options: BulkEditFlowOptions) {
       setBulkPreview({ keys, patch, fieldIds, snapshots, placements, targetPlacement: liveBulkPlacement, targetSprintId: liveBulkSprintId, boardId: selectedBoardId, rows })
       setLiveBulkOpen(false); setBulkPreviewOpen(true)
     } catch (error) {
-      const message = error instanceof Error ? error.message : t.updatePartial
+      const message = jiraErrorMessage(error, t.updatePartial)
       setLiveActionMessage(message); toast.error(t.updatePartial, { description: message })
     } finally { setBulkPreviewLoading(false) }
   }
@@ -122,18 +146,25 @@ export function useBulkEditFlow(options: BulkEditFlowOptions) {
       if ((editsFields && !permissions.edit) || (preview.patch.assignee !== undefined && !permissions.assign)) throw new Error(t.permissionsDenied)
       let fieldResults: Array<{ key: string; ok: boolean; error?: string }> = []
       if (Object.keys(preview.patch).length) fieldResults = await bulkEditIssues(preview.keys, preview.patch, preview.boardId)
-      if (preview.targetPlacement === "sprint" && typeof preview.targetSprintId === "number") await assignIssueKeysToSprint(preview.targetSprintId, preview.keys)
-      if (preview.targetPlacement === "backlog" && preview.boardId) await moveIssueKeysToBacklog(preview.boardId, preview.keys)
-      const allFieldsOk = fieldResults.length === 0 || fieldResults.every((item) => item.ok)
+      let placementError = ""
+      try {
+        if (preview.targetPlacement === "sprint" && typeof preview.targetSprintId === "number") await assignIssueKeysToSprint(preview.targetSprintId, preview.keys)
+        if (preview.targetPlacement === "backlog" && preview.boardId) await moveIssueKeysToBacklog(preview.boardId, preview.keys)
+      } catch (error) { placementError = jiraErrorMessage(error, t.updatePartial) }
+      const failedFields = fieldResults.filter((item) => !item.ok)
+      const allFieldsOk = failedFields.length === 0
+      const complete = allFieldsOk && !placementError
       setBulkHistory((current) => [{ id: `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`, createdAt: new Date().toISOString(), keys: preview.keys, fieldIds: preview.fieldIds, snapshots: preview.snapshots, placements: preview.placements, boardId: preview.boardId, changes: preview.rows.map((row) => row.label) }, ...current].slice(0, 8))
       await loadLiveBoard()
-      setLiveActionMessage(allFieldsOk ? t.updateComplete : t.updatePartial)
+      const fieldFailure = summarizeBatchFailures(fieldResults, preview.keys.length, t.updatePartial)
+      const failureDetail = [fieldFailure, placementError].filter(Boolean).join(" · ")
+      setLiveActionMessage(complete ? t.updateComplete : `${t.updatePartial}${failureDetail ? ` · ${failureDetail}` : ""}`)
       const automationRule = activeAutomationRuleId ? automationRules.find((rule) => rule.id === activeAutomationRuleId) : undefined
-      recordActivity({ kind: automationRule ? "automation" : "bulk-edit", outcome: allFieldsOk ? "success" : "warning", title: automationRule ? `Automation: ${automationRule.name}` : "Bulk edit applied", detail: preview.rows.map((row) => row.label).join(", "), issueKeys: preview.keys, automationRuleId: automationRule?.id })
-      setActiveAutomationRuleId(null); resetLiveBulkDraft(); setBulkPreviewOpen(false); setBulkPreview(null)
-      if (allFieldsOk) toast.success(t.updateSucceeded, { description: `${preview.keys.length} ${t.issues}` }); else toast.warning(t.updatePartial)
+      recordActivity({ kind: automationRule ? "automation" : "bulk-edit", outcome: complete ? "success" : "warning", title: automationRule ? `Automation: ${automationRule.name}` : "Bulk edit applied", detail: preview.rows.map((row) => row.label).join(", "), issueKeys: preview.keys, automationRuleId: automationRule?.id })
+      if (complete) { setActiveAutomationRuleId(null); resetLiveBulkDraft(); setBulkPreviewOpen(false); setBulkPreview(null); toast.success(t.updateSucceeded, { description: `${preview.keys.length} ${t.issues}` }) }
+      else toast.warning(t.updatePartial, { description: failureDetail || undefined })
     } catch (error) {
-      const message = error instanceof Error ? error.message : t.updatePartial
+      const message = jiraErrorMessage(error, t.updatePartial)
       setLiveActionMessage(message); toast.error(t.updatePartial, { description: message })
     } finally { setBulkApplying(false) }
   }
@@ -143,6 +174,7 @@ export function useBulkEditFlow(options: BulkEditFlowOptions) {
     try {
       const fieldResults = entry.fieldIds.length ? await restoreIssueFieldSnapshots(entry.snapshots, entry.fieldIds, entry.boardId) : []
       let placementOk = true
+      let placementError = ""
       try {
         const backlogKeys = entry.placements.filter((item) => item.placement === "backlog").map((item) => item.key)
         if (backlogKeys.length && entry.boardId) await moveIssueKeysToBacklog(entry.boardId, backlogKeys)
@@ -152,14 +184,15 @@ export function useBulkEditFlow(options: BulkEditFlowOptions) {
           sprintGroups.set(placement.sprintId, [...(sprintGroups.get(placement.sprintId) ?? []), placement.key])
         }
         for (const [sprintId, keys] of sprintGroups) await assignIssueKeysToSprint(sprintId, keys)
-      } catch { placementOk = false }
+      } catch (error) { placementOk = false; placementError = jiraErrorMessage(error, t.undoPartial) }
       const complete = (fieldResults.length === 0 || fieldResults.every((item) => item.ok)) && placementOk
       if (entry.boardId === selectedBoardId) await loadLiveBoard()
-      setLiveActionMessage(complete ? t.undoComplete : t.undoPartial)
+      const undoFailure = summarizeBatchFailures(fieldResults, entry.keys.length, t.undoPartial) || placementError
+      setLiveActionMessage(complete ? t.undoComplete : `${t.undoPartial}${undoFailure ? ` · ${undoFailure}` : ""}`)
       recordActivity({ kind: "undo", outcome: complete ? "success" : "warning", title: "Bulk edit undone", detail: entry.changes.join(", "), issueKeys: entry.keys })
-      if (complete) { setBulkHistory((current) => current.filter((item) => item.id !== entry.id)); toast.success(t.undoComplete) } else toast.warning(t.undoPartial)
+      if (complete) { setBulkHistory((current) => current.filter((item) => item.id !== entry.id)); toast.success(t.undoComplete) } else toast.warning(t.undoPartial, { description: undoFailure || undefined })
     } catch (error) {
-      const message = error instanceof Error ? error.message : t.undoPartial
+      const message = jiraErrorMessage(error, t.undoPartial)
       setLiveActionMessage(message); toast.error(t.undoPartial, { description: message })
     } finally { setUndoingHistoryId(null) }
   }
@@ -173,13 +206,14 @@ export function useBulkEditFlow(options: BulkEditFlowOptions) {
       if (!permissions.delete) throw new Error(t.permissionsDenied)
       const results = await deleteJiraIssues(keys)
       const deleted = new Set(results.filter((item) => item.ok).map((item) => item.key))
-      setLastCreatedKeys((current) => current.filter((key) => !deleted.has(key))); setLiveSelectedKeys(new Set())
+      setLastCreatedKeys((current) => current.filter((key) => !deleted.has(key))); setLiveSelectedKeys(new Set(keys.filter((key) => !deleted.has(key))))
       setDeleteDialogOpen(false); setDeleteConfirmText(""); await loadLiveBoard()
       const complete = results.every((item) => item.ok)
       setLiveActionMessage(complete ? t.deleteComplete : t.updatePartial)
       recordActivity({ kind: "delete", outcome: complete ? "success" : "warning", title: "Deleted Jira issues", detail: `${deleted.size}/${keys.length} ${t.issues}`, issueKeys: keys })
-      if (complete) toast.success(t.deleteSucceeded, { description: `${deleted.size} ${t.issues}` }); else toast.warning(t.updatePartial)
-    } catch (error) { setLiveActionMessage(error instanceof Error ? error.message : t.updatePartial) }
+      if (complete) toast.success(t.deleteSucceeded, { description: `${deleted.size} ${t.issues}` })
+      else { const detail = summarizeBatchFailures(results, keys.length, t.updatePartial); setLiveActionMessage(`${t.updatePartial}${detail ? ` · ${detail}` : ""}`); toast.warning(t.updatePartial, { description: detail || undefined }) }
+    } catch (error) { const message = jiraErrorMessage(error, t.updatePartial); setLiveActionMessage(message); toast.error(t.updatePartial, { description: message }) }
   }
 
   return { buildLiveBulkPatch, prepareLiveBulkEdit, executeLiveBulkEdit, undoBulkHistory, deleteLiveSelection }

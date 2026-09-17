@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react"
+import { toast } from "sonner"
 
 import { Toaster } from "@/components/ui/sonner"
 import { POPUP_COPY } from "@/features/popup/popup-copy"
@@ -11,7 +12,7 @@ import { usePopupAppearance } from "@/features/popup/use-popup-appearance"
 import { usePopupCapture } from "@/features/popup/use-popup-capture"
 import { usePopupJiraForm } from "@/features/popup/use-popup-jira-form"
 import { usePopupSmart } from "@/features/popup/use-popup-smart"
-import { getJiraConnectionStatus } from "@/lib/jira"
+import { getJiraConnectionStatus, jiraErrorMessage } from "@/lib/jira"
 import type { JiraConnectionStatus } from "@/types"
 
 type View = "home" | "capture" | "issue" | "success"
@@ -26,7 +27,17 @@ export default function Popup() {
   const [createdKey, setCreatedKey] = useState("")
   const [restoredSessionId, setRestoredSessionId] = useState<string | null>(null)
 
-  useEffect(() => { void getJiraConnectionStatus().then(setStatus) }, [captureDraftId])
+  useEffect(() => {
+    let active = true
+    void getJiraConnectionStatus()
+      .then((next) => { if (active) setStatus(next) })
+      .catch((error) => {
+        if (!active) return
+        setStatus({ configured: false, tabs: [] })
+        toast.error(t.noJira, { description: jiraErrorMessage(error, t.noJiraHint) })
+      })
+    return () => { active = false }
+  }, [captureDraftId, t.noJira, t.noJiraHint])
 
   const capture = usePopupCapture({ captureDraftId, t, onCaptureReady: () => setView("capture") })
   const form = usePopupJiraForm({ status, t })

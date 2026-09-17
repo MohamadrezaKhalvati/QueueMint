@@ -1,5 +1,6 @@
 import type { JiraBulkEditPatch, JiraIssueFieldSnapshot } from "@/types"
-import { applyOriginalEstimate } from "./estimation"
+import { applyTimeTrackingEstimates } from "./estimation"
+import { jiraErrorMessage } from "./errors"
 import { sendJiraRequest } from "./request"
 
 export async function getIssueFieldSnapshots(issueKeys: string[], fieldIds: string[]): Promise<JiraIssueFieldSnapshot[]> {
@@ -50,14 +51,13 @@ export async function restoreIssueFieldSnapshots(snapshots: JiraIssueFieldSnapsh
         fields[fieldId] = normalizeRestorableValue(snapshot.fields[fieldId])
       }
       if (Object.keys(fields).length) await sendJiraRequest<unknown>(`/rest/api/2/issue/${encodeURIComponent(snapshot.key)}`, "PUT", { fields })
-      if (fieldsToRestore.includes("timeoriginalestimate")) {
-        const original = snapshot.fields.timeoriginalestimate
-        if (typeof original === "number" && original > 0) await applyOriginalEstimate(snapshot.key, secondsToJiraDuration(original), boardId)
-        else await sendJiraRequest<unknown>(`/rest/api/2/issue/${encodeURIComponent(snapshot.key)}`, "PUT", { fields: { timetracking: { originalEstimate: "0m" } } })
+      const originalEstimate = fieldsToRestore.includes("timeoriginalestimate") ? secondsToJiraDuration(snapshot.fields.timeoriginalestimate) : undefined
+      const remainingEstimate = fieldsToRestore.includes("timeestimate") ? secondsToJiraDuration(snapshot.fields.timeestimate) : undefined
+      if (originalEstimate !== undefined || remainingEstimate !== undefined) {
+        await applyTimeTrackingEstimates(snapshot.key, { originalEstimate, remainingEstimate }, boardId)
       }
-      if (fieldsToRestore.includes("timeestimate")) await sendJiraRequest<unknown>(`/rest/api/2/issue/${encodeURIComponent(snapshot.key)}`, "PUT", { fields: { timetracking: { remainingEstimate: secondsToJiraDuration(snapshot.fields.timeestimate) } } })
       results.push({ key: snapshot.key, ok: true })
-    } catch (error) { results.push({ key: snapshot.key, ok: false, error: error instanceof Error ? error.message : "Undo failed." }) }
+    } catch (error) { results.push({ key: snapshot.key, ok: false, error: jiraErrorMessage(error, "Undo failed.") }) }
   }
   return results
 }
@@ -78,14 +78,15 @@ export async function bulkEditIssues(issueKeys: string[], patch: JiraBulkEditPat
     if (patch.issueType) fields.issuetype = { name: patch.issueType }
     if (patch.epicLink?.fieldId) fields[patch.epicLink.fieldId] = patch.epicLink.value
     if (patch.labels) fields.labels = patch.labels
-    if (patch.remainingEstimate) fields.timetracking = { remainingEstimate: patch.remainingEstimate }
     if (patch.storyPoints?.fieldId) fields[patch.storyPoints.fieldId] = patch.storyPoints.value
     for (const [fieldId, value] of Object.entries(patch.dynamicFields ?? {})) if (/^(customfield_\d+|[a-zA-Z][a-zA-Z0-9_]*)$/.test(fieldId)) fields[fieldId] = value
     try {
       if (Object.keys(fields).length) await sendJiraRequest<unknown>(`/rest/api/2/issue/${encodeURIComponent(key)}`, "PUT", { fields })
-      if (patch.originalEstimate) await applyOriginalEstimate(key, patch.originalEstimate, boardId)
+      if (patch.originalEstimate || patch.remainingEstimate) {
+        await applyTimeTrackingEstimates(key, { originalEstimate: patch.originalEstimate, remainingEstimate: patch.remainingEstimate }, boardId)
+      }
       results.push({ key, ok: true })
-    } catch (error) { results.push({ key, ok: false, error: error instanceof Error ? error.message : "Update failed." }) }
+    } catch (error) { results.push({ key, ok: false, error: jiraErrorMessage(error, "Update failed.") }) }
   }
   return results
 }
@@ -103,7 +104,7 @@ export async function deleteJiraIssues(issueKeys: string[]) {
   const results: Array<{ key: string; ok: boolean; error?: string }> = []
   for (const key of safeKeys) {
     try { await sendJiraRequest<unknown>(`/rest/api/2/issue/${encodeURIComponent(key)}?deleteSubtasks=false`, "DELETE"); results.push({ key, ok: true }) }
-    catch (error) { results.push({ key, ok: false, error: error instanceof Error ? error.message : "Delete failed." }) }
+    catch (error) { results.push({ key, ok: false, error: jiraErrorMessage(error, "Delete failed.") }) }
   }
   return results
 }

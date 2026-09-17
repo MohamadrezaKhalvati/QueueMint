@@ -1,4 +1,6 @@
 import type { JiraUser, JiraWorklog, WorklogApplyResult, WorklogDaySummary, WorklogDraftEntry } from "@/types"
+import { buildWorklogFallbackComment } from "../worklog-comment"
+import { jiraErrorMessage } from "./errors"
 import { sendJiraRequest } from "./request"
 
 const ISSUE_KEY = /^[A-Z][A-Z0-9_]*-\d+$/i
@@ -211,32 +213,44 @@ export async function getCurrentUserDayWorklogs(currentUser?: JiraUser, date = n
   let tempoRowsResult: JiraWorklog[] = []
   let jiraOk = false
   let tempoOk = false
-  try { jiraRows = await searchJiraCurrentUserWorklogs(currentUser, date); jiraOk = true } catch { jiraOk = false }
-  try { tempoRowsResult = await searchTempoCurrentUserWorklogs(currentUser, date); tempoOk = true } catch { tempoOk = false }
+  let jiraFailure = ""
+  let tempoFailure = ""
+  try { jiraRows = await searchJiraCurrentUserWorklogs(currentUser, date); jiraOk = true }
+  catch (error) { jiraFailure = jiraErrorMessage(error, "Jira worklog search failed.") }
+  try { tempoRowsResult = await searchTempoCurrentUserWorklogs(currentUser, date); tempoOk = true }
+  catch (error) { tempoFailure = jiraErrorMessage(error, "Tempo worklog search failed.") }
   const merged = mergeWorklogs(jiraRows, tempoRowsResult)
-  if (merged.length) return summarize(merged, jiraRows.length && tempoRowsResult.length ? "mixed" : tempoRowsResult.length ? "tempo" : "jira")
-  if (jiraOk || tempoOk) return summarize([], jiraOk ? "jira" : "tempo")
-  throw new Error("Could not read today's worklogs from Jira or Tempo.")
+  const warning = !jiraOk && tempoOk ? [`Jira worklog search failed; totals use Tempo fallback. ${jiraFailure}`] : undefined
+  if (merged.length) return { ...summarize(merged, jiraRows.length && tempoRowsResult.length ? "mixed" : tempoRowsResult.length ? "tempo" : "jira"), warnings: warning }
+  if (jiraOk || tempoOk) return { ...summarize([], jiraOk ? "jira" : "tempo"), warnings: warning }
+  throw new Error(["Could not read today's worklogs from Jira or Tempo.", jiraFailure, tempoFailure].filter(Boolean).join(" "))
 }
 
 export async function getDayWorklogs(issueKeys: string[], currentUser?: JiraUser, date = new Date()): Promise<WorklogDaySummary> {
   const keys = Array.from(new Set(issueKeys.filter((key) => ISSUE_KEY.test(key)).map((key) => key.toUpperCase())))
   const results: JiraWorklog[] = []
+  const failures: string[] = []
   for (let offset = 0; offset < keys.length; offset += 6) {
-    const pages = await Promise.all(keys.slice(offset, offset + 6).map((key) => getIssueWorklogs(key, date, currentUser).catch(() => [])))
-    for (const page of pages) results.push(...page)
+    const batch = keys.slice(offset, offset + 6)
+    const pages = await Promise.allSettled(batch.map((key) => getIssueWorklogs(key, date, currentUser)))
+    pages.forEach((page, index) => {
+      if (page.status === "fulfilled") results.push(...page.value)
+      else failures.push(`${batch[index]}: ${jiraErrorMessage(page.reason, "Worklog read failed.")}`)
+    })
   }
-  return summarize(mergeWorklogs(results), "jira")
+  if (keys.length && failures.length === keys.length) throw new Error(`Could not read worklogs for the selected Jira issues. ${failures[0]}`)
+  const summary = summarize(mergeWorklogs(results), "jira")
+  return failures.length ? { ...summary, warnings: failures } : summary
 }
 
 export async function addJiraWorklog(issueKey: string, minutes: number, comment: string, startedAt = new Date()) {
   const key = safeIssueKey(issueKey)
   const safeMinutes = Math.round(minutes)
   if (!Number.isFinite(safeMinutes) || safeMinutes <= 0 || safeMinutes > 1440) throw new Error("Worklog duration must be between 1 minute and 24 hours.")
-  const body: Record<string, unknown> = { timeSpentSeconds: safeMinutes * 60, started: jiraStarted(startedAt) }
-  if (comment.trim()) body.comment = comment.trim().slice(0, 4000)
+  const safeComment = (comment.trim() || buildWorklogFallbackComment(key)).slice(0, 4000)
+  const body: Record<string, unknown> = { timeSpentSeconds: safeMinutes * 60, started: jiraStarted(startedAt), comment: safeComment }
   const result = await sendJiraRequest<RawWorklog>(`/rest/api/2/issue/${encodeURIComponent(key)}/worklog?adjustEstimate=leave`, "POST", body)
-  return { id: String(result.id ?? ""), issueKey: key, started: result.started ?? body.started as string, timeSpentSeconds: result.timeSpentSeconds ?? safeMinutes * 60, comment: commentText(result.comment) ?? comment.trim() } satisfies JiraWorklog
+  return { id: String(result.id ?? ""), issueKey: key, started: result.started ?? body.started as string, timeSpentSeconds: result.timeSpentSeconds ?? safeMinutes * 60, comment: commentText(result.comment) ?? safeComment } satisfies JiraWorklog
 }
 
 export async function applyWorklogDraft(entries: WorklogDraftEntry[], startedAt = new Date()): Promise<WorklogApplyResult[]> {
@@ -246,7 +260,7 @@ export async function applyWorklogDraft(entries: WorklogDraftEntry[], startedAt 
       const created = await addJiraWorklog(entry.issueKey, entry.minutes, entry.comment, startedAt)
       results.push({ issueKey: entry.issueKey, ok: true, worklogId: created.id })
     } catch (error) {
-      results.push({ issueKey: entry.issueKey, ok: false, error: error instanceof Error ? error.message : "Worklog failed." })
+      results.push({ issueKey: entry.issueKey, ok: false, error: jiraErrorMessage(error, "Worklog failed.") })
     }
   }
   return results
