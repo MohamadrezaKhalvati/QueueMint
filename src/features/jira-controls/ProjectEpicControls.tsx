@@ -55,13 +55,13 @@ export function EpicCombobox({ options, value, onValueChange, placeholder, empty
   }} />
 }
 
-export function BulkEpicCombobox({ options, value, onValueChange, placeholder, emptyLabel, noChangeLabel = "No change", clearLabel = "Remove Epic Link" }: {
-  options: EpicOption[]; value: string | null | undefined; onValueChange: (value: string | null | undefined) => void; placeholder: string; emptyLabel: string; noChangeLabel?: string; clearLabel?: string
+export function BulkEpicCombobox({ options, value, onValueChange, placeholder, emptyLabel, noChangeLabel = "No change", clearLabel = "Remove Epic Link", disabled }: {
+  options: EpicOption[]; value: string | null | undefined; onValueChange: (value: string | null | undefined) => void; placeholder: string; emptyLabel: string; noChangeLabel?: string; clearLabel?: string; disabled?: boolean
 }) {
   const noChange = "__bulk_epic_no_change__"; const clearEpic = "__bulk_epic_clear__"
   const map = useMemo(() => new Map(options.map((item): [string, EpicOption] => [item.value, item])), [options])
   const encoded = value === undefined ? noChange : value === null ? clearEpic : value
-  return <SearchableSingle items={[noChange, clearEpic, ...options.map((item) => item.value)]} value={encoded} onValueChange={(next) => { if (!next || next === noChange) onValueChange(undefined); else if (next === clearEpic) onValueChange(null); else onValueChange(next) }} itemLabel={(key) => key === noChange ? noChangeLabel : key === clearEpic ? clearLabel : map.get(key)?.label ?? key} placeholder={placeholder} emptyLabel={emptyLabel} leading={<Zap className="size-4 shrink-0 text-primary" />} renderItem={(key) => {
+  return <SearchableSingle items={[noChange, clearEpic, ...options.map((item) => item.value)]} value={encoded} onValueChange={(next) => { if (!next || next === noChange) onValueChange(undefined); else if (next === clearEpic) onValueChange(null); else onValueChange(next) }} itemLabel={(key) => key === noChange ? noChangeLabel : key === clearEpic ? clearLabel : map.get(key)?.label ?? key} placeholder={placeholder} emptyLabel={emptyLabel} disabled={disabled} leading={<Zap className="size-4 shrink-0 text-primary" />} renderItem={(key) => {
     if (key === noChange) return <span className="text-muted-foreground">{noChangeLabel}</span>
     if (key === clearEpic) return <span className="text-muted-foreground">{clearLabel}</span>
     return <div className="flex min-w-0 items-center gap-2"><span className="size-2 shrink-0 rounded-full bg-primary" /><span className="min-w-0 flex-1 truncate">{map.get(key)?.label ?? key}</span></div>

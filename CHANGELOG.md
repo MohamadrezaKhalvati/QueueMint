@@ -1,5 +1,22 @@
 # Changelog
 
+## 1.3.0 - Worklog Board Sync
+
+- Worklog submissions no longer create blank Jira descriptions. Per-issue text wins first, the shared draft description is used second, and a blank entry falls back to `Worked on ISSUE-KEY: issue summary`; the low-level Jira writer also guarantees a non-empty issue-key fallback.
+- Renamed the shared Worklog note to a default worklog description and made the automatic fallback visible in the UI/review flow so users know what Jira will receive before submit.
+- Hardened Estimate only synchronization around the actual selected issue keys and estimate values rather than relying on Set identity. Adding, removing, or refreshing a selected issue now rebuilds the draft immediately without re-clicking the distribution method.
+- Added the selected worklog date to the draft sidebar and kept the active selection/draft intact when the date changes, so a prepared set can be moved to yesterday or another day without starting over.
+- Raised the responsive collapse point for the Worklog draft column and added a viewport fallback. Medium/constrained layouts now switch to the floating Draft action and side sheet before a four-column board can be squeezed or covered.
+- Added drag-and-drop status movement to the Worklog Board. Dropping a card onto another Jira board column uses an available direct Jira workflow transition, refreshes the board after success, and reports unavailable transitions without faking a local move.
+- Updated estimate-weighted distribution to prefer Jira remaining estimates where available while retaining original estimates as fallback context.
+- Fixed Bulk Edit Original/Remaining Estimate persistence. QueueMint now sends time-tracking changes through Jira's dedicated `timetracking` edit shape, verifies the saved seconds after each write, retries the alternate edit form when needed, and applies Remaining Estimate last when both estimates are changed.
+- Bulk Edit no longer reports estimate updates as successful just because Jira returned a successful HTTP response. Partial per-issue failures are surfaced with the first Jira verification error and the board is refreshed from Jira afterward.
+- Bulk Edit now checks Jira edit metadata for every selected issue before Review. Fields that are not editable across the whole selection are disabled, Remaining Estimate is blocked when Time Tracking is missing from any selected issue's Edit screen, and dynamic field operations/options are intersected across the selection instead of assuming one issue represents the batch.
+- Added a centralized Jira error layer for authentication, permissions, stale/missing issues, rate limits, browser-bridge failures, network failures, conflicts, and field-screen restrictions. Partial updates/deletes keep actionable failed items available for retry instead of reporting a vague success.
+- Hardened Worklog reads so per-issue failures no longer silently undercount daily totals; partial reads surface a warning while successful data remains usable. Jira board-column fallback now reports why the real board configuration could not be loaded.
+- Audited remaining Jira-facing fallbacks: popup board/assignee/epic/sprint metadata now degrades with a visible warning instead of silently becoming empty, clone target metadata failures are shown inline, browser-bridge exceptions are normalized centrally, and placement-only Bulk Edit remains usable when optional edit metadata is unavailable.
+- Added regression coverage for estimate-only live synchronization, constrained-width draft access, Jira board transition matching, and verified bulk time-tracking updates.
+
 ## 1.2.1 - Worklog board and estimate UX fixes
 
 - Fixed Worklog Board and Table wheel trapping by allowing vertical wheel events to chain to the document while keeping their horizontal scrolling local.

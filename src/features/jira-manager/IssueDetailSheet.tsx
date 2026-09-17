@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Field, FieldLabel } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import { Sheet, SheetBody, SheetContent, SheetDescription, SheetHeader, SheetTitle } from "@/components/ui/sheet"
-import { cloneJiraIssue, getProject, jiraBrowseUrl } from "@/lib/jira"
+import { cloneJiraIssue, getProject, jiraBrowseUrl, jiraErrorMessage } from "@/lib/jira"
 import type { AppLocale, JiraIssueDetails, JiraProject } from "@/types"
 import { toast } from "sonner"
 
@@ -41,6 +41,7 @@ export function IssueDetailSheet({
   const [cloneSummary, setCloneSummary] = useState("")
   const [cloneLoading, setCloneLoading] = useState(false)
   const [cloneProjectLoading, setCloneProjectLoading] = useState(false)
+  const [cloneProjectError, setCloneProjectError] = useState<string | null>(null)
 
   useEffect(() => {
     if (!open || !details) return
@@ -52,8 +53,8 @@ export function IssueDetailSheet({
 
   useEffect(() => {
     let active = true
-    if (!cloneProjectKey) { setCloneProject(null); return () => { active = false } }
-    setCloneProjectLoading(true)
+    if (!cloneProjectKey) { setCloneProject(null); setCloneProjectError(null); return () => { active = false } }
+    setCloneProjectLoading(true); setCloneProjectError(null)
     void getProject(cloneProjectKey)
       .then((next) => {
         if (!active) return
@@ -61,10 +62,10 @@ export function IssueDetailSheet({
         const issueTypes = next.issueTypes?.filter((item) => !item.subtask) ?? []
         setCloneIssueType((current) => issueTypes.some((item) => item.name === current) ? current : (issueTypes[0]?.name ?? "Task"))
       })
-      .catch(() => { if (active) setCloneProject(null) })
+      .catch((projectError) => { if (active) { setCloneProject(null); setCloneProjectError(jiraErrorMessage(projectError, locale === "fa" ? "اطلاعات پروژه مقصد خوانده نشد" : "Could not load target project metadata")) } })
       .finally(() => { if (active) setCloneProjectLoading(false) })
     return () => { active = false }
-  }, [cloneProjectKey])
+  }, [cloneProjectKey, locale])
 
   const targetIssueTypes = cloneProject?.issueTypes?.filter((item) => !item.subtask) ?? []
   const assigneeName = details?.assignee?.displayName ?? details?.assignee?.name ?? details?.assignee?.key
@@ -102,7 +103,7 @@ export function IssueDetailSheet({
       onRefresh()
       window.open(jiraBrowseUrl(created.key), "_blank")
     } catch (cloneError) {
-      toast.error(locale === "fa" ? "ساخت کپی ناموفق بود" : "Clone failed", { description: cloneError instanceof Error ? cloneError.message : String(cloneError) })
+      toast.error(locale === "fa" ? "ساخت کپی ناموفق بود" : "Clone failed", { description: jiraErrorMessage(cloneError, locale === "fa" ? "ساخت کپی ناموفق بود" : "Clone failed") })
     } finally {
       setCloneLoading(false)
     }
@@ -202,11 +203,11 @@ export function IssueDetailSheet({
 
                 {cloneMode ? (
                   <div className="mt-4 space-y-3 border-t pt-4">
-                    <Field><FieldLabel>{locale === "fa" ? "پروژه مقصد" : "Target project"}</FieldLabel><ProjectCombobox projects={projects} value={cloneProjectKey} onValueChange={setCloneProjectKey} placeholder={locale === "fa" ? "انتخاب پروژه" : "Choose project"} emptyLabel={locale === "fa" ? "پروژه‌ای پیدا نشد" : "No projects found"} /></Field>
+                    <Field><FieldLabel>{locale === "fa" ? "پروژه مقصد" : "Target project"}</FieldLabel><ProjectCombobox projects={projects} value={cloneProjectKey} onValueChange={setCloneProjectKey} placeholder={locale === "fa" ? "انتخاب پروژه" : "Choose project"} emptyLabel={locale === "fa" ? "پروژه‌ای پیدا نشد" : "No projects found"} />{cloneProjectError ? <div className="text-xs leading-5 text-warning">{cloneProjectError}</div> : null}</Field>
                     <Field><FieldLabel>{locale === "fa" ? "نوع تسک" : "Issue type"}</FieldLabel><SimpleSelect value={cloneIssueType} onValueChange={setCloneIssueType} disabled={cloneProjectLoading || !targetIssueTypes.length} items={targetIssueTypes.map((item) => ({ value: item.name, label: item.name }))} /></Field>
                     <Field><FieldLabel>{locale === "fa" ? "عنوان کپی" : "Clone summary"}</FieldLabel><Input value={cloneSummary} onChange={(event: ChangeEvent<HTMLInputElement>) => setCloneSummary(event.target.value)} /></Field>
                     <div className="rounded-[var(--qm-control-radius)] bg-muted/25 p-3 text-xs text-muted-foreground">{locale === "fa" ? "برای سازگاری بین پروژه‌ها، عنوان، توضیحات، اولویت و برچسب‌ها کپی می‌شوند. فایل‌ها، کامنت‌ها و فیلدهای وابسته به پروژه کپی نمی‌شوند." : "For cross-project safety, QueueMint copies summary, description, priority, and labels. Attachments, comments, and project-specific fields are not duplicated."}</div>
-                    <div className="flex justify-end"><Button onClick={() => void createClone()} disabled={cloneLoading || cloneProjectLoading || !cloneProjectKey || !cloneIssueType || !cloneSummary.trim()}>{cloneLoading ? <LoaderCircle className="size-4 animate-spin" /> : <Copy className="size-4" />}{locale === "fa" ? "ساخت کپی" : "Create clone"}</Button></div>
+                    <div className="flex justify-end"><Button onClick={() => void createClone()} disabled={cloneLoading || cloneProjectLoading || Boolean(cloneProjectError) || !cloneProjectKey || !cloneIssueType || !cloneSummary.trim()}>{cloneLoading ? <LoaderCircle className="size-4 animate-spin" /> : <Copy className="size-4" />}{locale === "fa" ? "ساخت کپی" : "Create clone"}</Button></div>
                   </div>
                 ) : null}
               </div>

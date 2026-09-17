@@ -26,7 +26,7 @@ The summary shows the daily target, global logged time, current-board logged tim
 
 ## Worklog screen flow
 
-The screen uses a compact four-step rail: Choose scope, Select issues, Distribute time, and Review & submit. A date toolbar above the workflow provides previous/next-day navigation plus a calendar picker. The selected date drives the Jira/Tempo read, AI context, and final Jira worklog timestamp.
+The screen uses a compact four-step rail: Choose scope, Select issues, Distribute time, and Review & submit. The selected date is available in both the page toolbar and the draft sidebar, with previous/next-day navigation plus a calendar picker. Changing the date by itself preserves the current issue selection and draft so a prepared set can be moved to another worklog day without starting over. The selected date drives the Jira/Tempo read, AI context, and final Jira worklog timestamp.
 
 ### 1. Choose scope and select issues
 
@@ -45,7 +45,7 @@ Issue filters:
 - Activity: all, relevant today, active, updated today, done today, logged today, or no worklog today
 - Estimate: any, estimated, or unestimated
 
-Active filters are displayed as chips. Worklog supports Table, Board, and Cards views. Table view includes a select-all checkbox in the header, while each row/card keeps its own selection control. Assignees render with Jira avatars where available. The Board view reads the selected Jira board configuration so a three-column board and a ten-column board keep their own Jira-defined columns; if that configuration cannot be read, QueueMint falls back to exact Jira status groups. Selection is local to Worklog and stays visible in the sticky Worklog draft sidebar even while the issue browser is filtered. Manage Jira can explicitly send a selection into Worklog, but normal Worklog navigation starts clean.
+Active filters are displayed as chips. Worklog supports Table, Board, and Cards views. Table view includes a select-all checkbox in the header, while each row/card keeps its own selection control. Assignees render with Jira avatars where available. The Board view reads the selected Jira board configuration so a three-column board and a ten-column board keep their own Jira-defined columns; if that configuration cannot be read, QueueMint falls back to exact Jira status groups. In Board view, a card can be dragged to another Jira status column. QueueMint resolves the target against Jira's available direct transitions, performs the transition only when Jira allows it, then refreshes the board from Jira. If the workflow does not offer a direct transition to that column, QueueMint leaves the board unchanged and shows feedback rather than chaining hidden transitions. Selection is local to Worklog and stays visible in the Worklog draft area even while the issue browser is filtered. Manage Jira can explicitly send a selection into Worklog, but normal Worklog navigation starts clean.
 
 ### Relevant today
 
@@ -61,7 +61,7 @@ The filter does not auto-select anything. The user still chooses the rows/cards 
 
 ### 2. Distribute time
 
-The sticky draft sidebar keeps the selected issues, editable duration inputs, total time, distribution method, optional common comment, and final submit action in one place. Its header and submit action stay stable while the sidebar body scrolls internally, so a long draft never pushes the submit controls below the viewport. Estimate weighting remains the default suggestion, while manual, equal, AI-assisted, and Estimate only allocation are available. Estimate weighted changes proportions for a chosen target; Estimate only uses Jira remaining estimates directly and never pads the draft to the daily target. Daily target settings stay collapsible at the bottom of the scrollable draft body so configuration does not compete with the daily task.
+The draft area keeps the selected issues, editable duration inputs, total time, distribution method, date control, optional common comment, and final submit action in one place. On genuinely wide work areas it stays as a sticky right column whose body can scroll internally. On medium or constrained widths it collapses earlier into an always-available Draft action that opens the same content in a side sheet, keeping four-column boards and tables usable instead of squeezing or covering them. Estimate weighting remains the default suggestion, while manual, equal, AI-assisted, and Estimate only allocation are available. Estimate weighted changes proportions for a chosen target and prefers remaining estimates as weights. Estimate only uses Jira remaining estimates directly, falls back to original estimate only when remaining estimate is unavailable, never pads the draft to the daily target, and automatically recomputes from the selected issue keys plus their current estimate values whenever selection or Jira estimate data changes. Daily target settings stay collapsible at the bottom of the scrollable draft body so configuration does not compete with the daily task.
 
 ### Estimate display
 
@@ -69,7 +69,7 @@ Worklog intentionally distinguishes Jira's original estimate from its remaining 
 
 ### 3. Review and submit
 
-The draft sidebar keeps every selected issue visible with its editable human-readable duration. Rows can be removed before submit, and a common optional comment fills entries that do not already have their own comment. Jira is written only after the final confirmation for the date shown in the date picker.
+The draft sidebar keeps every selected issue visible with its editable human-readable duration. Rows can be removed before submit. Description precedence is explicit: an issue-specific description wins, otherwise the shared default description is used, and when both are blank QueueMint generates `Worked on ISSUE-KEY: issue summary`. The low-level Jira worklog writer still supplies an issue-key-only fallback as a final guard, so blank or `undefined` worklog descriptions are not created. Jira is written only after the final confirmation for the date shown in the date picker.
 
 ## AI export and JSON import
 
@@ -123,9 +123,13 @@ Before tagging a Worklog release:
 3. Change Project, Board, Sprint, Assignee, Status, Type, Activity, and Estimate filters and verify the visible issues match the filter chips. Switch Table / Board / Cards views; confirm Table header select-all affects only visible rows and the Board view uses the selected Jira board column configuration.
 4. Confirm an untouched old In Progress issue is not included by the Relevant today filter.
 5. Confirm Updated today, Done today, and already-logged-today issues can appear when assigned to the current user.
-6. Select rows inside Worklog and confirm estimate weighting is selected by default. Check that equal and estimate-weighted splits preserve the requested total, then choose Estimate only and verify the draft total equals the sum of Jira remaining estimates instead of the daily target.
-7. Export AI JSON and verify status, sprint, assignee, estimate, and already-logged-today values are present.
-8. Import AI worklog JSON and verify it opens as an editable review draft.
-9. Edit/remove draft rows and submit. Verify Jira matches the reviewed values.
-10. Force one worklog failure and verify successful rows remain successful while the failed row stays retryable.
-11. Run architecture, typecheck, tests, build, and release audit before tagging.
+6. Select rows inside Worklog and confirm estimate weighting is selected by default. Check that equal and estimate-weighted splits preserve the requested total, then choose Estimate only and verify the draft total equals the sum of Jira remaining estimates instead of the daily target. While Estimate only remains active, add and remove another issue and verify the total updates immediately without reselecting the method.
+7. With several issues still selected, change the date from the draft sidebar and confirm the selection and draft remain intact while the target worklog date changes.
+8. Resize the usable Worklog area to roughly 1024px or narrower with a multi-column board and verify the desktop draft sidebar no longer overlaps the board. Open the floating Draft action and confirm the same draft/date controls are available in the side sheet.
+9. In Board view, drag an issue to another status column that Jira permits directly. Confirm Jira changes status and the board refreshes. Try a target without a valid direct transition and confirm QueueMint reports the failure without moving the card locally.
+10. Export AI JSON and verify status, sprint, assignee, estimate, and already-logged-today values are present.
+11. Import AI worklog JSON and verify it opens as an editable review draft.
+12. Edit/remove draft rows and submit. Verify Jira matches the reviewed values.
+13. Force one worklog submit failure and verify successful rows remain successful while the failed row stays retryable. Then force one issue-worklog read failure and verify QueueMint warns that the total may be incomplete rather than silently counting the failed issue as zero.
+14. If Jira board-column configuration is unavailable, verify Worklog labels the status-group fallback and exposes the Jira error as context instead of failing silently.
+15. Run architecture, typecheck, tests, build, and release audit before tagging.

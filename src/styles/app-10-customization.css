@@ -186,6 +186,32 @@ html[data-density="spacious"] .qm-worklog-draft-row { gap: 10px; padding: 12px 1
   .qm-worklog-draft-list { max-height: 320px; overflow-y: auto; }
 }
 
+.qm-page-worklog { container-name: qm-worklog; container-type: inline-size; }
+.qm-worklog-main { min-width: 0; overflow: hidden; }
+.qm-worklog-draft-date { display: grid; gap: 7px; border-block-end: 1px solid var(--border); padding: 10px 14px; background: color-mix(in oklab, var(--card) 96%, var(--muted) 4%); }
+.qm-worklog-draft-date .qm-date-toolbar { width: 100%; }
+.qm-worklog-draft-date .qm-date-picker-trigger { min-width: 0; flex: 1; }
+.qm-worklog-drag-card { cursor: grab; }
+.qm-worklog-drag-card:active { cursor: grabbing; }
+.qm-worklog-drag-card.is-dragging { opacity: .45; }
+.qm-worklog-drag-card.is-moving { pointer-events: none; opacity: .55; }
+.qm-worklog-lane.is-drop-target { border-color: color-mix(in oklab, var(--primary) 62%, var(--border)); background: color-mix(in oklab, var(--primary) 5%, var(--card)); box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--primary) 18%, transparent); }
+.qm-worklog-compact-draft-trigger { display: none; }
+.qm-worklog-draft-sheet .qm-worklog-draft-sidebar { height: 100%; max-height: none; border: 0; border-radius: 0; box-shadow: none; }
+.qm-worklog-draft-sheet .qm-worklog-draft-head { padding-inline-end: 54px; }
+
+@container qm-worklog (max-width: 1520px) {
+  .qm-worklog-layout { grid-template-columns: minmax(0, 1fr); }
+  .qm-worklog-draft-column { display: none; }
+  .qm-worklog-compact-draft-trigger { display: inline-flex; position: fixed; z-index: 80; inset-inline-end: 18px; inset-block-end: 18px; gap: 8px; box-shadow: 0 10px 30px rgb(15 23 42 / .2); }
+}
+
+@media (max-width: 1580px) {
+  .qm-worklog-layout { grid-template-columns: minmax(0, 1fr); }
+  .qm-worklog-draft-column { display: none; }
+  .qm-worklog-compact-draft-trigger { display: inline-flex; position: fixed; z-index: 80; inset-inline-end: 18px; inset-block-end: 18px; gap: 8px; box-shadow: 0 10px 30px rgb(15 23 42 / .2); }
+}
+
 @media (pointer: coarse) {
   html[data-density] [data-slot="button"],
   html[data-density] [data-slot="input"],

@@ -7,8 +7,11 @@ import {
   getJiraIssueDetails,
   getLiveBoardIssues,
   getProjectPermissions,
+  jiraErrorMessage,
   moveIssueKeysToBacklog,
   searchRecentProjectIssues,
+  summarizeBatchFailures,
+  transitionIssueToBoardColumn,
 } from "@/lib/jira"
 import { findPotentialDuplicates } from "@/lib/intelligence"
 import type { ActivityEntry } from "@/lib/storage"
@@ -17,6 +20,7 @@ import type {
   BulkIssue,
   BulkPayload,
   JiraIssueDetails,
+  JiraBoardColumn,
   JiraIssueSearchResult,
   JiraLiveIssue,
   JiraMetadata,
@@ -77,7 +81,7 @@ export function useLiveBoardOperations(options: LiveBoardOptions) {
       })
     } catch (error) {
       setLiveIssues([])
-      setLiveActionMessage(error instanceof Error ? error.message : "Unable to load Jira board.")
+      setLiveActionMessage(jiraErrorMessage(error, "Unable to load Jira board."))
     } finally {
       setLoadingLive(false)
     }
@@ -105,7 +109,7 @@ export function useLiveBoardOperations(options: LiveBoardOptions) {
       if (matches.length) toast.warning(locale === "fa" ? "تسک مشابه پیدا شد" : "Potential duplicates found", { description: `${matches.length} ${t.issues}` })
       else toast.success(locale === "fa" ? "مورد مشابهی پیدا نشد" : "No close duplicates found")
     } catch (error) {
-      toast.error(locale === "fa" ? "بررسی موارد مشابه ناموفق بود" : "Duplicate check failed", { description: error instanceof Error ? error.message : undefined })
+      toast.error(locale === "fa" ? "بررسی موارد مشابه ناموفق بود" : "Duplicate check failed", { description: jiraErrorMessage(error, "Duplicate check failed") })
     } finally {
       setDuplicateLoading(false)
     }
@@ -121,9 +125,27 @@ export function useLiveBoardOperations(options: LiveBoardOptions) {
       recordActivity({ kind: "move", outcome: "success", title: targetSprint ? "Moved issues to sprint" : "Moved issues to backlog", detail: `${issueKeys.length} ${t.issues}`, issueKeys })
       toast.success(t.updateSucceeded, { description: `${issueKeys.length} ${t.issues}` })
     } catch (error) {
-      const message = error instanceof Error ? error.message : "Unable to move Jira issues."
+      const message = jiraErrorMessage(error, "Unable to move Jira issues.")
       setLiveActionMessage(message)
       toast.error(t.updatePartial, { description: message })
+    }
+  }
+
+  async function transitionLiveIssue(issueKey: string, target: Pick<JiraBoardColumn, "name" | "statusIds">) {
+    const issue = liveIssues.find((item) => item.key === issueKey)
+    if (!issue || (issue.statusId && target.statusIds.includes(issue.statusId))) return true
+    setLiveActionMessage(null)
+    try {
+      await transitionIssueToBoardColumn(issueKey, target.statusIds, target.name)
+      await loadLiveBoard()
+      recordActivity({ kind: "move", outcome: "success", title: `Moved issue to ${target.name}`, detail: issueKey, issueKeys: [issueKey] })
+      toast.success(locale === "fa" ? "وضعیت Jira آپدیت شد" : "Jira status updated", { description: `${issueKey} → ${target.name}` })
+      return true
+    } catch (error) {
+      const message = jiraErrorMessage(error, "Unable to update Jira status.")
+      setLiveActionMessage(message)
+      toast.error(locale === "fa" ? "جابجایی تسک در Jira ناموفق بود" : "Could not move Jira issue", { description: message })
+      return false
     }
   }
 
@@ -138,12 +160,14 @@ export function useLiveBoardOperations(options: LiveBoardOptions) {
       const results = await bulkEditIssues(keys, { assignee: identity })
       await loadLiveBoard()
       const complete = results.every((item) => item.ok)
-      setLiveActionMessage(complete ? t.updateComplete : t.updatePartial)
+      const failureDetail = summarizeBatchFailures(results, keys.length, t.updatePartial)
+      setLiveActionMessage(complete ? t.updateComplete : `${t.updatePartial}${failureDetail ? ` · ${failureDetail}` : ""}`)
       recordActivity({ kind: "assign", outcome: complete ? "success" : "warning", title: "Assigned issues to current user", detail: `${keys.length} ${t.issues}`, issueKeys: keys })
       if (complete) toast.success(t.updateSucceeded, { description: `${keys.length} ${t.issues}` })
-      else toast.warning(t.updatePartial)
+      else toast.warning(t.updatePartial, { description: failureDetail || undefined })
     } catch (error) {
-      setLiveActionMessage(error instanceof Error ? error.message : t.updatePartial)
+      const message = jiraErrorMessage(error, t.updatePartial)
+      setLiveActionMessage(message); toast.error(t.updatePartial, { description: message })
     }
   }
 
@@ -156,11 +180,11 @@ export function useLiveBoardOperations(options: LiveBoardOptions) {
     try {
       setIssueDetails(await getJiraIssueDetails(issueKey, metadata?.estimation.storyPointsFieldId))
     } catch (error) {
-      setIssueDetailError(error instanceof Error ? error.message : (locale === "fa" ? "بارگذاری تسک ناموفق بود." : "Could not load the issue."))
+      setIssueDetailError(jiraErrorMessage(error, locale === "fa" ? "بارگذاری تسک ناموفق بود." : "Could not load the issue."))
     } finally {
       setIssueDetailLoading(false)
     }
   }
 
-  return { loadLiveBoard, recordActivity, checkQuickDuplicates, moveLiveIssues, assignLiveSelectionToMe, openIssueDetails }
+  return { loadLiveBoard, recordActivity, checkQuickDuplicates, moveLiveIssues, transitionLiveIssue, assignLiveSelectionToMe, openIssueDetails }
 }

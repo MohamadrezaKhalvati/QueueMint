@@ -4,7 +4,7 @@ import type { AppCopy } from "@/features/app-shell/app-copy"
 import { looksLikeJiraCandidate, safeOrigin } from "@/features/connection/jira-candidate"
 import { parseBulkJson } from "@/lib/validation"
 import {
-  configureJiraConnection, discoverJira, getJiraConnectionStatus, selectJiraTab,
+  configureJiraConnection, discoverJira, getJiraConnectionStatus, jiraErrorMessage, selectJiraTab,
 } from "@/lib/jira"
 import type {
   BulkPayload, JiraBoard, JiraConnectionStatus, JiraEpic, JiraLiveIssue, JiraMetadata,
@@ -128,7 +128,7 @@ export function useJiraConnection(options: JiraConnectionOptions) {
       return true
     } catch (error) {
       setMetadata(null); setProject(null); setBoards([]); setSprints([]); setJiraEpics([]); setProjectLabels([]); setAssignableUsers([])
-      const message = error instanceof Error ? error.message : "Could not connect to Jira."
+      const message = jiraErrorMessage(error, "Could not connect to Jira.")
       setConnectionError(message)
       if (showFeedback) toast.error(t.connectionFailed, { description: message })
       return false
@@ -142,7 +142,7 @@ export function useJiraConnection(options: JiraConnectionOptions) {
       setConnectionStatus(status)
       if (await connect(true)) { setOnboardingComplete(true); setOnboardingOpen(false) }
     } catch (error) {
-      const message = error instanceof Error ? error.message : t.connectionFailed
+      const message = jiraErrorMessage(error, t.connectionFailed)
       setConnectionError(message); toast.error(t.connectionFailed, { description: message })
     } finally { setLoadingConnection(false) }
   }
@@ -154,7 +154,7 @@ export function useJiraConnection(options: JiraConnectionOptions) {
       if (metadata) applyDetectedContext(status, metadata)
       toast.success(t.connectionReady, { description: status.selectedTab?.title ?? status.origin })
     } catch (error) {
-      toast.error(t.connectionFailed, { description: error instanceof Error ? error.message : t.connectionFailed })
+      toast.error(t.connectionFailed, { description: jiraErrorMessage(error, t.connectionFailed) })
     }
   }
 

@@ -1,13 +1,14 @@
 import { useEffect, useMemo, useState } from "react"
 import { toast } from "sonner"
 
-import { applyWorklogDraft, getCurrentUserDayWorklogs, getDayWorklogs } from "@/lib/jira"
+import { applyWorklogDraft, getCurrentUserDayWorklogs, getDayWorklogs, jiraErrorMessage } from "@/lib/jira"
 import type { ActivityEntry } from "@/lib/storage"
+import { resolveWorklogComment } from "@/lib/worklog-comment"
 import type { AppLocale, JiraLiveIssue, JiraUser, WorklogDaySummary, WorklogDraftEntry } from "@/types"
 import { generateAiWorklogDraft } from "./worklog-ai"
 import { buildDailyCandidateIssues } from "./worklog-issues"
 import { DEFAULT_WORKLOG_SETTINGS, loadWorklogSettings, saveWorklogSettings } from "./worklog-storage"
-import { buildEstimateOnlyWorklogDraft, buildManualWorklogDraft, buildWorklogDraft, formatWorklogMinutes, parseWorklogDuration, worklogStartedAtForDate } from "./worklog-utils"
+import { buildEstimateOnlyWorklogDraft, buildManualWorklogDraft, buildWorklogDraft, formatWorklogMinutes, parseWorklogDuration, worklogStartedAtForDate, type WorklogDistributionStrategy } from "./worklog-utils"
 
 type Options = {
   locale: AppLocale
@@ -17,6 +18,7 @@ type Options = {
   projectKey?: string
   boardId?: number | null
   date: Date
+  strategy: WorklogDistributionStrategy
   recordActivity?: (input: Omit<ActivityEntry, "id" | "createdAt" | "projectKey" | "boardId">) => void
 }
 
@@ -33,7 +35,18 @@ export function useWorklogAssistant(options: Options) {
   const [note, setNote] = useState("")
   const [loading, setLoading] = useState(false)
   const [applying, setApplying] = useState(false)
-  const selectedIssues = useMemo(() => options.issues.filter((issue) => options.selectedKeys.has(issue.key)), [options.issues, options.selectedKeys])
+  const selectedKeySignature = Array.from(options.selectedKeys).sort().join("|")
+  const selectedIssues = useMemo(
+    () => options.issues.filter((issue) => options.selectedKeys.has(issue.key)),
+    [options.issues, selectedKeySignature],
+  )
+  const selectedEstimateSignature = useMemo(
+    () => selectedIssues
+      .map((issue) => `${issue.key}:${issue.remainingEstimateSeconds ?? "x"}:${issue.originalEstimateSeconds ?? "x"}`)
+      .sort()
+      .join("|"),
+    [selectedIssues],
+  )
   const loggedMinutesByIssue = useMemo(() => {
     const result: Record<string, number> = {}
     for (const item of daySummary.worklogs) {
@@ -73,15 +86,17 @@ export function useWorklogAssistant(options: Options) {
       const merged = new Map<string, WorklogDaySummary["worklogs"][number]>()
       for (const item of [...(global?.worklogs ?? []), ...scope.worklogs]) merged.set(`${item.issueKey}:${item.id}`, item)
       const worklogs = Array.from(merged.values()).sort((a, b) => a.started.localeCompare(b.started))
+      const warnings = Array.from(new Set([...(global?.warnings ?? []), ...(scope.warnings ?? [])]))
       if (worklogs.length || global) {
         const totalMinutes = Math.round(worklogs.reduce((sum, item) => sum + Math.max(0, item.timeSpentSeconds), 0) / 60)
         const scopeAddedRows = scope.worklogs.some((item) => !(global?.worklogs ?? []).some((candidate) => candidate.id === item.id && candidate.issueKey === item.issueKey))
         const source = !global?.worklogs.length && scope.worklogs.length ? "scope" : scopeAddedRows ? "mixed" : global?.source
-        setDaySummary({ totalMinutes, worklogs, source })
+        setDaySummary({ totalMinutes, worklogs, source, warnings: warnings.length ? warnings : undefined })
       } else if (scope.worklogs.length) setDaySummary({ ...scope, source: "scope" })
       else throw globalResult.status === "rejected" ? globalResult.reason : new Error("Could not read worklogs for this date.")
+      if (warnings.length) toast.warning(options.locale === "fa" ? "بعضی Worklogها خوانده نشدند" : "Some worklogs could not be read", { description: warnings[0] })
     } catch (error) {
-      toast.error(options.locale === "fa" ? "خواندن Worklogهای این روز ناموفق بود" : "Could not read worklogs for this date", { description: error instanceof Error ? error.message : undefined })
+      toast.error(options.locale === "fa" ? "خواندن Worklogهای این روز ناموفق بود" : "Could not read worklogs for this date", { description: jiraErrorMessage(error, "Could not read worklogs for this date.") })
     } finally { setLoading(false) }
   }
 
@@ -89,7 +104,12 @@ export function useWorklogAssistant(options: Options) {
 
   useEffect(() => {
     if (draft.length && draft.some((entry) => !options.selectedKeys.has(entry.issueKey))) setDraft((current) => current.filter((entry) => options.selectedKeys.has(entry.issueKey)))
-  }, [options.selectedKeys, draft])
+  }, [selectedKeySignature, draft])
+
+  useEffect(() => {
+    if (options.strategy !== "estimate-only") return
+    setDraft(buildEstimateOnlyWorklogDraft(selectedIssues))
+  }, [options.strategy, selectedKeySignature, selectedEstimateSignature])
 
   async function saveTarget() {
     const parsed = parseWorklogDuration(targetText)
@@ -98,7 +118,7 @@ export function useWorklogAssistant(options: Options) {
     toast.success(options.locale === "fa" ? "هدف روزانه ذخیره شد" : "Daily target saved")
   }
 
-  function prepare(strategy: "equal" | "estimate" | "estimate-only", minutesOverride?: number) {
+  function prepare(strategy: Exclude<WorklogDistributionStrategy, "manual">, minutesOverride?: number) {
     if (!selectedIssues.length) { toast.info(options.locale === "fa" ? "اول چند تسک انتخاب کن" : "Choose issues first"); return }
     if (strategy === "estimate-only") {
       const next = buildEstimateOnlyWorklogDraft(selectedIssues)
@@ -125,7 +145,7 @@ export function useWorklogAssistant(options: Options) {
   }
 
   async function applyDraft(defaultComment = "") {
-    const entries = draft.filter((entry) => entry.minutes > 0).map((entry) => ({ ...entry, comment: entry.comment.trim() || defaultComment.trim() }))
+    const entries = draft.filter((entry) => entry.minutes > 0).map((entry) => ({ ...entry, comment: resolveWorklogComment(entry, defaultComment) }))
     if (!entries.length || !draftMinutes) return
     setApplying(true)
     try {
@@ -135,8 +155,14 @@ export function useWorklogAssistant(options: Options) {
       const okKeys = new Set(ok.map((item) => item.issueKey))
       const okMinutes = entries.filter((entry) => okKeys.has(entry.issueKey)).reduce((sum, entry) => sum + entry.minutes, 0)
       if (ok.length) options.recordActivity?.({ kind: "worklog", outcome: failed.length ? "warning" : "success", title: "Worklog added", detail: `${formatWorklogMinutes(okMinutes)} across ${ok.length} issues`, issueKeys: ok.map((item) => item.issueKey) })
-      if (failed.length) toast.warning(options.locale === "fa" ? "بعضی Worklogها ثبت نشدند" : "Some worklogs failed", { description: failed[0]?.error })
-      else toast.success(options.locale === "fa" ? "Worklogها ثبت شدند" : "Worklogs added")
+      if (failed.length) {
+        const first = failed[0]
+        const detail = `${failed.length}/${entries.length} failed.${first ? ` ${first.issueKey}: ${first.error ?? "Worklog failed."}` : ""}`
+        toast.warning(options.locale === "fa" ? "بعضی Worklogها ثبت نشدند" : "Some worklogs failed", { description: detail })
+      } else {
+        toast.success(options.locale === "fa" ? "Worklogها ثبت شدند" : "Worklogs added")
+        setNote("")
+      }
       setDraft(failed.length ? draft.filter((entry) => failed.some((item) => item.issueKey === entry.issueKey)) : [])
       await refreshDay()
     } finally { setApplying(false) }

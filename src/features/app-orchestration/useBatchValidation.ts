@@ -3,7 +3,7 @@ import { toast } from "sonner"
 import type { LocalAttachment } from "@/components/attachment-picker"
 import type { AppCopy } from "@/features/app-shell/app-copy"
 import { EMPTY_VALIDATION } from "@/features/bulk/bulk-utils"
-import { getCreateMeta, getProject } from "@/lib/jira"
+import { getCreateMeta, getProject, jiraErrorMessage } from "@/lib/jira"
 import { parseBulkJson, validatePayload } from "@/lib/validation"
 import type { BulkPayload, CreateRunResult, JiraMetadata, JiraProject, JiraSprint, ValidationResult } from "@/types"
 import type { StateSetter } from "./types"
@@ -52,7 +52,7 @@ export function useBatchValidation(options: BatchValidationOptions) {
           setProject(activeProject)
         } catch (error) {
           const local = validatePayload(payload, metadata, undefined, sprints)
-          const message = error instanceof Error ? error.message : "Unable to read project metadata."
+          const message = jiraErrorMessage(error, "Unable to read project metadata.")
           setValidation({ ...local, valid: false, errors: [...local.errors, { level: "error", message }] })
           toast.error(t.validationFailed, { description: message })
           return false
@@ -65,7 +65,7 @@ export function useBatchValidation(options: BatchValidationOptions) {
           await getCreateMeta(payload.project)
           setRemoteNote("Jira create metadata is reachable. The batch is ready for creation.")
         } catch (error) {
-          setRemoteNote(`Local validation passed. Jira create-metadata was unavailable: ${error instanceof Error ? error.message : "unknown error"}.`)
+          setRemoteNote(`Local validation passed. Jira create-metadata was unavailable: ${jiraErrorMessage(error, "unknown error")}.`)
         }
         toast.success(t.validationPassed, { description: `${payload.issues.length} ${t.issues}` })
       } else toast.error(t.validationFailed, { description: local.errors[0]?.message })

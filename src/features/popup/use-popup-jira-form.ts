@@ -6,7 +6,7 @@ import { formatDiagnosticsText } from "@/features/capture-pro/diagnostics"
 import type { CaptureEvidenceShot, QueueMintPageDiagnostics } from "@/features/capture-pro/types"
 import { captureContextText, screenshotFilename, type QueueMintPageContext } from "@/lib/capture"
 import { localAttachmentsToJira } from "@/lib/file-upload"
-import { createIssues, discoverJira, getAssignableUsers, getBoardsForProject, getProject, getProjectEpics, getSprintsForBoard, uploadIssueAttachments } from "@/lib/jira"
+import { createIssues, discoverJira, getAssignableUsers, getBoardsForProject, getProject, getProjectEpics, getSprintsForBoard, jiraErrorMessage, uploadIssueAttachments } from "@/lib/jira"
 import { loadState } from "@/lib/storage"
 import type { QueueMintCaptureIssueDraft } from "@/lib/capture-draft"
 import type { JiraAttachmentUpload, JiraBoard, JiraConnectionStatus, JiraEpic, JiraMetadata, JiraProject, JiraSprint, JiraUser } from "@/types"
@@ -47,17 +47,39 @@ export function usePopupJiraForm({ status, t }: { status: JiraConnectionStatus; 
     includeContext, includeScreenshot, includeDiagnostics, attachments: attachments.map(({ id, file }) => ({ id, file })),
   }), [summary, description, projectKey, issueType, priority, boardId, sprintId, assignee, epic, estimate, storyPoints, labels, component, fixVersion, dueDate, moreFields, includeContext, includeScreenshot, includeDiagnostics, attachments])
 
-  async function loadProjectOptions(nextProject: string, project: JiraProject) {
-    const [projectBoards, projectAssignees, projectEpics] = await Promise.all([
-      getBoardsForProject(nextProject).catch(() => [] as JiraBoard[]),
-      getAssignableUsers(nextProject, "", 100).catch(() => [] as JiraUser[]),
-      getProjectEpics(nextProject, 100).catch(() => [] as JiraEpic[]),
+  async function loadProjectOptionSets(nextProject: string) {
+    const [boardsResult, assigneesResult, epicsResult] = await Promise.allSettled([
+      getBoardsForProject(nextProject),
+      getAssignableUsers(nextProject, "", 100),
+      getProjectEpics(nextProject, 100),
     ])
+    const projectBoards = boardsResult.status === "fulfilled" ? boardsResult.value : [] as JiraBoard[]
+    const projectAssignees = assigneesResult.status === "fulfilled" ? assigneesResult.value : [] as JiraUser[]
+    const projectEpics = epicsResult.status === "fulfilled" ? epicsResult.value : [] as JiraEpic[]
+    const failures = [
+      boardsResult.status === "rejected" ? `${t.board}: ${jiraErrorMessage(boardsResult.reason, t.issueFailed)}` : "",
+      assigneesResult.status === "rejected" ? `${t.assignee}: ${jiraErrorMessage(assigneesResult.reason, t.issueFailed)}` : "",
+      epicsResult.status === "rejected" ? `${t.epic}: ${jiraErrorMessage(epicsResult.reason, t.issueFailed)}` : "",
+    ].filter(Boolean)
+    if (failures.length) toast.warning(t.loadingJira, { description: failures.join(" • ") })
+    return { projectBoards, projectAssignees, projectEpics }
+  }
+
+  async function loadBoardSprints(nextBoardId: number) {
+    try { return await getSprintsForBoard(nextBoardId) }
+    catch (error) {
+      toast.warning(t.loadingJira, { description: `${t.sprint}: ${jiraErrorMessage(error, t.issueFailed)}` })
+      return [] as JiraSprint[]
+    }
+  }
+
+  async function loadProjectOptions(nextProject: string, project: JiraProject) {
+    const { projectBoards, projectAssignees, projectEpics } = await loadProjectOptionSets(nextProject)
     setBoards(projectBoards); setAssignees(projectAssignees); setEpics(projectEpics)
     const contextualBoardId = status.context?.projectKey === nextProject ? status.context?.boardId : undefined
     const selectedBoard = projectBoards.find((item) => item.id === contextualBoardId) ?? projectBoards[0] ?? null
     setBoardId(selectedBoard?.id ?? null); setSprintId(null)
-    setSprints(selectedBoard ? await getSprintsForBoard(selectedBoard.id).catch(() => [] as JiraSprint[]) : [])
+    setSprints(selectedBoard ? await loadBoardSprints(selectedBoard.id) : [])
     if (component && !project.components?.some((item) => item.name === component)) setComponent("")
     if (fixVersion && !project.versions?.some((item) => item.name === fixVersion)) setFixVersion("")
     if (epic && !projectEpics.some((item) => item.key === epic)) setEpic("")
@@ -83,7 +105,7 @@ export function usePopupJiraForm({ status, t }: { status: JiraConnectionStatus; 
       await loadProjectOptions(preferred, project)
       return true
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : t.issueFailed)
+      toast.error(jiraErrorMessage(error, t.issueFailed))
       return false
     } finally { setLoadingMetadata(false) }
   }
@@ -99,15 +121,11 @@ export function usePopupJiraForm({ status, t }: { status: JiraConnectionStatus; 
       setProjectKey(preferred)
       const project = await getProject(preferred)
       setProjectInfo(project)
-      const [projectBoards, projectAssignees, projectEpics] = await Promise.all([
-        getBoardsForProject(preferred).catch(() => [] as JiraBoard[]),
-        getAssignableUsers(preferred, "", 100).catch(() => [] as JiraUser[]),
-        getProjectEpics(preferred, 100).catch(() => [] as JiraEpic[]),
-      ])
+      const { projectBoards, projectAssignees, projectEpics } = await loadProjectOptionSets(preferred)
       setBoards(projectBoards); setAssignees(projectAssignees); setEpics(projectEpics)
       const selectedBoard = projectBoards.find((item) => item.id === draft.boardId) ?? projectBoards[0] ?? null
       setBoardId(selectedBoard?.id ?? null)
-      const boardSprints = selectedBoard ? await getSprintsForBoard(selectedBoard.id).catch(() => [] as JiraSprint[]) : []
+      const boardSprints = selectedBoard ? await loadBoardSprints(selectedBoard.id) : []
       setSprints(boardSprints); setSprintId(boardSprints.some((item) => item.id === draft.sprintId) ? draft.sprintId : null)
       const types = project.issueTypes ?? []
       setIssueType(types.some((item) => item.name === draft.issueType) ? draft.issueType : types.find((item) => item.name.toLowerCase() === "bug")?.name ?? types[0]?.name ?? "Bug")
@@ -116,7 +134,7 @@ export function usePopupJiraForm({ status, t }: { status: JiraConnectionStatus; 
       const restoredAttachments = (draft.attachments ?? []).map((item) => ({ ...item, previewUrl: item.file.type.startsWith("image/") ? URL.createObjectURL(item.file) : undefined }))
       setMoreFields(draft.moreFields); setIncludeContext(draft.includeContext); setIncludeScreenshot(draft.includeScreenshot); setIncludeDiagnostics(draft.includeDiagnostics); setAttachments(restoredAttachments)
       return true
-    } catch (error) { toast.error(error instanceof Error ? error.message : t.issueFailed); return false } finally { setLoadingMetadata(false) }
+    } catch (error) { toast.error(jiraErrorMessage(error, t.issueFailed)); return false } finally { setLoadingMetadata(false) }
   }
 
   async function changeProject(nextProject: string) {
@@ -127,14 +145,14 @@ export function usePopupJiraForm({ status, t }: { status: JiraConnectionStatus; 
       const types = project.issueTypes ?? []
       if (!types.some((item) => item.name === issueType)) setIssueType(types.find((item) => item.name.toLowerCase() === "bug")?.name ?? types[0]?.name ?? "Bug")
       await loadProjectOptions(nextProject, project)
-    } catch (error) { toast.error(error instanceof Error ? error.message : t.issueFailed) } finally { setLoadingMetadata(false) }
+    } catch (error) { toast.error(jiraErrorMessage(error, t.issueFailed)) } finally { setLoadingMetadata(false) }
   }
 
   async function changeBoard(value: string) {
     const nextBoardId = value === "__none" ? null : Number(value)
     setBoardId(Number.isInteger(nextBoardId) ? nextBoardId : null); setSprintId(null)
     if (!nextBoardId) return setSprints([])
-    try { setSprints(await getSprintsForBoard(nextBoardId)) } catch (error) { setSprints([]); toast.error(error instanceof Error ? error.message : t.issueFailed) }
+    try { setSprints(await getSprintsForBoard(nextBoardId)) } catch (error) { setSprints([]); toast.error(jiraErrorMessage(error, t.issueFailed)) }
   }
 
   function changeIssueType(value: string) {
@@ -175,12 +193,12 @@ export function usePopupJiraForm({ status, t }: { status: JiraConnectionStatus; 
       const uploadWarnings: string[] = []
       for (const attachment of evidenceUploads) {
         try { await uploadIssueAttachments(created.key, [attachment]) }
-        catch (error) { uploadWarnings.push(error instanceof Error ? error.message : "Attachment upload failed.") }
+        catch (error) { uploadWarnings.push(jiraErrorMessage(error, "Attachment upload failed.")) }
       }
       if (uploadWarnings.length) toast.warning(`Issue created, but ${uploadWarnings.length} evidence file(s) could not be uploaded.`)
       toast.success(`${t.created}: ${created.key}`)
       return created.key
-    } catch (error) { toast.error(error instanceof Error ? error.message : t.issueFailed); return null } finally { setCreating(false) }
+    } catch (error) { toast.error(jiraErrorMessage(error, t.issueFailed)); return null } finally { setCreating(false) }
   }
 
   function resetFields() {

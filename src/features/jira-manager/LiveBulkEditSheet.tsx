@@ -121,16 +121,37 @@ export function LiveBulkEditSheet({
     ...coreFieldIds,
   ]), [coreFieldIds])
   const supportedDynamicFields = useMemo(() => dynamicFields.filter((field) => {
+    if (field.availableOn !== field.representativeCount) return false
     if (fixedIds.has(field.id)) return false
     const name = field.name.trim().toLowerCase()
     const custom = field.schema?.custom?.toLowerCase() ?? ""
     if (name === "sprint" || custom.includes("gh-sprint")) return false
     return isDynamicFieldSupported(field)
   }), [dynamicFields, fixedIds])
+  const metadataReady = !dynamicLoading && !dynamicError && selectedCount > 0
+  const editableEverywhere = (fieldId: string) => metadataReady && dynamicFields.some((field) => field.id === fieldId && field.availableOn === field.representativeCount)
+  const issueTypeEditable = editableEverywhere("issuetype")
+  const priorityEditable = editableEverywhere("priority")
+  const assigneeEditable = editableEverywhere("assignee")
+  const epicEditable = epicLinkFieldId ? editableEverywhere(epicLinkFieldId) : true
+  const timeTrackingEditable = editableEverywhere("timetracking") || editableEverywhere("timeestimate")
+  const storyPointsEditable = useMemo(() => {
+    const fieldId = estimation?.storyPointsFieldId
+    if (!fieldId || dynamicLoading || dynamicError || !selectedCount) return false
+    return dynamicFields.some((field) => field.id === fieldId && field.availableOn === field.representativeCount)
+  }, [dynamicFields, dynamicError, dynamicLoading, estimation?.storyPointsFieldId, selectedCount])
+  const timeTrackingHint = dynamicLoading ? t.preparingPreview : dynamicError ? t.editMetadataFailed : t.timeTrackingScreenHint
   const activeDynamicFields = supportedDynamicFields.filter((field) => Boolean(dynamicEdits[field.id]))
   const addableFields = supportedDynamicFields.filter((field) => !dynamicEdits[field.id])
   const dynamicReady = activeDynamicFields.every((field) => isDynamicDraftReady(field, dynamicEdits[field.id]))
-  const hasChange = priority !== undefined || assignee !== undefined || issueType !== undefined || epicLink !== undefined || placement !== "keep" || Boolean(originalEstimate.trim()) || Boolean(remainingEstimate.trim()) || Boolean(storyPoints.trim()) || activeDynamicFields.length > 0
+  const hasUnsupportedFixedChange = metadataReady && (
+    (issueType !== undefined && !issueTypeEditable) || (priority !== undefined && !priorityEditable) ||
+    (assignee !== undefined && !assigneeEditable) || (epicLink !== undefined && !epicEditable) ||
+    (Boolean(remainingEstimate.trim()) && !timeTrackingEditable) || (Boolean(storyPoints.trim()) && !storyPointsEditable)
+  )
+  const hasFieldChange = priority !== undefined || assignee !== undefined || issueType !== undefined || epicLink !== undefined || Boolean(originalEstimate.trim()) || Boolean(remainingEstimate.trim()) || Boolean(storyPoints.trim()) || activeDynamicFields.length > 0
+  const hasChange = hasFieldChange || placement !== "keep"
+  const metadataBlocksCurrentChange = hasFieldChange && (dynamicLoading || Boolean(dynamicError))
 
   useEffect(() => {
     if (open) return
@@ -161,19 +182,20 @@ export function LiveBulkEditSheet({
         <SheetHeader><SheetTitle>{t.bulkEdit}</SheetTitle><SheetDescription>{selectedCount} {t.selectedIssues}</SheetDescription></SheetHeader>
         <SheetBody className="space-y-5">
           <SavedActionComposer locale={locale} actions={savedActions} onCompose={onComposeAction} />
-          <Field><FieldLabel>{t.editIssueType}</FieldLabel><SimpleSelect value={issueType ?? "__no_change_type__"} onValueChange={(value) => setIssueType(value === "__no_change_type__" ? undefined : value)} items={[{ value: "__no_change_type__", label: t.noChange }, ...issueTypes.map((item) => ({ value: item.name, label: item.name }))]} disabled={!issueTypes.length} /></Field>
-          <Field><FieldLabel>{t.editPriority}</FieldLabel><PrioritySelect priorities={priorities} value={priority} onValueChange={setPriority} allowInherited={false} noDefaultLabel={t.noChange} /></Field>
-          <Field><FieldLabel>{t.editAssignee}</FieldLabel><BulkAssigneeCombobox users={users} value={assignee} onValueChange={setAssignee} placeholder={t.noChange} emptyLabel={t.assigneeEmpty} unassignedLabel={t.unassign} noChangeLabel={t.noChange} /><SmartAssigneeSuggestions locale={locale} suggestions={assigneeSuggestions} onSelect={setAssignee} /></Field>
-          {epicLinkFieldId ? <Field><FieldLabel>{t.editEpicLink}</FieldLabel><BulkEpicCombobox options={epicOptions} value={epicLink} onValueChange={setEpicLink} placeholder={t.epicSearch} emptyLabel={t.epicEmpty} noChangeLabel={t.noChange} clearLabel={t.removeEpicLink} /></Field> : null}
+          {metadataReady ? <div className="rounded-[var(--qm-control-radius)] border border-primary/15 bg-primary/[0.035] px-3 py-2 text-xs leading-5 text-muted-foreground">{t.bulkFieldGuardHint}</div> : null}
+          <Field><FieldLabel>{t.editIssueType}</FieldLabel><SimpleSelect value={issueType ?? "__no_change_type__"} onValueChange={(value) => setIssueType(value === "__no_change_type__" ? undefined : value)} items={[{ value: "__no_change_type__", label: t.noChange }, ...issueTypes.map((item) => ({ value: item.name, label: item.name }))]} disabled={!issueTypes.length || !issueTypeEditable} /></Field>
+          <Field><FieldLabel>{t.editPriority}</FieldLabel><PrioritySelect priorities={priorities} value={priority} onValueChange={setPriority} allowInherited={false} noDefaultLabel={t.noChange} disabled={!priorityEditable} /></Field>
+          <Field><FieldLabel>{t.editAssignee}</FieldLabel><BulkAssigneeCombobox users={users} value={assignee} onValueChange={setAssignee} placeholder={t.noChange} emptyLabel={t.assigneeEmpty} unassignedLabel={t.unassign} noChangeLabel={t.noChange} disabled={!assigneeEditable} />{assigneeEditable ? <SmartAssigneeSuggestions locale={locale} suggestions={assigneeSuggestions} onSelect={setAssignee} /> : null}</Field>
+          {epicLinkFieldId ? <Field><FieldLabel>{t.editEpicLink}</FieldLabel><BulkEpicCombobox options={epicOptions} value={epicLink} onValueChange={setEpicLink} placeholder={t.epicSearch} emptyLabel={t.epicEmpty} noChangeLabel={t.noChange} clearLabel={t.removeEpicLink} disabled={!epicEditable} /></Field> : null}
           <Field><FieldLabel>{t.editPlacement}</FieldLabel><SimpleSelect value={placement} onValueChange={(value) => setPlacement(value as "keep" | "sprint" | "backlog")} items={[{ value: "keep", label: t.noChange }, { value: "sprint", label: t.sprint }, { value: "backlog", label: t.backlog }]} /></Field>
           {placement === "sprint" ? <Field><FieldLabel>{t.sprint}</FieldLabel><SprintSelect sprints={sprints} value={sprintId ?? undefined} onValueChange={(value) => setSprintId(typeof value === "number" ? value : null)} allowInherited={false} allowBacklog={false} noDefaultLabel={t.noDefault} activeLabel={t.active} futureLabel={t.future} /></Field> : null}
           {estimation?.timeTracking ? (
             <div className="grid gap-3 sm:grid-cols-2">
               <EstimateInput label={t.originalEstimate} value={originalEstimate} onValueChange={setOriginalEstimate} placeholder={t.estimatePlaceholder} help={t.estimateHelp} />
-              <EstimateInput label={t.remainingEstimate} value={remainingEstimate} onValueChange={setRemainingEstimate} placeholder={t.estimatePlaceholder} help={t.estimateHelp} />
+              <EstimateInput label={t.remainingEstimate} value={remainingEstimate} onValueChange={setRemainingEstimate} placeholder={t.estimatePlaceholder} help={t.estimateHelp} inheritedText={timeTrackingEditable ? undefined : timeTrackingHint} disabled={!timeTrackingEditable} />
             </div>
           ) : null}
-          {estimation?.storyPointsFieldId ? <Field><FieldLabel>{estimation.storyPointsFieldName ?? t.storyPoints}</FieldLabel><Input type="number" min="0" step="0.5" value={storyPoints} onChange={(event: ChangeEvent<HTMLInputElement>) => setStoryPoints(event.target.value)} placeholder={t.noChange} dir="ltr" /></Field> : null}
+          {estimation?.storyPointsFieldId ? <Field><FieldLabel>{estimation.storyPointsFieldName ?? t.storyPoints}</FieldLabel><Input type="number" min="0" step="0.5" value={storyPoints} onChange={(event: ChangeEvent<HTMLInputElement>) => setStoryPoints(event.target.value)} placeholder={t.noChange} dir="ltr" disabled={!storyPointsEditable} /><div className="text-xs text-muted-foreground">{!storyPointsEditable ? (dynamicLoading ? t.preparingPreview : dynamicError ? t.editMetadataFailed : t.fieldNotEditable.replace("{field}", estimation.storyPointsFieldName ?? t.storyPoints).replace("{count}", String(selectedCount))) : null}</div></Field> : null}
 
           <section className="rounded-[var(--qm-panel-radius)] border bg-muted/[0.12] p-3.5">
             <div className="mb-3 flex items-start gap-3">
@@ -229,8 +251,8 @@ export function LiveBulkEditSheet({
           ) : null}
         </SheetBody>
         <SheetFooter className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
-          <Button type="button" variant="outline" onClick={() => setSaveActionOpen(true)} disabled={!hasChange || hasInvalidEstimate || !dynamicReady || preparing || (placement === "sprint" && !sprintId)}><Bookmark className="size-4" />{t.saveAction}</Button>
-          <Button onClick={onApply} disabled={!hasChange || hasInvalidEstimate || !dynamicReady || preparing || (placement === "sprint" && !sprintId)}>
+          <Button type="button" variant="outline" onClick={() => setSaveActionOpen(true)} disabled={!hasChange || hasInvalidEstimate || hasUnsupportedFixedChange || !dynamicReady || metadataBlocksCurrentChange || preparing || (placement === "sprint" && !sprintId)}><Bookmark className="size-4" />{t.saveAction}</Button>
+          <Button onClick={onApply} disabled={!hasChange || hasInvalidEstimate || hasUnsupportedFixedChange || !dynamicReady || metadataBlocksCurrentChange || preparing || (placement === "sprint" && !sprintId)}>
             {preparing ? <LoaderCircle className="size-4 animate-spin" /> : null}{preparing ? t.preparingPreview : t.bulkEditPreview}
           </Button>
         </SheetFooter>

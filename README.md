@@ -6,7 +6,7 @@ The product focuses on workflows that are slow, repetitive, fragmented, or awkwa
 
 Current stable release: **v1.0.2**.
 
-Current release line: **v1.2.1 Worklog UX Fixes**.
+Current release line: **v1.3.0 Worklog Board Sync**.
 
 ## Product principle
 
@@ -44,7 +44,7 @@ The complete current feature inventory is in [docs/CAPABILITIES.md](docs/CAPABIL
 
 ## Worklog Assistant
 
-QueueMint includes a preview-first Worklog Assistant. QueueMint can move across worklog dates with a calendar picker, reads the selected day through multiple Jira/Tempo-compatible paths, and merges a direct board scan so a fragile zero-result query is not trusted by itself. Worklog has explicit Project, Board, Sprint, Assignee, Status, Type, Activity, Estimate, and search filters plus Table, Cards, and a Jira-configuration-backed Board view. Distribution can be estimate-weighted, estimate-only, equal, manual, AI-assisted, or imported from external AI JSON, and every path ends in review before Jira writes. The Worklog screen is lazy-loaded so the feature does not stay in QueueMint's initial application chunk.
+QueueMint includes a preview-first Worklog Assistant. QueueMint can move across worklog dates with a calendar picker in both the page toolbar and draft sidebar, while preserving the current selection when the date changes. It reads the selected day through multiple Jira/Tempo-compatible paths and merges a direct board scan so a fragile zero-result query is not trusted by itself. Worklog has explicit Project, Board, Sprint, Assignee, Status, Type, Activity, Estimate, and search filters plus Table, Cards, and a Jira-configuration-backed Board view. Estimate only stays synchronized from the actual selected issue keys and Jira estimate values as issues are added, removed, or refreshed, and Board cards can be dragged between Jira status columns when Jira exposes a valid direct workflow transition. At medium/constrained work-area widths the draft collapses early into an always-available side sheet instead of squeezing or overlapping the board. Bulk Edit checks Jira edit metadata across every selected issue before Review, disables unsupported fields such as Remaining Estimate when Time Tracking is unavailable on any selected Edit screen, and verifies time-tracking writes back against Jira so Original/Remaining Estimate failures are surfaced per issue instead of looking successful. Distribution can also be estimate-weighted, equal, manual, AI-assisted, or imported from external AI JSON. Worklog descriptions follow a clear precedence: per-issue text, then the shared draft description, then an automatic `Worked on ISSUE-KEY: issue summary` fallback so Jira never receives an undefined/blank description. Every path ends in review before Jira writes. The Worklog screen is lazy-loaded so the feature does not stay in QueueMint's initial application chunk.
 
 Bulk JSON can also attach an optional `worklog` object to a new issue. The issue is created first; the worklog is added only after the reviewed batch is confirmed, and a failed worklog remains retryable without turning the successfully created Jira issue into a failed creation.
 
@@ -221,4 +221,4 @@ Do not commit `node_modules/`, `dist/`, local logs, secrets, or private Jira dat
 
 The large architecture refactor is complete. All production source files are under the 300-line limit. The product roadmap has now returned to user-facing capability work, with Capture Pro as the first post-refactor phase.
 
-Current release: **v1.2.1**. Appearance Studio and the Worklog UX fixes are part of the supported release line.
+Current release: **v1.3.0**. Appearance Studio and Worklog Board Sync are part of the supported release line.

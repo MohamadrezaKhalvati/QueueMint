@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { cn } from "@/lib/utils"
-import type { AppLocale, JiraLiveIssue, JiraUser } from "@/types"
+import type { AppLocale, JiraBoardColumn, JiraLiveIssue, JiraUser } from "@/types"
 import { EMPTY_WORKLOG_FILTERS, filterWorklogIssues, type WorklogFilters, worklogFilterCount } from "./worklog-filtering"
 import { sortWorklogIssues } from "./worklog-issues"
 import { WorklogFilterSelect, type WorklogFilterOption } from "./WorklogFilterSelect"
@@ -20,7 +20,7 @@ function itemLabel(items: WorklogFilterOption[], value: string) { return items.f
 function userAvatar(user?: JiraUser) { return user?.avatarUrls?.["24x24"] ?? user?.avatarUrls?.["32x32"] ?? user?.avatarUrls?.["48x48"] }
 function typeIcon(type: string) { const value = type.toLowerCase(); return value.includes("bug") ? Bug : value.includes("story") ? BookOpen : value.includes("task") ? CheckSquare2 : Shapes }
 
-export function WorklogIssuePicker({ locale, date, issues, selectedKeys, currentUser, boardId, sprintFilter, dailyCandidateKeys, loggedMinutesByIssue, onSelectedKeysChange, onCopyForAi, onDownloadForAi, onOpenImport }: {
+export function WorklogIssuePicker({ locale, date, issues, selectedKeys, currentUser, boardId, sprintFilter, dailyCandidateKeys, loggedMinutesByIssue, onSelectedKeysChange, onMoveIssueStatus, onCopyForAi, onDownloadForAi, onOpenImport }: {
   locale: AppLocale
   date: Date
   issues: JiraLiveIssue[]
@@ -31,6 +31,7 @@ export function WorklogIssuePicker({ locale, date, issues, selectedKeys, current
   dailyCandidateKeys: Set<string>
   loggedMinutesByIssue: Record<string, number>
   onSelectedKeysChange: (keys: Set<string>) => void
+  onMoveIssueStatus?: (issueKey: string, target: Pick<JiraBoardColumn, "name" | "statusIds">) => Promise<boolean>
   onCopyForAi: (issues: JiraLiveIssue[]) => void
   onDownloadForAi: (issues: JiraLiveIssue[]) => void
   onOpenImport: () => void
@@ -115,7 +116,7 @@ export function WorklogIssuePicker({ locale, date, issues, selectedKeys, current
       {view !== "table" ? <div className="flex items-center gap-2 border-b bg-muted/[0.08] px-3 py-2"><Button variant="outline" size="sm" onClick={() => toggleAllVisible(true)} disabled={!visible.length || allVisibleSelected}><CheckSquare2 className="size-3.5" />{isFa ? "انتخاب نمایان" : "Select visible"}</Button><Button variant="ghost" size="sm" onClick={() => onSelectedKeysChange(new Set())} disabled={!selectedKeys.size}>{isFa ? "پاک کردن انتخاب" : "Clear selection"}</Button>{someVisibleSelected ? <span className="text-[11px] text-muted-foreground">{selectedVisibleCount}/{visible.length}</span> : null}</div> : null}
 
       {view === "table" ? <WorklogIssueTable locale={locale} issues={visible} selectedKeys={selectedKeys} loggedMinutesByIssue={loggedMinutesByIssue} allVisibleSelected={allVisibleSelected} someVisibleSelected={someVisibleSelected} onToggle={toggle} onToggleAll={toggleAllVisible} /> : null}
-      {view === "board" ? <WorklogIssueBoard locale={locale} issues={visible} columns={boardColumns.columns} columnsSource={boardColumns.source} columnsLoading={boardColumns.loading} selectedKeys={selectedKeys} loggedMinutesByIssue={loggedMinutesByIssue} onToggle={toggle} /> : null}
+      {view === "board" ? <WorklogIssueBoard locale={locale} issues={visible} columns={boardColumns.columns} columnsSource={boardColumns.source} columnsLoading={boardColumns.loading} columnsError={boardColumns.error} selectedKeys={selectedKeys} loggedMinutesByIssue={loggedMinutesByIssue} onToggle={toggle} onMoveIssueStatus={onMoveIssueStatus} /> : null}
       {view === "cards" ? <WorklogIssueCards locale={locale} issues={visible} selectedKeys={selectedKeys} loggedMinutesByIssue={loggedMinutesByIssue} onToggle={toggle} /> : null}
     </section>
   )

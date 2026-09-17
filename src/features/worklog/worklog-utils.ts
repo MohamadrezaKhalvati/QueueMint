@@ -1,5 +1,7 @@
 import type { JiraLiveIssue, WorklogDraftEntry } from "@/types"
 
+export type WorklogDistributionStrategy = "manual" | "equal" | "estimate" | "estimate-only"
+
 export function formatWorklogMinutes(totalMinutes: number) {
   const safe = Math.max(0, Math.round(totalMinutes))
   const hours = Math.floor(safe / 60)
@@ -63,7 +65,7 @@ export function buildEstimateOnlyWorklogDraft(issues: JiraLiveIssue[]): WorklogD
 
 export function buildWorklogDraft(issues: JiraLiveIssue[], totalMinutes: number, strategy: "equal" | "estimate"): WorklogDraftEntry[] {
   const weights = strategy === "estimate"
-    ? issues.map((issue) => Math.max(0, issue.originalEstimateSeconds ?? issue.remainingEstimateSeconds ?? 0))
+    ? issues.map((issue) => worklogEstimateMinutes(issue))
     : issues.map(() => 1)
   const minutes = distributeInteger(totalMinutes, weights)
   return issues.map((issue, index) => ({ issueKey: issue.key, summary: issue.summary, minutes: minutes[index], comment: "" })).filter((entry) => entry.minutes > 0)

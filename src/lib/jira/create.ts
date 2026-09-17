@@ -1,5 +1,6 @@
 import type { BulkIssue, BulkPayload, CreateResultItem, CreateRunResult, FieldMap } from "@/types"
 import { applyOriginalEstimate } from "./estimation"
+import { jiraErrorMessage } from "./errors"
 import { addJiraWorklog } from "./worklogs"
 import { sendJiraRequest } from "./request"
 
@@ -58,7 +59,7 @@ export async function createIssues(payload: BulkPayload, detectedFieldMap: Field
       if (issue.ref) epicKeys.set(issue.ref, created.key)
       result = { index, ref: issue.ref, summary: issue.summary, type: issue.type, ok: true, key: created.key, id: created.id, self: created.self, sprintId: issue.type.toLowerCase() === "epic" ? undefined : effectiveSprint(payload, issue) }
     } catch (error) {
-      result = { index, ref: issue.ref, summary: issue.summary, type: issue.type, ok: false, error: error instanceof Error ? error.message : "Unknown Jira error" }
+      result = { index, ref: issue.ref, summary: issue.summary, type: issue.type, ok: false, error: jiraErrorMessage(error, "Unknown Jira error") }
     }
     results.push(result); onProgress?.(results.length, ordered.length, result)
   }
@@ -72,7 +73,7 @@ export async function createIssues(payload: BulkPayload, detectedFieldMap: Field
       const issue = payload.issues[result.index]; const estimate = issue ? effectiveEstimate(payload, issue) : undefined
       if (!result.key || !estimate) return
       try { await applyOriginalEstimate(result.key, estimate, boardId); result.estimateAssigned = true }
-      catch (error) { result.estimateAssigned = false; result.estimateError = error instanceof Error ? error.message : "Estimate update failed." }
+      catch (error) { result.estimateAssigned = false; result.estimateError = jiraErrorMessage(error, "Estimate update failed.") }
     }))
   }
   const bySprint = new Map<number, CreateResultItem[]>()
@@ -82,7 +83,7 @@ export async function createIssues(payload: BulkPayload, detectedFieldMap: Field
   }
   for (const [sprintId, group] of bySprint) {
     try { await assignIssueKeysToSprint(sprintId, group.map((item) => item.key as string)); group.forEach((item) => { item.sprintAssigned = true }) }
-    catch (error) { const message = error instanceof Error ? error.message : "Sprint assignment failed."; group.forEach((item) => { item.sprintAssigned = false; item.sprintError = message }) }
+    catch (error) { const message = jiraErrorMessage(error, "Sprint assignment failed."); group.forEach((item) => { item.sprintAssigned = false; item.sprintError = message }) }
   }
   const worklogTargets = results.filter((result) => result.ok && result.key && payload.issues[result.index]?.worklog)
   for (let offset = 0; offset < worklogTargets.length; offset += 4) {
@@ -96,7 +97,7 @@ export async function createIssues(payload: BulkPayload, detectedFieldMap: Field
         const started = config.started ? new Date(config.started) : new Date()
         await addJiraWorklog(result.key, config.minutes, config.comment ?? "", Number.isNaN(started.getTime()) ? new Date() : started)
         result.worklogAssigned = true
-      } catch (error) { result.worklogAssigned = false; result.worklogError = error instanceof Error ? error.message : "Worklog failed." }
+      } catch (error) { result.worklogAssigned = false; result.worklogError = jiraErrorMessage(error, "Worklog failed.") }
     }))
   }
   results.sort((a, b) => a.index - b.index)

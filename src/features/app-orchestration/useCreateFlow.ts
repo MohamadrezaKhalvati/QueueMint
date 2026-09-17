@@ -3,7 +3,7 @@ import { toast } from "sonner"
 import type { LocalAttachment } from "@/components/attachment-picker"
 import type { AppCopy } from "@/features/app-shell/app-copy"
 import type { Mode, Placement } from "@/features/bulk/bulk-utils"
-import { addJiraWorklog, assignIssueKeysToSprint, createIssues, uploadIssueAttachments } from "@/lib/jira"
+import { addJiraWorklog, assignIssueKeysToSprint, createIssues, jiraErrorMessage, uploadIssueAttachments } from "@/lib/jira"
 import type { ActivityEntry } from "@/lib/storage"
 import { validatePayload } from "@/lib/validation"
 import type {
@@ -56,7 +56,7 @@ export function useCreateFlow(options: CreateFlowOptions) {
         await uploadIssueAttachments(item.key, uploads)
         return { ...item, attachmentCount: uploads.length, attachmentError: undefined }
       } catch (error) {
-        return { ...item, attachmentCount: localFiles.length, attachmentError: error instanceof Error ? error.message : "Attachment upload failed." }
+        return { ...item, attachmentCount: localFiles.length, attachmentError: jiraErrorMessage(error, "Attachment upload failed.") }
       }
     }))
     return { ...result, finishedAt: new Date().toISOString(), results: nextResults }
@@ -122,7 +122,7 @@ export function useCreateFlow(options: CreateFlowOptions) {
     const updates = new Map<number, { sprintAssigned: boolean; sprintError?: string }>()
     for (const [sprintId, items] of bySprint) {
       try { await assignIssueKeysToSprint(sprintId, items.map((item) => item.key as string)); items.forEach((item) => updates.set(item.index, { sprintAssigned: true })) }
-      catch (error) { const message = error instanceof Error ? error.message : "Sprint assignment failed."; items.forEach((item) => updates.set(item.index, { sprintAssigned: false, sprintError: message })) }
+      catch (error) { const message = jiraErrorMessage(error, "Sprint assignment failed."); items.forEach((item) => updates.set(item.index, { sprintAssigned: false, sprintError: message })) }
     }
     setRunResult({ ...runResult, finishedAt: new Date().toISOString(), results: runResult.results.map((item) => ({ ...item, ...(updates.get(item.index) ?? {}) })) })
   }
@@ -136,7 +136,7 @@ export function useCreateFlow(options: CreateFlowOptions) {
         const started = item.worklogStarted ? new Date(item.worklogStarted) : new Date()
         await addJiraWorklog(item.key, item.worklogMinutes, item.worklogComment ?? "", Number.isNaN(started.getTime()) ? new Date() : started)
         updates.set(item.index, { worklogAssigned: true })
-      } catch (error) { updates.set(item.index, { worklogAssigned: false, worklogError: error instanceof Error ? error.message : "Worklog failed." }) }
+      } catch (error) { updates.set(item.index, { worklogAssigned: false, worklogError: jiraErrorMessage(error, "Worklog failed.") }) }
     }
     setRunResult({ ...runResult, finishedAt: new Date().toISOString(), results: runResult.results.map((item) => ({ ...item, ...(updates.get(item.index) ?? {}) })) })
   }

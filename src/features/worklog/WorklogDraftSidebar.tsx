@@ -6,14 +6,14 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { cn } from "@/lib/utils"
 import type { AppLocale, JiraLiveIssue, WorklogDraftEntry } from "@/types"
+import { WorklogDateToolbar } from "./WorklogDateToolbar"
 import { WorklogDurationInput } from "./WorklogDurationInput"
-import { formatWorklogMinutes, worklogEstimateMinutes } from "./worklog-utils"
+import { formatWorklogMinutes, worklogEstimateMinutes, type WorklogDistributionStrategy } from "./worklog-utils"
 
-export type WorklogSidebarStrategy = "manual" | "equal" | "estimate" | "estimate-only"
-
-export function WorklogDraftSidebar({ locale, date, selectedIssues, draft, draftMinutes, remainingMinutes, targetMinutes, targetText, selectionText, loading, applying, note, onSelectionText, onTargetText, onSaveTarget, onNote, onManual, onBuild, onAi, onUpdate, onRemove, onDeselect, onFocusIssues, onApply }: {
+export function WorklogDraftSidebar({ locale, date, strategy, selectedIssues, draft, draftMinutes, remainingMinutes, targetMinutes, targetText, selectionText, loading, applying, note, onDateChange, onStrategyChange, onSelectionText, onTargetText, onSaveTarget, onNote, onManual, onBuild, onAi, onUpdate, onRemove, onDeselect, onFocusIssues, onApply }: {
   locale: AppLocale
   date: Date
+  strategy: WorklogDistributionStrategy
   selectedIssues: JiraLiveIssue[]
   draft: WorklogDraftEntry[]
   draftMinutes: number
@@ -24,12 +24,14 @@ export function WorklogDraftSidebar({ locale, date, selectedIssues, draft, draft
   loading: boolean
   applying: boolean
   note: string
+  onDateChange: (value: Date) => void
+  onStrategyChange: (value: WorklogDistributionStrategy) => void
   onSelectionText: (value: string) => void
   onTargetText: (value: string) => void
   onSaveTarget: () => void
   onNote: (value: string) => void
   onManual: () => void
-  onBuild: (strategy: "equal" | "estimate" | "estimate-only") => void
+  onBuild: (strategy: Exclude<WorklogDistributionStrategy, "manual">) => void
   onAi: () => void
   onUpdate: (issueKey: string, patch: Partial<Pick<WorklogDraftEntry, "minutes" | "comment">>) => void
   onRemove: (issueKey: string) => void
@@ -38,8 +40,6 @@ export function WorklogDraftSidebar({ locale, date, selectedIssues, draft, draft
   onApply: (defaultComment: string) => void
 }) {
   const isFa = locale === "fa"
-  const [strategy, setStrategy] = useState<WorklogSidebarStrategy>("estimate")
-  const [comment, setComment] = useState(note)
   const [settingsOpen, setSettingsOpen] = useState(false)
   const draftByKey = useMemo(() => new Map(draft.map((entry) => [entry.issueKey, entry])), [draft])
   const ready = draft.some((entry) => entry.minutes > 0) && draftMinutes > 0
@@ -52,8 +52,8 @@ export function WorklogDraftSidebar({ locale, date, selectedIssues, draft, draft
     { id: "estimate-only" as const, icon: Clock3, title: isFa ? "فقط Estimate" : "Estimate only", hint: isFa ? `همان زمان باقی مانده Jira را ثبت کن · ${formatWorklogMinutes(estimateTotal)}` : `Use Jira remaining estimates only · ${formatWorklogMinutes(estimateTotal)}` },
   ]
 
-  function chooseMethod(next: WorklogSidebarStrategy) {
-    setStrategy(next)
+  function chooseMethod(next: WorklogDistributionStrategy) {
+    onStrategyChange(next)
     if (next === "manual") onManual()
     else onBuild(next)
   }
@@ -63,6 +63,11 @@ export function WorklogDraftSidebar({ locale, date, selectedIssues, draft, draft
       <div className="qm-worklog-draft-head">
         <div><div className="text-base font-semibold">{isFa ? "پیش نویس Worklog" : "Worklog draft"}</div><div className="mt-0.5 text-xs text-muted-foreground">{selectedIssues.length} {isFa ? "تسک" : "issues"} · <strong className="text-foreground">{formatWorklogMinutes(draftMinutes)}</strong></div></div>
         <span className={cn("qm-worklog-status-badge inline-flex items-center gap-1 border px-2 py-1 text-[11px] font-semibold", ready ? "border-success/25 bg-success/10 text-success" : "border-border bg-muted/30 text-muted-foreground")}><Check className="size-3" />{ready ? (isFa ? "آماده ثبت" : "Ready to submit") : (isFa ? "در حال آماده سازی" : "Preparing")}</span>
+      </div>
+
+      <div className="qm-worklog-draft-date">
+        <span className="text-[11px] font-semibold text-muted-foreground">{isFa ? "تاریخ ثبت" : "Log date"}</span>
+        <WorklogDateToolbar locale={locale} value={date} onChange={onDateChange} loading={loading} />
       </div>
 
       <div className="qm-worklog-draft-scroll qm-worklog-scroll">
@@ -90,7 +95,7 @@ export function WorklogDraftSidebar({ locale, date, selectedIssues, draft, draft
         </div>
 
         <div className="border-t px-4 py-4">
-          <label className="grid gap-1.5 text-xs font-medium"><span className="inline-flex items-center gap-1.5"><MessageSquareText className="size-3.5 text-muted-foreground" />{isFa ? "کامنت عمومی (اختیاری)" : "Add a comment (optional)"}</span><Textarea value={comment} onChange={(event) => { setComment(event.target.value); onNote(event.target.value) }} rows={3} maxLength={500} placeholder={isFa ? "امروز روی چه چیزی کار کردی؟" : "What did you work on today?"} /><span className="text-end text-[10px] font-normal text-muted-foreground">{comment.length}/500</span></label>
+          <label className="grid gap-1.5 text-xs font-medium"><span className="inline-flex items-center gap-1.5"><MessageSquareText className="size-3.5 text-muted-foreground" />{isFa ? "توضیح پیش فرض Worklog (اختیاری)" : "Default worklog description (optional)"}</span><Textarea value={note} onChange={(event) => onNote(event.target.value)} rows={3} maxLength={500} placeholder={isFa ? "مثلا: پیاده سازی و بررسی این تسک ها" : "For example: implementation and validation work"} /><span className="flex items-center justify-between gap-3 text-[10px] font-normal text-muted-foreground"><span>{isFa ? "اگر خالی باشد، QueueMint برای هر تسک از کلید و عنوان آن توضیح می سازد." : "If left blank, QueueMint uses each issue key and summary as the worklog description."}</span><span className="shrink-0">{note.length}/500</span></span></label>
         </div>
 
         <div className="border-t bg-muted/[0.08] px-4 py-3">
@@ -100,7 +105,7 @@ export function WorklogDraftSidebar({ locale, date, selectedIssues, draft, draft
       </div>
 
       <div className="qm-worklog-draft-submit">
-        <Button size="lg" className="w-full" onClick={() => onApply(comment)} disabled={!ready || applying}>{applying ? <LoaderCircle className="size-4 animate-spin" /> : <Send className="size-4" />}{isFa ? `ثبت Worklog (${formatWorklogMinutes(draftMinutes)})` : `Submit worklog (${formatWorklogMinutes(draftMinutes)})`}</Button>
+        <Button size="lg" className="w-full" onClick={() => onApply(note)} disabled={!ready || applying}>{applying ? <LoaderCircle className="size-4 animate-spin" /> : <Send className="size-4" />}{isFa ? `ثبت Worklog (${formatWorklogMinutes(draftMinutes)})` : `Submit worklog (${formatWorklogMinutes(draftMinutes)})`}</Button>
         <div className="mt-2 text-center text-[10px] text-muted-foreground">{isFa ? `زمان برای ${dateText} در Jira ثبت میشه.` : `Time will be logged to Jira for ${dateText}.`}</div>
       </div>
     </aside>

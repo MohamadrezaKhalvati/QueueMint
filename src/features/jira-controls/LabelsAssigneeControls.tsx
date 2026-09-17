@@ -66,12 +66,12 @@ export function AssigneeCombobox({ users, value, onValueChange, placeholder, emp
   return <SearchableSingle items={[...(allowInherited ? [inheritedKey] : []), unassignedKey, ...Array.from(map.keys())]} value={encoded} onValueChange={(next) => { if (!next || next === inheritedKey || next === unassignedKey) onValueChange(undefined); else onValueChange(next) }} itemLabel={labelFor} placeholder={placeholder} emptyLabel={emptyLabel} leading={<UserRound className="size-4 shrink-0 text-muted-foreground" />} renderItem={(key) => key === inheritedKey || key === unassignedKey ? <span className="text-muted-foreground">{labelFor(key)}</span> : <UserOption user={map.get(key)} fallback={key} label={labelFor(key)} />} />
 }
 
-export function BulkAssigneeCombobox({ users, value, onValueChange, placeholder, emptyLabel, unassignedLabel, noChangeLabel }: {
-  users: JiraUser[]; value: string | null | undefined; onValueChange: (value: string | null | undefined) => void; placeholder: string; emptyLabel: string; unassignedLabel: string; noChangeLabel: string
+export function BulkAssigneeCombobox({ users, value, onValueChange, placeholder, emptyLabel, unassignedLabel, noChangeLabel, disabled }: {
+  users: JiraUser[]; value: string | null | undefined; onValueChange: (value: string | null | undefined) => void; placeholder: string; emptyLabel: string; unassignedLabel: string; noChangeLabel: string; disabled?: boolean
 }) {
   const map = useMemo(() => new Map(users.map((user): [string, JiraUser] => [userIdentity(user), user]).filter(([key]) => Boolean(key))), [users])
   const noChange = "__bulk_no_change__"; const unassigned = "__bulk_unassigned__"
   const encoded = value === undefined ? noChange : value === null ? unassigned : value
   const labelFor = (key: string) => key === noChange ? noChangeLabel : key === unassigned ? unassignedLabel : userLabel(map.get(key) ?? { name: key })
-  return <SearchableSingle items={[noChange, unassigned, ...Array.from(map.keys())]} value={encoded} onValueChange={(next) => { if (!next || next === noChange) onValueChange(undefined); else if (next === unassigned) onValueChange(null); else onValueChange(next) }} itemLabel={labelFor} placeholder={placeholder} emptyLabel={emptyLabel} leading={<UserRound className="size-4 shrink-0 text-muted-foreground" />} renderItem={(key) => key === noChange || key === unassigned ? <span className="text-muted-foreground">{labelFor(key)}</span> : <UserOption user={map.get(key)} fallback={key} label={labelFor(key)} />} />
+  return <SearchableSingle items={[noChange, unassigned, ...Array.from(map.keys())]} value={encoded} onValueChange={(next) => { if (!next || next === noChange) onValueChange(undefined); else if (next === unassigned) onValueChange(null); else onValueChange(next) }} itemLabel={labelFor} placeholder={placeholder} emptyLabel={emptyLabel} disabled={disabled} leading={<UserRound className="size-4 shrink-0 text-muted-foreground" />} renderItem={(key) => key === noChange || key === unassigned ? <span className="text-muted-foreground">{labelFor(key)}</span> : <UserOption user={map.get(key)} fallback={key} label={labelFor(key)} />} />
 }

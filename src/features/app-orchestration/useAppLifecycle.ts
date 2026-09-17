@@ -2,7 +2,7 @@ import { useEffect } from "react"
 
 import type { LocalAttachment } from "@/components/attachment-picker"
 import { accentForDarkMode, foregroundForHex, type DynamicFieldDraft, type Mode, type Placement } from "@/features/bulk/bulk-utils"
-import { getBulkEditableFields } from "@/lib/jira"
+import { getBulkEditableFields, jiraErrorMessage } from "@/lib/jira"
 import { ensureAppearanceFonts } from "@/features/customization/font-loader"
 import { loadState, saveState, type ActivityEntry, type AutomationRule, type SavedIssueView, type SavedWorkspaceAction } from "@/lib/storage"
 import { LEGACY_SAMPLE_JSON } from "@/sample"
@@ -111,12 +111,11 @@ export function useAppLifecycle(options: LifecycleOptions) {
   }, [o.selectedProjectKey])
   useEffect(() => {
     if (!o.liveBulkOpen || !o.liveSelectedKeys.size) { o.setLiveDynamicFields([]); o.setLiveDynamicError(null); return }
-    const representatives = new Map<string, string>()
-    for (const issue of o.liveIssues.filter((item) => o.liveSelectedKeys.has(item.key))) if (!representatives.has(issue.type)) representatives.set(issue.type, issue.key)
-    const keys = Array.from(representatives.values()); if (!keys.length) return
+    const keys = o.liveIssues.filter((item) => o.liveSelectedKeys.has(item.key)).map((item) => item.key)
+    if (!keys.length) return
     let cancelled = false; o.setLiveDynamicLoading(true); o.setLiveDynamicError(null)
     void getBulkEditableFields(keys).then((fields) => { if (!cancelled) o.setLiveDynamicFields(fields) }).catch((error) => {
-      if (!cancelled) { o.setLiveDynamicFields([]); o.setLiveDynamicError(error instanceof Error ? error.message : "Unable to load Jira edit metadata.") }
+      if (!cancelled) { o.setLiveDynamicFields([]); o.setLiveDynamicError(jiraErrorMessage(error, "Unable to load Jira edit metadata.")) }
     }).finally(() => { if (!cancelled) o.setLiveDynamicLoading(false) })
     return () => { cancelled = true }
   }, [o.liveBulkOpen, o.liveSelectedKeys, o.liveIssues])

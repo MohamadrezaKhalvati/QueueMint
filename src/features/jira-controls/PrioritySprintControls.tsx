@@ -17,13 +17,13 @@ const DEFAULT_VALUE = "__default__"
 const NONE_VALUE = "__none__"
 const UNSET_VALUE = "__unset__"
 
-export function PrioritySelect({ priorities, value, defaultPriority, onValueChange, allowInherited = true, noDefaultLabel = "No default", inheritedLabel = "Use batch default", className }: {
-  priorities: JiraPriority[]; value?: string; defaultPriority?: string; onValueChange: (value: string | undefined) => void; allowInherited?: boolean; noDefaultLabel?: string; inheritedLabel?: string; className?: string
+export function PrioritySelect({ priorities, value, defaultPriority, onValueChange, allowInherited = true, noDefaultLabel = "No default", inheritedLabel = "Use batch default", disabled, className }: {
+  priorities: JiraPriority[]; value?: string; defaultPriority?: string; onValueChange: (value: string | undefined) => void; allowInherited?: boolean; noDefaultLabel?: string; inheritedLabel?: string; disabled?: boolean; className?: string
 }) {
   const encoded = allowInherited ? value ?? DEFAULT_VALUE : value ?? UNSET_VALUE
   const visiblePriority = value ?? defaultPriority
   const inherited = allowInherited && value === undefined && Boolean(defaultPriority)
-  return <Select value={encoded} onValueChange={(next) => onValueChange(next === DEFAULT_VALUE || next === UNSET_VALUE ? undefined : next)}>
+  return <Select value={encoded} disabled={disabled} onValueChange={(next) => onValueChange(next === DEFAULT_VALUE || next === UNSET_VALUE ? undefined : next)}>
     <SelectTrigger className={className} aria-label="Priority">
       {visiblePriority ? <PriorityVisual name={visiblePriority} compact inherited={inherited} inheritedLabel={inheritedLabel} /> : <span className="text-muted-foreground">{allowInherited ? inheritedLabel : noDefaultLabel}</span>}
     </SelectTrigger>

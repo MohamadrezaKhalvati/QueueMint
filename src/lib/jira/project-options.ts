@@ -1,4 +1,5 @@
 import type { JiraAttachmentUpload, JiraEpic, JiraPage, JiraRequestResponse, JiraUser } from "@/types"
+import { jiraErrorFromResponse } from "./errors"
 import { sendJiraRequest } from "./request"
 
 export async function getEpicsForBoard(boardId: number) {
@@ -68,5 +69,5 @@ export async function uploadIssueAttachments(issueKey: string, attachments: Jira
   if (!/^[A-Z][A-Z0-9_]*-\d+$/i.test(issueKey)) throw new Error("Invalid Jira issue key for attachment upload.")
   if (typeof chrome === "undefined" || !chrome.runtime?.id) throw new Error("Chrome extension APIs are unavailable. Load the built dist folder as an unpacked extension.")
   const response = (await chrome.runtime.sendMessage({ type: "QUEUEMINT_JIRA_UPLOAD_ATTACHMENTS", request: { issueKey, attachments } })) as JiraRequestResponse<unknown>
-  if (!response?.ok) throw new Error(response?.error?.message ?? "Jira attachment upload failed.")
+  if (!response?.ok) throw jiraErrorFromResponse(response, "Jira attachment upload failed.")
 }

@@ -27,6 +27,7 @@ export interface WorklogDaySummary {
   totalMinutes: number
   worklogs: JiraWorklog[]
   source?: "jira" | "tempo" | "mixed" | "scope"
+  warnings?: string[]
 }
 
 export interface WorklogSettings {
