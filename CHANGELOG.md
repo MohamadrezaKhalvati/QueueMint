@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.3.1 - Manage Jira Filter UX and Overlay Reliability
+
+- Fixed Select, Combobox, and Popover overlays opened inside QueueMint Sheets. Nested overlays now stay inside the active Sheet interaction layer, close normally on outside interaction, and keep their own scroll area usable.
+- Upgraded Manage Jira Type, Priority, Status, Assignee, Sprint, and Label filters to multi-select controls. Values inside one filter are OR conditions while different filter groups remain AND conditions.
+- Added a persistent Active filters band with removable filter chips, Jira assignee avatars, priority visuals, and clearer filter icons so saved or complex views remain visible at a glance.
+- Preserved existing Saved Views and command presets by accepting both legacy single filter values and the new multi-value arrays.
+- Removed implicit Manage Jira selection of the most recently created batch. Created-batch context remains available as a scope without making Jira mutations one click away.
+- Added confirmation before direct Assign to me and Move selected mutations. Bulk Edit, Worklog, and Delete continue through their existing review or confirmation paths.
+- Added regression coverage for multi-value filtering, Sheet overlay portals, mutation confirmation wiring, and the removal of automatic Manage Jira selection.
+
 ## 1.3.0 - Worklog Board Sync
 
 - Worklog submissions no longer create blank Jira descriptions. Per-issue text wins first, the shared draft description is used second, and a blank entry falls back to `Worked on ISSUE-KEY: issue summary`; the low-level Jira writer also guarantees a non-empty issue-key fallback.

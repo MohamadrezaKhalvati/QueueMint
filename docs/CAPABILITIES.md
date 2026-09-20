@@ -2,7 +2,7 @@
 
 Current stable release: v1.0.2.
 
-Current release line: v1.3.0. Appearance Studio and Worklog Board Sync are included in the supported release.
+Current release line: v1.3.1. Appearance Studio, Worklog Board Sync, and Manage Jira Filter UX are included in the supported release.
 
 This document describes what is implemented today. It intentionally separates current capability from the future roadmap.
 
@@ -162,8 +162,11 @@ QueueMint does not intend to replace Jira's dashboard/reporting system.
 - Scope and filters work independently.
 - Search.
 - My Issues toggle.
-- Type, Priority, Status, Assignee, Sprint, Label, and Estimate filters.
-- Saved Views scoped to project/board context.
+- Type, Priority, Status, Assignee, Sprint, Label, and Estimate filters. Type, Priority, Status, Assignee, Sprint, and Label support multiple selected values. Values inside the same filter use OR while different filter groups combine with AND.
+- Active filters stay visible as removable chips, with Jira assignee avatars and priority visuals where available.
+- Saved Views scoped to project/board context. Older single-value Saved Views remain readable after the multi-select filter upgrade.
+- Entering Manage Jira does not implicitly select the last created batch. Created-batch context is a scope only until the user explicitly selects issues.
+- Direct Assign to me and Move selected actions require confirmation before Jira is mutated.
 - Hidden filtered issues are removed from active bulk selection to avoid accidental edits.
 - Issue detail inspector.
 - Jira user avatars.

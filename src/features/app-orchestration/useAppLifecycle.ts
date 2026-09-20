@@ -42,7 +42,7 @@ export function useAppLifecycle(options: LifecycleOptions) {
       if (state.reviewLayout) o.setReviewLayout(state.reviewLayout); if (state.gridColumns) o.setGridColumns(state.gridColumns); if (state.density) o.setDensity(state.density); if (state.radius) o.setRadius(state.radius)
       if (state.neutralTone) o.setNeutralTone(state.neutralTone); if (state.bodyFont) o.setBodyFont(state.bodyFont); if (state.headingFont) o.setHeadingFont(state.headingFont)
       if (state.sidebarStyle) o.setSidebarStyle(state.sidebarStyle); if (state.sidebarAccent) o.setSidebarAccent(state.sidebarAccent); if (state.surfaceStyle) o.setSurfaceStyle(state.surfaceStyle); if (state.lastMode) o.setMode(state.lastMode)
-      if (state.lastCreatedKeys?.length) { o.setLastCreatedKeys(state.lastCreatedKeys); o.setLiveSelectedKeys(new Set(state.lastCreatedKeys)) }
+      if (state.lastCreatedKeys?.length) o.setLastCreatedKeys(state.lastCreatedKeys)
       if (state.savedActions?.length) o.setSavedActions(state.savedActions); if (state.savedViews?.length) o.setSavedViews(state.savedViews)
       if (state.automationRules?.length) o.setAutomationRules(state.automationRules); if (state.activityLog?.length) o.setActivityLog(state.activityLog)
       o.setOnboardingComplete(Boolean(state.onboardingComplete)); o.setHydrated(true)
@@ -82,6 +82,9 @@ export function useAppLifecycle(options: LifecycleOptions) {
   }, [o.jsonText, o.payload?.project, o.selectedBoardId, o.theme, o.locale, o.accentColor, o.reviewLayout, o.gridColumns, o.density, o.radius, o.neutralTone, o.bodyFont, o.headingFont, o.sidebarStyle, o.sidebarAccent, o.surfaceStyle, o.mode, o.lastCreatedKeys, o.onboardingComplete, o.savedActions, o.savedViews, o.automationRules, o.activityLog])
 
   useEffect(() => { if (o.hydrated) void o.connect(false) }, [o.hydrated])
+  useEffect(() => {
+    if (o.mode !== "manage" && o.liveSelectedKeys.size) o.setLiveSelectedKeys(new Set())
+  }, [o.mode])
   useEffect(() => {
     if (typeof chrome === "undefined" || !chrome.runtime?.onMessage) return
     const listener = (message: unknown) => {

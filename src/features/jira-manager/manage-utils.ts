@@ -28,27 +28,31 @@ export function formatEstimate(issue: JiraLiveIssue) {
 
 export type ManageIssueFilterState = {
   search: string
-  type: string
-  priority: string
-  status: string
-  assignee: string
-  sprint: string
-  label: string
+  type: string[]
+  priority: string[]
+  status: string[]
+  assignee: string[]
+  sprint: string[]
+  label: string[]
   estimate: string
   myIssuesOnly: boolean
   currentUser?: string | null
+}
+
+function includesAny(values: string[], actual?: string) {
+  return values.length === 0 || Boolean(actual && values.includes(actual))
 }
 
 export function filterManageIssues(source: JiraLiveIssue[], filters: ManageIssueFilterState) {
   const q = filters.search.trim().toLowerCase()
   return source
     .filter((issue) => !q || issue.key.toLowerCase().includes(q) || issue.summary.toLowerCase().includes(q) || issue.labels.some((label) => label.toLowerCase().includes(q)) || issue.assignee?.toLowerCase().includes(q) || issue.status?.toLowerCase().includes(q))
-    .filter((issue) => filters.type === "all" || issue.type === filters.type)
-    .filter((issue) => filters.priority === "all" || issue.priority === filters.priority)
-    .filter((issue) => filters.status === "all" || issue.status === filters.status)
-    .filter((issue) => filters.assignee === "all" || (filters.assignee === "__unassigned__" ? !issue.assignee && !issue.assigneeId : issue.assignee === filters.assignee))
-    .filter((issue) => filters.sprint === "all" || (filters.sprint === "backlog" ? issue.placement === "backlog" : issue.sprintId === Number(filters.sprint)))
-    .filter((issue) => filters.label === "all" || issue.labels.includes(filters.label))
+    .filter((issue) => includesAny(filters.type, issue.type))
+    .filter((issue) => includesAny(filters.priority, issue.priority))
+    .filter((issue) => includesAny(filters.status, issue.status))
+    .filter((issue) => filters.assignee.length === 0 || filters.assignee.some((value) => value === "__unassigned__" ? !issue.assignee && !issue.assigneeId : issue.assignee === value))
+    .filter((issue) => filters.sprint.length === 0 || filters.sprint.some((value) => value === "backlog" ? issue.placement === "backlog" : issue.sprintId === Number(value)))
+    .filter((issue) => filters.label.length === 0 || filters.label.some((value) => issue.labels.includes(value)))
     .filter((issue) => filters.estimate === "all" || (filters.estimate === "estimated" ? formatEstimate(issue) !== "—" : formatEstimate(issue) === "—"))
     .filter((issue) => !filters.myIssuesOnly || Boolean(filters.currentUser && issue.assignee === filters.currentUser))
 }

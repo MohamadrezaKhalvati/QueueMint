@@ -2,6 +2,7 @@ import * as React from "react"
 import * as SelectPrimitive from "@radix-ui/react-select"
 import { Check, ChevronDown, ChevronUp } from "lucide-react"
 
+import { useOverlayPortalContainer } from "@/components/ui/overlay-portal"
 import { cn } from "@/lib/utils"
 
 const Select = SelectPrimitive.Root
@@ -27,8 +28,9 @@ function SelectTrigger({ className, children, ...props }: React.ComponentPropsWi
 }
 
 function SelectContent({ className, children, position = "popper", sideOffset = 6, align = "start", ...props }: React.ComponentPropsWithoutRef<typeof SelectPrimitive.Content>) {
+  const portalContainer = useOverlayPortalContainer()
   return (
-    <SelectPrimitive.Portal>
+    <SelectPrimitive.Portal container={portalContainer ?? undefined}>
       <SelectPrimitive.Content
         data-slot="select-content"
         position={position}
@@ -43,7 +45,7 @@ function SelectContent({ className, children, position = "popper", sideOffset = 
         <SelectPrimitive.ScrollUpButton className="flex h-7 items-center justify-center border-b bg-popover text-muted-foreground">
           <ChevronUp className="size-4" />
         </SelectPrimitive.ScrollUpButton>
-        <SelectPrimitive.Viewport className="p-1.5">{children}</SelectPrimitive.Viewport>
+        <SelectPrimitive.Viewport className="max-h-[min(var(--radix-select-content-available-height),22rem)] overflow-y-auto overscroll-contain p-1.5">{children}</SelectPrimitive.Viewport>
         <SelectPrimitive.ScrollDownButton className="flex h-7 items-center justify-center border-t bg-popover text-muted-foreground">
           <ChevronDown className="size-4" />
         </SelectPrimitive.ScrollDownButton>

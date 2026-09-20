@@ -7,10 +7,10 @@ import { cn } from "@/lib/utils"
 import type { JiraBoard, JiraEditableField, JiraEpic, JiraProject } from "@/types"
 import { SearchableSingle } from "./SearchableSingle"
 
-export function SimpleSelect({ value, items, onValueChange, placeholder, disabled, className }: {
-  value?: string; items: Array<{ value: string; label: string }>; onValueChange: (value: string) => void; placeholder?: string; disabled?: boolean; className?: string
+export function SimpleSelect({ value, items, onValueChange, placeholder, disabled, className, ariaLabel }: {
+  value?: string; items: Array<{ value: string; label: string }>; onValueChange: (value: string) => void; placeholder?: string; disabled?: boolean; className?: string; ariaLabel?: string
 }) {
-  return <Select value={value || undefined} onValueChange={onValueChange} disabled={disabled}><SelectTrigger className={className}><SelectValue placeholder={placeholder} /></SelectTrigger><SelectContent>{items.map((item) => <SelectItem key={item.value} value={item.value}>{item.label}</SelectItem>)}</SelectContent></Select>
+  return <Select value={value || undefined} onValueChange={onValueChange} disabled={disabled}><SelectTrigger className={className} aria-label={ariaLabel}><SelectValue placeholder={placeholder} /></SelectTrigger><SelectContent>{items.map((item) => <SelectItem key={item.value} value={item.value}>{item.label}</SelectItem>)}</SelectContent></Select>
 }
 
 export function JiraFieldCombobox({ fields, value, onValueChange, placeholder, emptyLabel, disabled }: {

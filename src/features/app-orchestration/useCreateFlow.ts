@@ -20,7 +20,7 @@ type CreateFlowOptions = {
   includedIndicesForCreation: () => number[]; clearDraftBatch: (payload: BulkPayload) => void
   recordActivity: (input: Omit<ActivityEntry, "id" | "createdAt" | "projectKey" | "boardId">) => void
   setCreateDialogOpen: StateSetter<boolean>; setCreating: StateSetter<boolean>; setRunResult: StateSetter<CreateRunResult | null>
-  setProgress: StateSetter<ProgressState>; setLastCreatedKeys: StateSetter<string[]>; setLiveSelectedKeys: StateSetter<Set<string>>
+  setProgress: StateSetter<ProgressState>; setLastCreatedKeys: StateSetter<string[]>
   setLiveScope: StateSetter<"created" | "board">; setLiveActionMessage: StateSetter<string | null>; setMode: StateSetter<Mode>
   setQuickCreating: StateSetter<boolean>; setQuickResult: StateSetter<CreateRunResult | null>; setQuickIssue: StateSetter<BulkIssue>
   setDuplicateProjectIssues: StateSetter<JiraIssueSearchResult[]>; setDuplicateCheckedSummary: StateSetter<string>; setQuickAttachments: StateSetter<LocalAttachment[]>
@@ -32,7 +32,7 @@ export function useCreateFlow(options: CreateFlowOptions) {
     payload, metadata, selectedBoardId, attachmentsByIndex, runResult, quickIssue, selectedProjectKey,
     quickPlacement, quickSprintId, project, sprints, quickAttachments, t, includedIndicesForCreation,
     clearDraftBatch, recordActivity, setCreateDialogOpen, setCreating, setRunResult, setProgress,
-    setLastCreatedKeys, setLiveSelectedKeys, setLiveScope, setLiveActionMessage, setMode,
+    setLastCreatedKeys, setLiveScope, setLiveActionMessage, setMode,
     setQuickCreating, setQuickResult, setQuickIssue, setDuplicateProjectIssues,
     setDuplicateCheckedSummary, setQuickAttachments, setValidation,
   } = options
@@ -75,7 +75,7 @@ export function useCreateFlow(options: CreateFlowOptions) {
       const withAttachments = await uploadAttachmentsForResults(remapped, attachmentsByIndex)
       setRunResult(withAttachments)
       const createdKeys = withAttachments.results.filter((item) => item.ok && item.key).map((item) => item.key as string)
-      if (createdKeys.length) { setLastCreatedKeys(createdKeys); setLiveSelectedKeys(new Set(createdKeys)); setLiveScope("created") }
+      if (createdKeys.length) { setLastCreatedKeys(createdKeys); setLiveScope("created") }
       const allIssuesCreated = withAttachments.results.every((item) => item.ok)
       const attachmentFailed = withAttachments.results.some((item) => Boolean(item.attachmentError))
       const placementNeedsReview = withAttachments.results.some((item) => item.ok && item.sprintAssigned === false)
@@ -153,7 +153,7 @@ export function useCreateFlow(options: CreateFlowOptions) {
       setQuickResult(withAttachments)
       if (withAttachments.results[0]?.ok) {
         const key = withAttachments.results[0]?.key
-        if (key) { setLastCreatedKeys([key]); setLiveSelectedKeys(new Set([key])); setLiveScope("created"); recordActivity({ kind: "create", outcome: withAttachments.results[0]?.estimateError ? "warning" : "success", title: "Quick issue created", detail: quickIssue.summary.trim(), issueKeys: [key] }) }
+        if (key) { setLastCreatedKeys([key]); setLiveScope("created"); recordActivity({ kind: "create", outcome: withAttachments.results[0]?.estimateError ? "warning" : "success", title: "Quick issue created", detail: quickIssue.summary.trim(), issueKeys: [key] }) }
         setQuickIssue({ type: quickIssue.type, summary: "", description: "", priority: quickIssue.priority, assignee: quickIssue.assignee, labels: quickIssue.labels, estimate: undefined })
         setDuplicateProjectIssues([]); setDuplicateCheckedSummary(""); setQuickAttachments([])
         if (withAttachments.results[0]?.estimateError) toast.warning(t.estimateApplyFailed, { description: withAttachments.results[0]?.estimateError })
