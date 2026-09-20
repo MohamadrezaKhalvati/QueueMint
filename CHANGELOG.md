@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased - Manage Jira Filter UX and Overlay Reliability
+## 1.3.1 - Manage Jira Filter UX and Overlay Reliability
 
 - Fixed Select, Combobox, and Popover overlays opened inside QueueMint Sheets. Nested overlays now stay inside the active Sheet interaction layer, close normally on outside interaction, and keep their own scroll area usable.
 - Upgraded Manage Jira Type, Priority, Status, Assignee, Sprint, and Label filters to multi-select controls. Values inside one filter are OR conditions while different filter groups remain AND conditions.
