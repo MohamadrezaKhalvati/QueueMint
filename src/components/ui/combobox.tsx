@@ -3,14 +3,16 @@ import * as PopoverPrimitive from "@radix-ui/react-popover"
 import { Check, Search } from "lucide-react"
 
 import { Input } from "@/components/ui/input"
+import { useOverlayPortalContainer } from "@/components/ui/overlay-portal"
 import { cn } from "@/lib/utils"
 
 const Combobox = PopoverPrimitive.Root
 const ComboboxTrigger = PopoverPrimitive.Trigger
 
 function ComboboxContent({ className, align = "start", sideOffset = 6, ...props }: React.ComponentPropsWithoutRef<typeof PopoverPrimitive.Content>) {
+  const portalContainer = useOverlayPortalContainer()
   return (
-    <PopoverPrimitive.Portal>
+    <PopoverPrimitive.Portal container={portalContainer ?? undefined}>
       <PopoverPrimitive.Content
         data-slot="combobox-content"
         align={align}

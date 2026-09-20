@@ -2,6 +2,7 @@ import * as React from "react"
 import * as DialogPrimitive from "@radix-ui/react-dialog"
 import { X } from "lucide-react"
 
+import { OverlayPortalProvider } from "@/components/ui/overlay-portal"
 import { cn } from "@/lib/utils"
 
 const Sheet = DialogPrimitive.Root
@@ -9,6 +10,7 @@ const SheetTrigger = DialogPrimitive.Trigger
 const SheetClose = DialogPrimitive.Close
 
 function SheetContent({ className, children, side = "right", showClose = true, ...props }: React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content> & { side?: "right" | "left" | "bottom"; showClose?: boolean }) {
+  const [portalContainer, setPortalContainer] = React.useState<HTMLElement | null>(null)
   const sideClass = side === "bottom"
     ? "inset-x-0 bottom-0 max-h-[90dvh] rounded-t-[var(--qm-panel-radius)] border-t"
     : side === "left"
@@ -22,21 +24,24 @@ function SheetContent({ className, children, side = "right", showClose = true, .
         className="fixed inset-0 z-[200] bg-slate-950/35 backdrop-blur-[2px]"
       />
       <DialogPrimitive.Content
+        ref={setPortalContainer}
         data-slot="sheet-content"
         data-side={side}
         className={cn(
-          "fixed z-[210] flex flex-col overflow-hidden bg-background text-foreground shadow-2xl outline-none will-change-transform",
+          "fixed z-[210] flex flex-col overflow-visible bg-background text-foreground shadow-2xl outline-none",
           sideClass,
           className,
         )}
         {...props}
       >
-        {showClose ? (
-          <DialogPrimitive.Close aria-label="Close" className="absolute end-3 top-3 z-10 grid size-9 place-items-center rounded-[var(--qm-control-radius)] border border-transparent text-muted-foreground outline-none transition hover:border-border hover:bg-accent hover:text-foreground focus-visible:ring-[3px] focus-visible:ring-ring/25">
-            <X className="size-4" />
-          </DialogPrimitive.Close>
-        ) : null}
-        {children}
+        <OverlayPortalProvider container={portalContainer}>
+          {showClose ? (
+            <DialogPrimitive.Close aria-label="Close" className="absolute end-3 top-3 z-10 grid size-9 place-items-center rounded-[var(--qm-control-radius)] border border-transparent text-muted-foreground outline-none transition hover:border-border hover:bg-accent hover:text-foreground focus-visible:ring-[3px] focus-visible:ring-ring/25">
+              <X className="size-4" />
+            </DialogPrimitive.Close>
+          ) : null}
+          {children}
+        </OverlayPortalProvider>
       </DialogPrimitive.Content>
     </DialogPrimitive.Portal>
   )

@@ -32,7 +32,6 @@ type LiveBoardOptions = {
   selectedBoardId: number | null
   sprints: JiraSprint[]
   metadata: JiraMetadata | null
-  lastCreatedKeys: string[]
   payload: BulkPayload | undefined
   t: AppCopy
   locale: AppLocale
@@ -57,7 +56,7 @@ type LiveBoardOptions = {
 
 export function useLiveBoardOperations(options: LiveBoardOptions) {
   const {
-    selectedBoardId, sprints, metadata, lastCreatedKeys, payload, t, locale, selectedProjectKey,
+    selectedBoardId, sprints, metadata, payload, t, locale, selectedProjectKey,
     quickIssue, liveIssues, liveSelectedKeys, setLiveIssues, setLiveSelectedKeys, setLoadingLive,
     setLiveActionMessage, setActivityLog, setDuplicateProjectIssues, setDuplicateLoading,
     setDuplicateCheckedSummary, setIssueDetailKey, setIssueDetailOpen, setIssueDetails,
@@ -75,9 +74,7 @@ export function useLiveBoardOperations(options: LiveBoardOptions) {
       setLiveIssues(next)
       setLiveSelectedKeys((current) => {
         const available = new Set(next.map((item) => item.key))
-        const kept = new Set(Array.from(current).filter((key) => available.has(key)))
-        if (kept.size) return kept
-        return new Set(lastCreatedKeys.filter((key) => available.has(key)))
+        return new Set(Array.from(current).filter((key) => available.has(key)))
       })
     } catch (error) {
       setLiveIssues([])

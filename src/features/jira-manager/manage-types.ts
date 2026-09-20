@@ -13,12 +13,12 @@ export type ManageCommandPreset = {
   search?: string
   view?: ManageView
   filters?: Partial<{
-    type: string
-    priority: string
-    status: string
-    assignee: string
-    sprint: string
-    label: string
+    type: string | string[]
+    priority: string | string[]
+    status: string | string[]
+    assignee: string | string[]
+    sprint: string | string[]
+    label: string | string[]
     estimate: string
     myIssuesOnly: boolean
   }>

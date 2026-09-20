@@ -31,6 +31,8 @@ QueueMint uses React + TypeScript + Tailwind CSS 4 with source-owned shadcn/Pers
 
 ## Manage Jira large-board UX
 
+- Shared Select, Combobox, and Popover primitives opened inside a modal Sheet portal into that Sheet content so modal pointer-lock, outside-click, and scrolling remain coherent.
+- Manage Jira multi-select filters expose active values as removable chips instead of relying on a numeric badge alone.
 - Large result sets default to List view.
 - List view uses 25/50/100-row pagination rather than rendering hundreds of cards at once.
 - Board view is retained for direct Sprint/Backlog drag/drop.

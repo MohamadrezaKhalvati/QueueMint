@@ -13,12 +13,12 @@ export interface SavedIssueView {
   search: string
   view: "list" | "board"
   filters: {
-    type: string
-    priority: string
-    status: string
-    assignee: string
-    sprint: string
-    label: string
+    type: string | string[]
+    priority: string | string[]
+    status: string | string[]
+    assignee: string | string[]
+    sprint: string | string[]
+    label: string | string[]
     estimate: string
     myIssuesOnly: boolean
   }

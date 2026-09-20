@@ -97,7 +97,7 @@ function App() {
     setSelectedForCreate, setMode, setInspectorOpen, setAttachmentsByIndex, setProgress, setSearch, setTypeFilter, setPlacementFilter,
   })
   const liveActions = useLiveBoardOperations({
-    selectedBoardId, sprints, metadata, lastCreatedKeys, payload, t, locale, selectedProjectKey, quickIssue, liveIssues, liveSelectedKeys,
+    selectedBoardId, sprints, metadata, payload, t, locale, selectedProjectKey, quickIssue, liveIssues, liveSelectedKeys,
     setLiveIssues, setLiveSelectedKeys, setLoadingLive, setLiveActionMessage, setActivityLog, setDuplicateProjectIssues,
     setDuplicateLoading, setDuplicateCheckedSummary, setIssueDetailKey, setIssueDetailOpen, setIssueDetails, setIssueDetailError, setIssueDetailLoading,
   })
@@ -136,7 +136,7 @@ function App() {
     payload, metadata, selectedBoardId, attachmentsByIndex, runResult, quickIssue, selectedProjectKey, quickPlacement, quickSprintId,
     project, sprints, quickAttachments, t, includedIndicesForCreation: validationActions.includedIndicesForCreation,
     clearDraftBatch: draftActions.clearDraftBatch, recordActivity: liveActions.recordActivity, setCreateDialogOpen, setCreating,
-    setRunResult, setProgress, setLastCreatedKeys, setLiveSelectedKeys, setLiveScope, setLiveActionMessage, setMode,
+    setRunResult, setProgress, setLastCreatedKeys, setLiveScope, setLiveActionMessage, setMode,
     setQuickCreating, setQuickResult, setQuickIssue, setDuplicateProjectIssues, setDuplicateCheckedSummary, setQuickAttachments, setValidation,
   })
   const actions: AppActionGroups = {

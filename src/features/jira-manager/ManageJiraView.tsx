@@ -9,6 +9,8 @@ import { Sheet, SheetBody, SheetContent, SheetDescription, SheetFooter, SheetHea
 import { ContextItem, BoardContextItem } from "@/features/review/ReviewContext"
 import { cn } from "@/lib/utils"
 import { LiveIssueCard, LiveIssueListRow } from "./LiveIssueViews"
+import { ManageFiltersPanel } from "./ManageFiltersPanel"
+import { ManageMutationConfirmDialog } from "./ManageMutationConfirmDialog"
 import { ManagePowerTools } from "./ManagePowerTools"
 import type { ManageJiraScreenProps } from "./manage-types"
 import { useManageJiraModel } from "./useManageJiraModel"
@@ -16,7 +18,7 @@ import { useManageJiraModel } from "./useManageJiraModel"
 type ManageJiraViewProps = ManageJiraScreenProps & ReturnType<typeof useManageJiraModel>
 
 export function ManageJiraView(args: ManageJiraViewProps) {
-  const { t, locale, project, boards, selectedBoardId, boardLoading, onBoardChange, sprints, issues, selectedKeys, scope, setScope, search, setSearch, loading, message, onRefresh, onMove, onAssignToMe, onBulkEdit, onWorklog, onPreparePowerTool, savedActions, onUseSavedAction, onDeleteSavedAction, onDeleteView, onOpenIssue, historyCount, onHistory, onDelete, draggedKey, setDraggedKey, overLane, setOverLane, moveTarget, view, setView, filtersOpen, setFiltersOpen, saveViewOpen, setSaveViewOpen, saveViewName, setSaveViewName, typeFilter, setTypeFilter, priorityFilter, setPriorityFilter, statusFilter, setStatusFilter, assigneeFilter, setAssigneeFilter, sprintFilter, setSprintFilter, labelFilter, setLabelFilter, estimateFilter, setEstimateFilter, myIssuesOnly, setMyIssuesOnly, setPage, pageSize, setPageSize, currentUser, matchingSavedViews, createdIssues, activeFilterCount, visibleIssues, hasActiveFiltering, createdScopeCount, boardScopeCount, pageCount, safePage, pageIssues, groups, allPageSelected, allMatchingSelected, moveItems, toggle, moveSelection, clearFilters, applySavedView, saveCurrentView, selectPage, selectMatching, filterItems } = args
+  const { t, locale, project, boards, selectedBoardId, boardLoading, onBoardChange, sprints, users, issues, selectedKeys, scope, setScope, search, setSearch, loading, message, onRefresh, onMove, onBulkEdit, onWorklog, onPreparePowerTool, savedActions, onUseSavedAction, onDeleteSavedAction, onDeleteView, onOpenIssue, historyCount, onHistory, onDelete, draggedKey, setDraggedKey, overLane, setOverLane, moveTarget, pendingMutation, setPendingMutation, view, setView, filtersOpen, setFiltersOpen, saveViewOpen, setSaveViewOpen, saveViewName, setSaveViewName, typeFilter, setTypeFilter, priorityFilter, setPriorityFilter, statusFilter, setStatusFilter, assigneeFilter, setAssigneeFilter, sprintFilter, setSprintFilter, labelFilter, setLabelFilter, estimateFilter, setEstimateFilter, myIssuesOnly, setMyIssuesOnly, setPage, pageSize, setPageSize, currentUser, matchingSavedViews, createdIssues, activeFilterCount, visibleIssues, hasActiveFiltering, createdScopeCount, boardScopeCount, pageCount, safePage, pageIssues, groups, allPageSelected, allMatchingSelected, moveItems, toggle, requestMoveSelection, requestAssignToMe, confirmPendingMutation, clearFilters, applySavedView, saveCurrentView, selectPage, selectMatching, filterItems } = args
 return (
   <div className="qm-screen animate-in fade-in slide-in-from-bottom-2 duration-200">
     <div className="qm-page-heading qm-page-heading-row flex flex-wrap items-end justify-between gap-4">
@@ -126,18 +128,14 @@ return (
           </div>
         </div>
 
-        {filtersOpen ? (
-          <div className="mt-3 grid gap-2 rounded-[var(--qm-panel-radius)] border bg-muted/10 p-3 sm:grid-cols-2 xl:grid-cols-4 2xl:grid-cols-7">
-            <SimpleSelect value={typeFilter} onValueChange={setTypeFilter} items={filterItems.type} />
-            <SimpleSelect value={priorityFilter} onValueChange={setPriorityFilter} items={filterItems.priority} />
-            <SimpleSelect value={statusFilter} onValueChange={setStatusFilter} items={filterItems.status} />
-            <SimpleSelect value={assigneeFilter} onValueChange={setAssigneeFilter} items={filterItems.assignee} />
-            <SimpleSelect value={sprintFilter} onValueChange={setSprintFilter} items={filterItems.sprint} />
-            <SimpleSelect value={labelFilter} onValueChange={setLabelFilter} items={filterItems.label} />
-            <SimpleSelect value={estimateFilter} onValueChange={setEstimateFilter} items={filterItems.estimate} />
-            {activeFilterCount ? <div className="sm:col-span-2 xl:col-span-4 2xl:col-span-7 flex justify-end"><Button variant="ghost" size="sm" onClick={clearFilters}><XCircle className="size-4" />{t.clearFilters}</Button></div> : null}
-          </div>
-        ) : null}
+        <ManageFiltersPanel
+          locale={locale} t={t} open={filtersOpen} activeCount={activeFilterCount}
+          typeFilter={typeFilter} priorityFilter={priorityFilter} statusFilter={statusFilter} assigneeFilter={assigneeFilter}
+          sprintFilter={sprintFilter} labelFilter={labelFilter} estimateFilter={estimateFilter} myIssuesOnly={myIssuesOnly}
+          filterItems={filterItems} users={users} sprints={sprints}
+          onType={setTypeFilter} onPriority={setPriorityFilter} onStatus={setStatusFilter} onAssignee={setAssigneeFilter}
+          onSprint={setSprintFilter} onLabel={setLabelFilter} onEstimate={setEstimateFilter} onMyIssues={setMyIssuesOnly} onClear={clearFilters}
+        />
 
       </div>
 
@@ -148,8 +146,8 @@ return (
           <Button variant="ghost" size="sm" onClick={selectPage}>{allPageSelected ? t.clearSelection : t.selectVisible}</Button>
           {visibleIssues.length > pageIssues.length ? <Button variant="ghost" size="sm" onClick={selectMatching}>{allMatchingSelected ? t.clearSelection : `${t.selectMatching} (${visibleIssues.length})`}</Button> : null}
           <div className="ms-auto hidden items-center gap-2 lg:flex">
-            <SimpleSelect value={moveTarget} onValueChange={moveSelection} className="min-w-[220px]" placeholder={t.moveSelected} disabled={!selectedKeys.size} items={moveItems} />
-            <Button variant="outline" size="sm" onClick={onAssignToMe} disabled={!selectedKeys.size || !currentUser}><UserCheck className="size-4" />{t.assignToMe}</Button>
+            <SimpleSelect value={moveTarget} onValueChange={requestMoveSelection} className="min-w-[220px]" placeholder={t.moveSelected} disabled={!selectedKeys.size} items={moveItems} />
+            <Button variant="outline" size="sm" onClick={requestAssignToMe} disabled={!selectedKeys.size || !currentUser}><UserCheck className="size-4" />{t.assignToMe}</Button>
             <Button variant="outline" size="sm" onClick={onBulkEdit} disabled={!selectedKeys.size}><UsersRound className="size-4" />{t.bulkEdit}</Button>
             <Button variant="outline" size="sm" onClick={onWorklog} disabled={!selectedKeys.size}><TimerReset className="size-4" />{locale === "fa" ? "ثبت زمان" : "Log work"}</Button>
             <Button variant="ghost" size="sm" className="text-destructive hover:text-destructive" onClick={onDelete} disabled={!selectedKeys.size}><Trash2 className="size-4" />{t.deleteSelected}</Button>
@@ -244,6 +242,13 @@ return (
         )}
       </div>
     </section>
+
+    <ManageMutationConfirmDialog
+      locale={locale}
+      pending={pendingMutation}
+      onOpenChange={(open) => { if (!open) setPendingMutation(null) }}
+      onConfirm={confirmPendingMutation}
+    />
 
     <Sheet open={saveViewOpen} onOpenChange={setSaveViewOpen}>
       <SheetContent side={locale === "fa" ? "left" : "right"} className="w-full sm:max-w-md">
