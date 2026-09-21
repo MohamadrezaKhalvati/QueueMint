@@ -1,14 +1,6 @@
 # Changelog
 
-## Unreleased - Calendar and evidence upload polish
-
-- Replaced browser-native date inputs with QueueMint's shared calendar for Capture due dates and dynamic Jira date fields, including previous/next month, previous/next year, Today, and Clear controls.
-- Kept Jira date values timezone-safe by converting calendar selections to local `YYYY-MM-DD` values instead of UTC-derived strings.
-- Rebuilt the shared evidence upload control as a stable responsive grid so its icon, copy, format hint, and add action no longer overlap or escape the drop zone in narrow extension layouts.
-- Improved attachment previews with readable file sizes, meaningful image alt text, a visible file count, and touch-accessible remove controls.
-- Added regression coverage for shared calendar adoption and responsive attachment layout.
-
-## Unreleased - Jira Create Field Safety and Issue Form Visuals
+## 1.3.2 - Jira Create Safety, Calendar and Evidence UX
 
 - Added Jira Data Center create-screen capability checks through REST API v2 create metadata. QueueMint now filters optional fields against the selected project and issue type before creating an issue instead of assuming every discovered Jira field is writable everywhere.
 - Added a defensive create retry for Jira field-screen mismatches. If Jira still rejects one optional field, QueueMint removes that field, retries the issue creation, and reports the skipped field after success instead of failing the whole issue.
@@ -16,6 +8,12 @@
 - Added Jira issue-type visuals, priority visuals, and selected-assignee avatars across the issue creation controls so fields are easier to scan and identify.
 - Rebalanced the full-screen Capture issue form. Assignee now sits with the classification controls, the oversized empty Ownership panel is gone, and Description uses the full form width for easier editing.
 - Added regression coverage for REST v2 create metadata, rejected optional-field recovery, create-field gating, visual Jira selectors, and Capture form alignment.
+
+- Replaced browser-native date inputs with QueueMint's shared calendar for Capture due dates and dynamic Jira date fields, including previous/next month, previous/next year, Today, and Clear controls.
+- Kept Jira date values timezone-safe by converting calendar selections to local `YYYY-MM-DD` values instead of UTC-derived strings.
+- Rebuilt the shared evidence upload control as a stable responsive grid so its icon, copy, format hint, and add action no longer overlap or escape the drop zone in narrow extension layouts.
+- Improved attachment previews with readable file sizes, meaningful image alt text, a visible file count, and touch-accessible remove controls.
+- Added regression coverage for shared calendar adoption and responsive attachment layout.
 
 ## 1.3.1 - Manage Jira Filter UX and Overlay Reliability
 

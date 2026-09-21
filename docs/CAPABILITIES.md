@@ -2,7 +2,7 @@
 
 Current stable release: v1.0.2.
 
-Current release line: v1.3.1. Appearance Studio, Worklog Board Sync, and Manage Jira Filter UX are included in the supported release.
+Current release line: v1.3.2. Appearance Studio, Worklog Board Sync, Manage Jira Filter UX, Jira Create Safety, Calendar, and Evidence Upload UX are included in the supported release.
 
 This document describes what is implemented today. It intentionally separates current capability from the future roadmap.
 
