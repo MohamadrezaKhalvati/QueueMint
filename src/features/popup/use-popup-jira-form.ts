@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react"
+import { useMemo, useRef, useState } from "react"
 import { toast } from "sonner"
 
 import type { LocalAttachment } from "@/components/attachment-picker"
@@ -6,7 +6,7 @@ import { formatDiagnosticsText } from "@/features/capture-pro/diagnostics"
 import type { CaptureEvidenceShot, QueueMintPageDiagnostics } from "@/features/capture-pro/types"
 import { captureContextText, screenshotFilename, type QueueMintPageContext } from "@/lib/capture"
 import { localAttachmentsToJira } from "@/lib/file-upload"
-import { createIssues, discoverJira, getAssignableUsers, getBoardsForProject, getProject, getProjectEpics, getSprintsForBoard, jiraErrorMessage, uploadIssueAttachments } from "@/lib/jira"
+import { createIssues, discoverJira, getAssignableUsers, getBoardsForProject, getCreateFieldsForIssueType, getProject, getProjectEpics, getSprintsForBoard, jiraErrorMessage, uploadIssueAttachments } from "@/lib/jira"
 import { loadState } from "@/lib/storage"
 import type { QueueMintCaptureIssueDraft } from "@/lib/capture-draft"
 import type { JiraAttachmentUpload, JiraBoard, JiraConnectionStatus, JiraEpic, JiraMetadata, JiraProject, JiraSprint, JiraUser } from "@/types"
@@ -34,6 +34,8 @@ export function usePopupJiraForm({ status, t }: { status: JiraConnectionStatus; 
   const [fixVersion, setFixVersion] = useState("")
   const [dueDate, setDueDate] = useState("")
   const [moreFields, setMoreFields] = useState(false)
+  const [createFieldIds, setCreateFieldIds] = useState<string[] | null>(null)
+  const createFieldsRequest = useRef(0)
   const [summary, setSummary] = useState("")
   const [description, setDescription] = useState("")
   const [includeContext, setIncludeContext] = useState(true)
@@ -46,6 +48,18 @@ export function usePopupJiraForm({ status, t }: { status: JiraConnectionStatus; 
     summary, description, projectKey, issueType, priority, boardId, sprintId, assignee, epic, estimate, storyPoints, labels, component, fixVersion, dueDate, moreFields,
     includeContext, includeScreenshot, includeDiagnostics, attachments: attachments.map(({ id, file }) => ({ id, file })),
   }), [summary, description, projectKey, issueType, priority, boardId, sprintId, assignee, epic, estimate, storyPoints, labels, component, fixVersion, dueDate, moreFields, includeContext, includeScreenshot, includeDiagnostics, attachments])
+
+
+  async function refreshCreateFields(nextProject: string, nextIssueType: string) {
+    const requestId = ++createFieldsRequest.current
+    try {
+      const capability = await getCreateFieldsForIssueType(nextProject, nextIssueType)
+      if (requestId !== createFieldsRequest.current) return
+      setCreateFieldIds(capability ? Object.keys(capability.fields) : null)
+    } catch {
+      if (requestId === createFieldsRequest.current) setCreateFieldIds(null)
+    }
+  }
 
   async function loadProjectOptionSets(nextProject: string) {
     const [boardsResult, assigneesResult, epicsResult] = await Promise.allSettled([
@@ -102,7 +116,7 @@ export function usePopupJiraForm({ status, t }: { status: JiraConnectionStatus; 
         ? types.find((item) => item.name.toLowerCase() === "bug")?.name ?? types.find((item) => item.name.toLowerCase() === "task")?.name ?? types[0]?.name ?? "Bug"
         : types.find((item) => item.name.toLowerCase() === "task")?.name ?? types.find((item) => item.name.toLowerCase() === "bug")?.name ?? types[0]?.name ?? "Task"
       setIssueType(defaultType)
-      await loadProjectOptions(preferred, project)
+      await Promise.all([loadProjectOptions(preferred, project), refreshCreateFields(preferred, defaultType)])
       return true
     } catch (error) {
       toast.error(jiraErrorMessage(error, t.issueFailed))
@@ -128,7 +142,9 @@ export function usePopupJiraForm({ status, t }: { status: JiraConnectionStatus; 
       const boardSprints = selectedBoard ? await loadBoardSprints(selectedBoard.id) : []
       setSprints(boardSprints); setSprintId(boardSprints.some((item) => item.id === draft.sprintId) ? draft.sprintId : null)
       const types = project.issueTypes ?? []
-      setIssueType(types.some((item) => item.name === draft.issueType) ? draft.issueType : types.find((item) => item.name.toLowerCase() === "bug")?.name ?? types[0]?.name ?? "Bug")
+      const restoredType = types.some((item) => item.name === draft.issueType) ? draft.issueType : types.find((item) => item.name.toLowerCase() === "bug")?.name ?? types[0]?.name ?? "Bug"
+      setIssueType(restoredType)
+      void refreshCreateFields(preferred, restoredType)
       setSummary(draft.summary); setDescription(draft.description); setPriority(draft.priority); setAssignee(draft.assignee); setEpic(draft.epic)
       setEstimate(draft.estimate); setStoryPoints(draft.storyPoints); setLabels(draft.labels); setComponent(draft.component); setFixVersion(draft.fixVersion); setDueDate(draft.dueDate)
       const restoredAttachments = (draft.attachments ?? []).map((item) => ({ ...item, previewUrl: item.file.type.startsWith("image/") ? URL.createObjectURL(item.file) : undefined }))
@@ -138,13 +154,14 @@ export function usePopupJiraForm({ status, t }: { status: JiraConnectionStatus; 
   }
 
   async function changeProject(nextProject: string) {
-    setProjectKey(nextProject); setProjectInfo(null); setLoadingMetadata(true); setBoardId(null); setSprintId(null); setBoards([]); setSprints([])
+    setProjectKey(nextProject); setProjectInfo(null); setLoadingMetadata(true); setBoardId(null); setSprintId(null); setBoards([]); setSprints([]); setCreateFieldIds(null)
     try {
       const project = await getProject(nextProject)
       setProjectInfo(project)
       const types = project.issueTypes ?? []
-      if (!types.some((item) => item.name === issueType)) setIssueType(types.find((item) => item.name.toLowerCase() === "bug")?.name ?? types[0]?.name ?? "Bug")
-      await loadProjectOptions(nextProject, project)
+      const nextType = types.some((item) => item.name === issueType) ? issueType : types.find((item) => item.name.toLowerCase() === "bug")?.name ?? types[0]?.name ?? "Bug"
+      if (nextType !== issueType) setIssueType(nextType)
+      await Promise.all([loadProjectOptions(nextProject, project), refreshCreateFields(nextProject, nextType)])
     } catch (error) { toast.error(jiraErrorMessage(error, t.issueFailed)) } finally { setLoadingMetadata(false) }
   }
 
@@ -157,6 +174,7 @@ export function usePopupJiraForm({ status, t }: { status: JiraConnectionStatus; 
 
   function changeIssueType(value: string) {
     setIssueType(value)
+    void refreshCreateFields(projectKey, value)
     if (value.toLowerCase() === "epic") { setSprintId(null); setEpic("") }
   }
 
@@ -177,7 +195,10 @@ export function usePopupJiraForm({ status, t }: { status: JiraConnectionStatus; 
       const result = await createIssues({ project: projectKey, issues: [{ type: issueType, summary: summary.trim(), description: body || undefined, priority: priority || undefined, sprint: isEpic ? undefined : sprintId, assignee: assignee && assignee !== "__unassigned" ? assignee : undefined, epic: !isEpic && epic ? epic : undefined, estimate: !isEpic && estimate.trim() ? estimate.trim() : undefined, labels: parsedLabels.length ? parsedLabels : undefined, components: component ? [component] : undefined, fixVersions: fixVersion ? [fixVersion] : undefined, fields: Object.keys(extraFields).length ? extraFields : undefined }] }, metadata.detectedFieldMap, undefined, {}, boardId)
       const created = result.results.find((item) => item.ok && item.key)
       if (!created?.key) throw new Error(result.results.find((item) => !item.ok)?.error ?? t.issueFailed)
-      const warnings = [result.results.find((item) => item.key === created.key)?.sprintError, result.results.find((item) => item.key === created.key)?.estimateError].filter(Boolean)
+      const createdResult = result.results.find((item) => item.key === created.key)
+      const skippedNames = (createdResult?.skippedCreateFields ?? []).map((fieldId) => metadata.fields.find((field) => field.id === fieldId)?.name ?? fieldId)
+      const skippedWarning = skippedNames.length ? `Jira skipped fields that are not available when creating this issue type: ${skippedNames.join(", ")}.` : undefined
+      const warnings = [createdResult?.sprintError, createdResult?.estimateError, skippedWarning].filter(Boolean)
       if (warnings.length) toast.warning(warnings.join(" • "))
       const evidenceUploads: JiraAttachmentUpload[] = []
       if (includeScreenshot) {
@@ -205,5 +226,5 @@ export function usePopupJiraForm({ status, t }: { status: JiraConnectionStatus; 
     setSummary(""); setDescription(""); setPriority(""); setAssignee(""); setEpic(""); setSprintId(null); setEstimate(""); setStoryPoints(""); setLabels(""); setComponent(""); setFixVersion(""); setDueDate(""); setMoreFields(false); setAttachments([]); setIncludeDiagnostics(false)
   }
 
-  return { metadata, projectInfo, loadingMetadata, projectKey, issueType, issueTypes, priority, boards, boardId, sprints, sprintId, assignees, assignee, epics, epic, estimate, storyPoints, labels, component, fixVersion, dueDate, moreFields, summary, description, includeContext, includeScreenshot, includeDiagnostics, attachments, creating, issueDraft, setSummary, setDescription, setPriority, setAssignee, setEpic, setSprintId, setEstimate, setStoryPoints, setLabels, setComponent, setFixVersion, setDueDate, setMoreFields, setIncludeContext, setIncludeScreenshot, setIncludeDiagnostics, setAttachments, ensureMetadata, restoreIssueDraft, changeProject, changeBoard, changeIssueType, createIssue, resetFields }
+  return { metadata, projectInfo, loadingMetadata, projectKey, issueType, issueTypes, priority, boards, boardId, sprints, sprintId, assignees, assignee, epics, epic, estimate, storyPoints, labels, component, fixVersion, dueDate, moreFields, createFieldIds, summary, description, includeContext, includeScreenshot, includeDiagnostics, attachments, creating, issueDraft, setSummary, setDescription, setPriority, setAssignee, setEpic, setSprintId, setEstimate, setStoryPoints, setLabels, setComponent, setFixVersion, setDueDate, setMoreFields, setIncludeContext, setIncludeScreenshot, setIncludeDiagnostics, setAttachments, ensureMetadata, restoreIssueDraft, changeProject, changeBoard, changeIssueType, createIssue, resetFields }
 }

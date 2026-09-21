@@ -30,12 +30,6 @@
   margin-block-start: -3px;
 }
 
-.qm-attachment-compact > :first-child {
-  min-height: 48px !important;
-  border-style: solid !important;
-  border-radius: var(--qm-control-radius) !important;
-  background: var(--qm-surface-subtle) !important;
-}
 
 .qm-start-grid {
   display: grid;

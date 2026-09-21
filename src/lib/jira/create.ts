@@ -1,8 +1,11 @@
 import type { BulkIssue, BulkPayload, CreateResultItem, CreateRunResult, FieldMap } from "@/types"
 import { applyOriginalEstimate } from "./estimation"
-import { jiraErrorMessage } from "./errors"
+import { JiraRequestError, jiraErrorMessage } from "./errors"
+import { getCreateFieldMatrix, type JiraCreateFieldMatrix } from "./metadata"
 import { addJiraWorklog } from "./worklogs"
 import { sendJiraRequest } from "./request"
+
+const CORE_CREATE_FIELDS = new Set(["project", "issuetype", "summary"])
 
 function mergeArrays<T>(a?: T[], b?: T[]) { return Array.from(new Set([...(a ?? []), ...(b ?? [])])) }
 function effectiveSprint(payload: BulkPayload, issue: BulkIssue): number | null | undefined { return issue.sprint !== undefined ? issue.sprint : payload.defaults?.sprint }
@@ -36,8 +39,60 @@ function buildIssueFields(payload: BulkPayload, issue: BulkIssue, fieldMap: Fiel
   return fields
 }
 
+function allowedFieldsForIssueType(matrix: JiraCreateFieldMatrix | null, issueType: string) {
+  const entry = matrix?.[issueType.trim().toLowerCase()]
+  if (!entry) return null
+  return new Set(Object.keys(entry.fields))
+}
+
+function filterCreateFields(fields: Record<string, unknown>, allowed: Set<string> | null) {
+  if (!allowed) return { fields, skipped: [] as string[] }
+  const next: Record<string, unknown> = {}
+  const skipped: string[] = []
+  for (const [fieldId, value] of Object.entries(fields)) {
+    if (CORE_CREATE_FIELDS.has(fieldId) || allowed.has(fieldId)) next[fieldId] = value
+    else skipped.push(fieldId)
+  }
+  return { fields: next, skipped }
+}
+
+function errorText(error: unknown) {
+  if (error instanceof JiraRequestError) {
+    const data = error.data === undefined ? "" : (() => { try { return JSON.stringify(error.data) } catch { return "" } })()
+    return [error.rawMessage, error.message, data].filter(Boolean).join(" ")
+  }
+  return error instanceof Error ? error.message : String(error ?? "")
+}
+
+function unsupportedCreateField(error: unknown) {
+  const text = errorText(error)
+  const patterns = [
+    /Field ['"]([^'"]+)['"] cannot be set/i,
+    /does not allow ['"]([^'"]+)['"] to be edited/i,
+    /['"](customfield_\d+)['"][^\n]{0,120}(?:cannot be set|not on the appropriate screen|not editable)/i,
+  ]
+  for (const pattern of patterns) {
+    const fieldId = pattern.exec(text)?.[1]
+    if (fieldId) return fieldId
+  }
+  return null
+}
+
 async function createOneIssue(fields: Record<string, unknown>) {
-  return sendJiraRequest<{ id: string; key: string; self: string }>("/rest/api/2/issue", "POST", { fields })
+  const next = { ...fields }
+  const skipped: string[] = []
+  for (let attempt = 0; attempt < 4; attempt += 1) {
+    try {
+      const created = await sendJiraRequest<{ id: string; key: string; self: string }>("/rest/api/2/issue", "POST", { fields: next })
+      return { created, skipped }
+    } catch (error) {
+      const fieldId = unsupportedCreateField(error)
+      if (!fieldId || CORE_CREATE_FIELDS.has(fieldId) || !(fieldId in next)) throw error
+      delete next[fieldId]
+      skipped.push(fieldId)
+    }
+  }
+  throw new Error("Jira rejected multiple create fields. Review the issue type create screen configuration.")
 }
 
 export async function assignIssueKeysToSprint(sprintId: number, issueKeys: string[]) {
@@ -50,14 +105,19 @@ export async function createIssues(payload: BulkPayload, detectedFieldMap: Field
   const fieldMap = { ...detectedFieldMap, ...(payload.fieldMap ?? {}) }
   const epicKeys = new Map<string, string>(Object.entries(existingEpicKeys))
   const results: CreateResultItem[] = []
+  let createFieldMatrix: JiraCreateFieldMatrix | null = null
+  try { createFieldMatrix = await getCreateFieldMatrix(payload.project) } catch { createFieldMatrix = null }
   const indexed = payload.issues.map((issue, index) => ({ issue, index }))
   const ordered = [...indexed.filter(({ issue }) => issue.type.toLowerCase() === "epic"), ...indexed.filter(({ issue }) => issue.type.toLowerCase() !== "epic")]
   for (const { issue, index } of ordered) {
     let result: CreateResultItem
     try {
-      const created = await createOneIssue(buildIssueFields(payload, issue, fieldMap, epicKeys))
+      const requested = buildIssueFields(payload, issue, fieldMap, epicKeys)
+      const filtered = filterCreateFields(requested, allowedFieldsForIssueType(createFieldMatrix, issue.type))
+      const { created, skipped } = await createOneIssue(filtered.fields)
+      const skippedCreateFields = Array.from(new Set([...filtered.skipped, ...skipped]))
       if (issue.ref) epicKeys.set(issue.ref, created.key)
-      result = { index, ref: issue.ref, summary: issue.summary, type: issue.type, ok: true, key: created.key, id: created.id, self: created.self, sprintId: issue.type.toLowerCase() === "epic" ? undefined : effectiveSprint(payload, issue) }
+      result = { index, ref: issue.ref, summary: issue.summary, type: issue.type, ok: true, key: created.key, id: created.id, self: created.self, sprintId: issue.type.toLowerCase() === "epic" ? undefined : effectiveSprint(payload, issue), skippedCreateFields: skippedCreateFields.length ? skippedCreateFields : undefined }
     } catch (error) {
       result = { index, ref: issue.ref, summary: issue.summary, type: issue.type, ok: false, error: jiraErrorMessage(error, "Unknown Jira error") }
     }

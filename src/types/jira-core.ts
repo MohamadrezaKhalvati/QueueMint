@@ -8,6 +8,7 @@ export interface JiraProject {
     id: string
     name: string
     subtask?: boolean
+    iconUrl?: string
   }>
   components?: Array<{ id: string; name: string }>
   versions?: Array<{ id: string; name: string; released?: boolean; archived?: boolean }>

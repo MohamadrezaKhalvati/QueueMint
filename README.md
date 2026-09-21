@@ -6,7 +6,7 @@ The product focuses on workflows that are slow, repetitive, fragmented, or awkwa
 
 Current stable release: **v1.0.2**.
 
-Current release line: **v1.3.1 Manage Jira Filter UX**.
+Current release line: **v1.3.2 Jira Create Safety, Calendar & Evidence UX**.
 
 ## Product principle
 
@@ -221,4 +221,4 @@ Do not commit `node_modules/`, `dist/`, local logs, secrets, or private Jira dat
 
 The large architecture refactor is complete. All production source files are under the 300-line limit. The product roadmap has now returned to user-facing capability work, with Capture Pro as the first post-refactor phase.
 
-Current release: **v1.3.1**. Appearance Studio, Worklog Board Sync, and Manage Jira Filter UX are part of the supported release line.
+Current release: **v1.3.2**. Appearance Studio, Worklog Board Sync, Manage Jira Filter UX, Jira Create Safety, Calendar, and Evidence Upload UX are part of the supported release line.

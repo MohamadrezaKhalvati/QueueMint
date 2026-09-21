@@ -26,31 +26,33 @@
   max-width: none !important;
 }
 
-.qm-attachment-compact > div:first-child {
+.qm-attachment-compact > .qm-attachment-heading {
   display: none;
 }
 
-.qm-attachment-compact > [data-slot="button"] {
-  min-height: 58px !important;
-  height: auto !important;
-  width: 100% !important;
-  border-style: dashed !important;
-  border-radius: var(--qm-control-radius) !important;
-  background: var(--qm-surface-subtle) !important;
-  padding: 9px 12px !important;
+.qm-attachment-compact > [data-slot="attachment-trigger"] {
+  min-height: 62px !important;
+  grid-template-columns: 34px minmax(0, 1fr) 30px;
+  gap: 10px;
+  padding: 9px 11px !important;
 }
 
-.qm-attachment-compact > [data-slot="button"] > span:first-child {
-  width: 30px;
-  height: 30px;
+.qm-attachment-compact .qm-upload-icon {
+  width: 34px;
+  height: 34px;
   box-shadow: none;
 }
 
-.qm-attachment-compact > [data-slot="button"] span span:last-child {
-  display: block;
+.qm-attachment-compact .qm-upload-add {
+  width: 30px;
+  height: 30px;
 }
 
-.qm-attachment-compact > [data-slot="button"][data-drag-active="true"] {
+.qm-attachment-compact .qm-upload-hint {
+  line-height: 1.35;
+}
+
+.qm-attachment-compact > [data-slot="attachment-trigger"][data-drag-active="true"] {
   border-color: var(--primary) !important;
   background: var(--qm-primary-soft) !important;
 }

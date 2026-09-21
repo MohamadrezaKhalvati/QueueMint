@@ -23,6 +23,7 @@ export function SearchableSingle({
   disabled,
   leading,
   renderItem,
+  renderValue,
   allowClear = false,
   clearLabel = "Clear selection",
 }: {
@@ -35,6 +36,7 @@ export function SearchableSingle({
   disabled?: boolean
   leading?: ReactNode
   renderItem?: (value: string) => ReactNode
+  renderValue?: (value: string) => ReactNode
   allowClear?: boolean
   clearLabel?: string
 }) {
@@ -55,7 +57,7 @@ export function SearchableSingle({
     <Combobox open={open} onOpenChange={setOpen}>
       <ComboboxTrigger asChild>
         <Button type="button" variant="outline" className="h-10 w-full min-w-0 justify-between px-3 font-normal" disabled={disabled} aria-haspopup="listbox">
-          <span className="flex min-w-0 items-center gap-2">{leading}<span className={cn("truncate", !value && "text-muted-foreground")}>{value ? itemLabel(value) : placeholder}</span></span>
+          <span className="flex min-w-0 flex-1 items-center gap-2 overflow-hidden">{value && renderValue ? renderValue(value) : <>{leading}<span className={cn("truncate", !value && "text-muted-foreground")}>{value ? itemLabel(value) : placeholder}</span></>}</span>
           <ChevronsUpDown className="size-4 shrink-0 text-muted-foreground" />
         </Button>
       </ComboboxTrigger>

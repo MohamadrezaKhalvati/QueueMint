@@ -1,5 +1,5 @@
 export { configureJiraConnection, getJiraAvatarDataUrl, getJiraConnectionStatus, jiraBrowseUrl, openJira, selectJiraTab } from "./jira/request"
-export { discoverJira, getBoardsForProject, getCreateMeta, getProject, getSprintsForBoard } from "./jira/metadata"
+export { clearCreateFieldCache, discoverJira, getBoardsForProject, getCreateFieldMatrix, getCreateFieldsForIssueType, getCreateMeta, getProject, getSprintsForBoard } from "./jira/metadata"
 export { getLiveBoardIssues, searchRecentProjectIssues } from "./jira/board-issues"
 export { getJiraBoardColumns } from "./jira/board-columns"
 export { transitionIssueToBoardColumn } from "./jira/transitions"

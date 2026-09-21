@@ -2,7 +2,7 @@
 
 Current stable release: v1.0.2.
 
-Current release line: v1.3.1. Appearance Studio, Worklog Board Sync, and Manage Jira Filter UX are included in the supported release.
+Current release line: v1.3.2. Appearance Studio, Worklog Board Sync, Manage Jira Filter UX, Jira Create Safety, Calendar, and Evidence Upload UX are included in the supported release.
 
 This document describes what is implemented today. It intentionally separates current capability from the future roadmap.
 
@@ -113,6 +113,10 @@ QueueMint does not request the Chrome `debugger` permission for Capture diagnost
 - Fix Version.
 - Due Date.
 - additional supported field data through discovered field mappings.
+- Create-time field capability checks use Jira Data Center REST API v2 create metadata for the selected project and issue type. Optional fields that Jira does not expose on that Create screen are not sent.
+- If Jira still rejects an optional create field because screen or field configuration changed, QueueMint can remove that rejected field, retry the create request, and surface the skipped field as a warning after the issue is created.
+- Capture hides optional create controls that are unavailable for the selected project and issue type instead of inviting input that Jira will reject.
+- Issue Type controls show Jira's own icon when available with a local fallback, Priority uses its visual indicator, and selected Assignees show Jira avatars where available.
 - attachment upload after issue creation.
 - Description editors use one editable visual surface rather than separate raw markup and preview panes. Bold, italic, lists, quote, inline code, and links render while editing; active toolbar buttons are highlighted; Ctrl/Cmd+B and Ctrl/Cmd+I are supported. The form value remains Jira wiki markup for the existing Jira create flows.
 - Smart Assistant output is normalized to Jira wiki formatting before it is applied to an issue description.
