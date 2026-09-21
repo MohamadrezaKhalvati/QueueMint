@@ -1,7 +1,7 @@
 import { type ChangeEvent } from "react"
 import { CheckCircle2, Copy, Trash2, XCircle } from "lucide-react"
 import { AttachmentPicker, type LocalAttachment } from "@/components/attachment-picker"
-import { AssigneeCombobox, BoardSelect, buildEpicOptions, EpicCombobox, LabelsCombobox, PrioritySelect, ProjectCombobox, SimpleSelect, SprintSelect } from "@/components/jira-controls"
+import { AssigneeCombobox, BoardSelect, buildEpicOptions, EpicCombobox, IssueTypeSelect, LabelsCombobox, PrioritySelect, ProjectCombobox, SimpleSelect, SprintSelect } from "@/components/jira-controls"
 import { RichTextEditor } from "@/components/rich-text-editor"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -23,7 +23,7 @@ export function IssueInspectorSheet({ open, onOpenChange, locale, t, issue, inde
   issue?: BulkIssue
   index: number
   payload?: BulkPayload
-  issueTypes: Array<{ id: string; name: string }>
+  issueTypes: Array<{ id: string; name: string; iconUrl?: string }>
   priorities: JiraPriority[]
   sprints: JiraSprint[]
   epicOptions: ReturnType<typeof buildEpicOptions>
@@ -54,7 +54,7 @@ export function IssueInspectorSheet({ open, onOpenChange, locale, t, issue, inde
             <div className="space-y-5">
               <Field><FieldLabel>{t.summary} *</FieldLabel><Input value={issue.summary} onChange={(event: ChangeEvent<HTMLInputElement>) => onUpdate({ summary: event.target.value })} /></Field>
               <div className="grid gap-4 sm:grid-cols-2">
-                <Field><FieldLabel>{t.type}</FieldLabel><SimpleSelect value={issue.type} onValueChange={(type) => onUpdate({ type })} items={issueTypes.length ? issueTypes.map((item) => ({ value: item.name, label: item.name })) : [{ value: issue.type, label: issue.type }]} /></Field>
+                <Field><FieldLabel>{t.type}</FieldLabel><IssueTypeSelect issueTypes={issueTypes.length ? issueTypes : [{ id: issue.type, name: issue.type }]} value={issue.type} onValueChange={(type) => onUpdate({ type })} placeholder={t.type} /></Field>
                 <Field><FieldLabel>{t.priority}</FieldLabel><PrioritySelect priorities={priorities} value={issue.priority} defaultPriority={payload.defaults?.priority} onValueChange={(priority) => onUpdate({ priority })} inheritedLabel={t.useDefault} /></Field>
                 {!isEpic ? <div className="sm:col-span-2"><EstimateInput label={t.estimate} value={issue.estimate ?? ""} onValueChange={(estimate) => onUpdate({ estimate: estimate.trim() ? estimate : undefined })} placeholder={t.estimatePlaceholder} help={timeTrackingAvailable ? t.estimateHelp : t.estimateUnavailable} inheritedText={payload.defaults?.estimate ? `${t.inheritedEstimate}: ${payload.defaults.estimate}` : undefined} /></div> : null}
               </div>

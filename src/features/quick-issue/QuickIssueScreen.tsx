@@ -2,7 +2,7 @@ import type { ChangeEvent } from "react"
 import { Bolt, CheckCircle2, ExternalLink, Layers3, LoaderCircle, Plus, XCircle } from "lucide-react"
 
 import { AttachmentPicker, type LocalAttachment } from "@/components/attachment-picker"
-import { AssigneeCombobox, EpicCombobox, LabelsCombobox, PrioritySelect, ProjectCombobox, SimpleSelect, SprintSelect, buildEpicOptions } from "@/components/jira-controls"
+import { AssigneeCombobox, EpicCombobox, IssueTypeSelect, LabelsCombobox, PrioritySelect, ProjectCombobox, SimpleSelect, SprintSelect, buildEpicOptions } from "@/components/jira-controls"
 import { JiraUserAvatar } from "@/components/jira-user-avatar"
 import { RichTextEditor } from "@/components/rich-text-editor"
 import { Badge } from "@/components/ui/badge"
@@ -60,7 +60,7 @@ export function QuickIssueScreen({
   payload?: BulkPayload
   metadata: JiraMetadata | null
   project: JiraProject | null
-  issueTypes: Array<{ id: string; name: string }>
+  issueTypes: Array<{ id: string; name: string; iconUrl?: string }>
   priorities: JiraPriority[]
   sprints: JiraSprint[]
   epicOptions: ReturnType<typeof buildEpicOptions>
@@ -151,7 +151,7 @@ export function QuickIssueScreen({
             </Field>
             <Field>
               <FieldLabel>{t.type}</FieldLabel>
-              <SimpleSelect value={issue.type} onValueChange={(value) => setIssue({ ...issue, type: value })} items={issueTypes.length ? issueTypes.map((item) => ({ value: item.name, label: item.name })) : [{ value: issue.type, label: issue.type }]} />
+              <IssueTypeSelect issueTypes={issueTypes.length ? issueTypes : [{ id: issue.type, name: issue.type }]} value={issue.type} onValueChange={(value) => setIssue({ ...issue, type: value })} placeholder={t.type} />
             </Field>
             <Field>
               <FieldLabel>{t.priority}</FieldLabel>
@@ -221,6 +221,7 @@ export function QuickIssueScreen({
                 <div className="min-w-0 flex-1">
                   <div className="font-medium">{resultItem.ok ? t.quickSuccess : t.quickFailure}</div>
                   <div className="mt-1 text-xs opacity-80">{resultItem.key ?? resultItem.error}</div>
+                  {resultItem.skippedCreateFields?.length ? <div className="mt-1 text-xs">Jira skipped unavailable create fields: {resultItem.skippedCreateFields.join(", ")}</div> : null}
                   {resultItem.estimateError ? <div className="mt-1 text-xs">{t.estimateApplyFailed}: {resultItem.estimateError}</div> : null}
                   {resultItem.attachmentError ? <div className="mt-1 text-xs">{t.attachmentsFailed}: {resultItem.attachmentError}</div> : null}
                 </div>

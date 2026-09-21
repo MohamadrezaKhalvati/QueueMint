@@ -73,7 +73,9 @@ export interface CreateResultItem {
   worklogMinutes?: number
   worklogComment?: string
   worklogStarted?: string
+  skippedCreateFields?: string[]
 }
+
 
 export interface CreateRunResult {
   startedAt: string

@@ -1,6 +1,7 @@
 import { useMemo } from "react"
 import { Layers3, Plus, Zap } from "lucide-react"
 
+import { JiraIssueTypeVisual } from "@/components/jira-issue-type-visual"
 import { Badge } from "@/components/ui/badge"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { cn } from "@/lib/utils"
@@ -11,6 +12,16 @@ export function SimpleSelect({ value, items, onValueChange, placeholder, disable
   value?: string; items: Array<{ value: string; label: string }>; onValueChange: (value: string) => void; placeholder?: string; disabled?: boolean; className?: string; ariaLabel?: string
 }) {
   return <Select value={value || undefined} onValueChange={onValueChange} disabled={disabled}><SelectTrigger className={className} aria-label={ariaLabel}><SelectValue placeholder={placeholder} /></SelectTrigger><SelectContent>{items.map((item) => <SelectItem key={item.value} value={item.value}>{item.label}</SelectItem>)}</SelectContent></Select>
+}
+
+export function IssueTypeSelect({ issueTypes, value, onValueChange, placeholder = "Issue type", disabled, className }: {
+  issueTypes: Array<{ id: string; name: string; iconUrl?: string }>; value?: string; onValueChange: (value: string) => void; placeholder?: string; disabled?: boolean; className?: string
+}) {
+  const selected = issueTypes.find((item) => item.name === value)
+  return <Select value={value || undefined} onValueChange={onValueChange} disabled={disabled}>
+    <SelectTrigger className={className} aria-label={placeholder}>{selected ? <JiraIssueTypeVisual name={selected.name} iconUrl={selected.iconUrl} compact /> : <span className="text-muted-foreground">{placeholder}</span>}</SelectTrigger>
+    <SelectContent>{issueTypes.map((item) => <SelectItem key={item.id} value={item.name}><JiraIssueTypeVisual name={item.name} iconUrl={item.iconUrl} compact /></SelectItem>)}</SelectContent>
+  </Select>
 }
 
 export function JiraFieldCombobox({ fields, value, onValueChange, placeholder, emptyLabel, disabled }: {

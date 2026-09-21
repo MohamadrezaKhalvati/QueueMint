@@ -1,5 +1,5 @@
 import { useRef, useState, type ChangeEvent, type DragEvent } from "react"
-import { Paperclip, Plus, Trash2, UploadCloud } from "lucide-react"
+import { FileText, Plus, Trash2, UploadCloud } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
@@ -44,6 +44,11 @@ function isSupportedFile(file: File) {
 
 function fileFingerprint(file: File) {
   return `${file.name}:${file.size}:${file.lastModified}`
+}
+
+function fileSize(file: File) {
+  if (file.size < 1024 * 1024) return `${Math.max(1, Math.round(file.size / 1024))} KB`
+  return `${(file.size / 1024 / 1024).toFixed(1)} MB`
 }
 
 export function AttachmentPicker({ files, onChange, label, helper, addLabel, dropLabel, dropActiveLabel, formatHint, className }: AttachmentPickerProps) {
@@ -103,6 +108,8 @@ export function AttachmentPicker({ files, onChange, label, helper, addLabel, dro
     appendFiles(event.dataTransfer.files)
   }
 
+  const triggerTitle = dragActive ? dropActiveLabel ?? "Drop to attach" : dropLabel ?? addLabel
+
   return (
     <div
       className={cn("qm-attachment-picker space-y-3 rounded-[var(--qm-panel-radius)] transition-[background-color,border-color,box-shadow]", dragActive && "bg-primary/5 ring-2 ring-primary/25", className)}
@@ -111,9 +118,12 @@ export function AttachmentPicker({ files, onChange, label, helper, addLabel, dro
       onDragLeave={endDrag}
       onDrop={dropFiles}
     >
-      <div>
-        <div className="text-sm font-medium">{label}</div>
-        <div className="mt-1 text-xs leading-5 text-muted-foreground">{helper}</div>
+      <div className="qm-attachment-heading flex items-start justify-between gap-3">
+        <div className="min-w-0">
+          <div className="text-sm font-medium">{label}</div>
+          <div className="mt-1 text-xs leading-5 text-muted-foreground">{helper}</div>
+        </div>
+        {files.length ? <span className="shrink-0 rounded-[var(--qm-control-radius)] bg-muted px-2 py-1 text-[10px] font-medium text-muted-foreground">{files.length}/{MAX_FILES}</span> : null}
       </div>
 
       {files.length ? (
@@ -122,19 +132,19 @@ export function AttachmentPicker({ files, onChange, label, helper, addLabel, dro
             <div key={item.id} className="qm-attachment-file group relative overflow-hidden rounded-[var(--qm-control-radius)] border bg-muted/30">
               <div className="aspect-[4/3] overflow-hidden bg-muted/40">
                 {item.previewUrl ? (
-                  <img src={item.previewUrl} alt="" className="h-full w-full object-cover" />
+                  <img src={item.previewUrl} alt={item.file.name} className="h-full w-full object-cover" />
                 ) : (
-                  <div className="grid h-full place-items-center text-muted-foreground"><Paperclip className="size-5" /></div>
+                  <div className="grid h-full place-items-center text-muted-foreground"><FileText className="size-5" /></div>
                 )}
               </div>
-              <div className="min-w-0 px-2 py-1.5">
-                <div className="truncate text-[11px] font-medium">{item.file.name}</div>
-                <div className="text-[10px] text-muted-foreground">{(item.file.size / 1024 / 1024).toFixed(1)} MB</div>
+              <div className="min-w-0 px-2 py-1.5 pe-9">
+                <div className="truncate text-[11px] font-medium" title={item.file.name}>{item.file.name}</div>
+                <div className="text-[10px] text-muted-foreground">{fileSize(item.file)}</div>
               </div>
               <Button
                 variant="destructive"
                 size="icon-sm"
-                className="absolute end-1.5 top-1.5 size-7 opacity-0 shadow-sm transition-opacity group-hover:opacity-100 focus-visible:opacity-100"
+                className="absolute end-1.5 top-1.5 size-7 opacity-100 shadow-sm md:opacity-0 md:transition-opacity md:group-hover:opacity-100 md:focus-visible:opacity-100"
                 onClick={() => remove(item.id)}
                 aria-label={`Remove ${item.file.name}`}
               >
@@ -145,23 +155,24 @@ export function AttachmentPicker({ files, onChange, label, helper, addLabel, dro
         </div>
       ) : null}
 
-      <Button
+      <button
         type="button"
-        variant="outline"
+        data-slot="attachment-trigger"
         className={cn(
-          "qm-upload-control min-h-24 h-auto w-full cursor-pointer justify-start whitespace-normal border-dashed bg-muted/15 px-4 text-muted-foreground transition-colors hover:border-primary/45 hover:bg-primary/5 hover:text-foreground",
+          "qm-upload-control grid min-h-[76px] w-full cursor-pointer grid-cols-[40px_minmax(0,1fr)_32px] items-center gap-3 rounded-[var(--qm-control-radius)] border border-dashed px-3 py-3 text-start outline-none transition-[background-color,border-color,box-shadow,color] focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/20",
           dragActive && "border-primary bg-primary/10 text-foreground",
         )}
         data-drag-active={dragActive ? "true" : undefined}
         onClick={() => inputRef.current?.click()}
+        aria-label={addLabel}
       >
-        <span className="grid size-9 shrink-0 place-items-center rounded-[var(--qm-control-radius)] bg-background shadow-xs"><UploadCloud className="size-4" /></span>
-        <span className="min-w-0 text-start">
-          <span className="block font-medium text-foreground">{dragActive ? dropActiveLabel ?? "Drop to attach" : dropLabel ?? addLabel}</span>
-          <span className="mt-0.5 block text-xs">{formatHint ?? FILE_HINT}</span>
+        <span className="qm-upload-icon grid size-10 shrink-0 place-items-center rounded-[var(--qm-control-radius)] border bg-background text-primary shadow-xs" aria-hidden="true"><UploadCloud className="size-4" /></span>
+        <span className="qm-upload-copy min-w-0">
+          <span className="qm-upload-title block text-sm font-medium leading-5 text-foreground">{triggerTitle}</span>
+          <span className="qm-upload-hint mt-0.5 block break-words text-xs leading-5 text-muted-foreground">{formatHint ?? FILE_HINT}</span>
         </span>
-        <Plus className="ms-auto size-4 shrink-0" />
-      </Button>
+        <span className="qm-upload-add grid size-8 place-items-center justify-self-end rounded-[var(--qm-control-radius)] border bg-background text-muted-foreground" aria-hidden="true"><Plus className="size-4" /></span>
+      </button>
       <input
         ref={inputRef}
         type="file"

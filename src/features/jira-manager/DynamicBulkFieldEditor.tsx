@@ -3,10 +3,12 @@ import { Check, XCircle } from "lucide-react"
 import { SimpleSelect } from "@/components/jira-controls"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
+import { DatePicker } from "@/components/ui/date-picker"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { copy } from "@/features/app-shell/app-copy"
 import { allowedValuePayload, dynamicFieldInitialValue, jiraValueLabel, type DynamicFieldDraft } from "@/features/bulk/bulk-utils"
+import { formatDateOnly, parseDateOnly } from "@/lib/date-only"
 import type { JiraEditableField } from "@/types"
 
 export function DynamicBulkFieldEditor({ field, draft, t, onChange, onRemove }: {
@@ -20,6 +22,7 @@ export function DynamicBulkFieldEditor({ field, draft, t, onChange, onRemove }: 
   const isArray = type === "array"
   const allowed = field.allowedValues
   const availability = t.fieldAvailability.replace("{count}", String(field.availableOn)).replace("{total}", String(field.representativeCount))
+  const isFa = t === copy.fa
 
   function setMode(mode: "set" | "clear") {
     onChange({ mode, value: mode === "set" ? dynamicFieldInitialValue(field) : null })
@@ -53,7 +56,7 @@ export function DynamicBulkFieldEditor({ field, draft, t, onChange, onRemove }: 
       return <SimpleSelect value={String(Boolean(draft.value))} onValueChange={(value) => onChange({ ...draft, value: value === "true" })} items={[{ value: "true", label: "True" }, { value: "false", label: "False" }]} />
     }
     if (type === "number") return <Input type="number" value={typeof draft.value === "string" || typeof draft.value === "number" ? draft.value : ""} onChange={(event: ChangeEvent<HTMLInputElement>) => onChange({ ...draft, value: event.target.value })} />
-    if (type === "date") return <Input type="date" value={typeof draft.value === "string" ? draft.value : ""} onChange={(event: ChangeEvent<HTMLInputElement>) => onChange({ ...draft, value: event.target.value })} />
+    if (type === "date") return <DatePicker value={parseDateOnly(typeof draft.value === "string" ? draft.value : "")} onChange={(date) => onChange({ ...draft, value: formatDateOnly(date) })} onClear={() => onChange({ ...draft, value: "" })} locale={isFa ? "fa-IR-u-ca-gregory" : "en-US"} placeholder={isFa ? "انتخاب تاریخ" : "Choose a date"} clearLabel={isFa ? "پاک کردن" : "Clear"} todayLabel={isFa ? "امروز" : "Today"} showToday className="w-full" />
     if (type === "datetime") return <Input type="datetime-local" value={typeof draft.value === "string" ? draft.value : ""} onChange={(event: ChangeEvent<HTMLInputElement>) => onChange({ ...draft, value: event.target.value })} />
     if (type === "array") return <Input value={Array.isArray(draft.value) ? draft.value.join(", ") : String(draft.value ?? "")} onChange={(event: ChangeEvent<HTMLInputElement>) => onChange({ ...draft, value: event.target.value.split(",").map((item) => item.trim()).filter(Boolean) })} placeholder="value1, value2" />
     const multiline = field.name.toLowerCase().includes("environment") || (field.schema?.custom?.toLowerCase() ?? "").includes("textarea")

@@ -7,8 +7,11 @@ import {
   ListChecks,
   SquareKanban,
   UserRound,
+  UserRoundX,
 } from "lucide-react"
 
+import { JiraIssueTypeVisual } from "@/components/jira-issue-type-visual"
+import { PriorityVisual } from "@/components/priority"
 import { Button } from "@/components/ui/button"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/capture-select"
 import { RichTextEditor } from "@/components/rich-text-editor"
@@ -45,9 +48,14 @@ export type PopupIssueMainFieldsProps = {
   onMoreFields: () => void
 }
 
+function userIdentity(user: JiraUser) { return user.name ?? user.key ?? user.displayName ?? "" }
+
 export function PopupIssueMainFields(props: PopupIssueMainFieldsProps) {
   const { t, metadata, projectInfo, projectKey, boards, boardId, sprints, sprintId, issueType, assignees, assignee, priority, epics, epic, description, moreFields } = props
   const issueTypes = projectInfo?.issueTypes ?? []
+  const selectedType = issueTypes.find((type) => type.name === issueType)
+  const selectedAssignee = assignees.find((user) => userIdentity(user) === assignee)
+  const selectedAssigneeLabel = selectedAssignee?.displayName ?? assignee
   const isEpic = issueType.toLowerCase() === "epic"
 
   return <>
@@ -72,41 +80,44 @@ export function PopupIssueMainFields(props: PopupIssueMainFieldsProps) {
       </PopupFieldShell>
     </PopupFieldSection>
 
-    <PopupFieldSection icon={ListChecks} title={t.planningFields} className="qm-section-three-up">
+    <PopupFieldSection icon={ListChecks} title={t.planningFields} className="qm-section-four-up">
       <PopupFieldShell icon={ListChecks} label={t.issueType} tone="planning">
         <Select value={issueType} onValueChange={props.onIssueType} disabled={!issueTypes.length}>
-          <SelectTrigger><SelectValue placeholder={t.issueType} /></SelectTrigger>
-          <SelectContent>{issueTypes.map((type) => <SelectItem key={type.id} value={type.name}>{type.name}</SelectItem>)}</SelectContent>
+          <SelectTrigger>
+            <JiraIssueTypeVisual name={selectedType?.name ?? issueType} iconUrl={selectedType?.iconUrl} compact />
+          </SelectTrigger>
+          <SelectContent>{issueTypes.map((type) => <SelectItem key={type.id} value={type.name}><JiraIssueTypeVisual name={type.name} iconUrl={type.iconUrl} compact /></SelectItem>)}</SelectContent>
         </Select>
       </PopupFieldShell>
       <PopupFieldShell icon={Flag} label={t.priority} tone="planning">
         <Select value={priority || "__none"} onValueChange={(value) => props.onPriority(value === "__none" ? "" : value)}>
-          <SelectTrigger><SelectValue placeholder={t.priority} /></SelectTrigger>
-          <SelectContent><SelectItem value="__none">{t.jiraDefault}</SelectItem>{metadata.priorities.map((item) => <SelectItem key={item.id} value={item.name}>{item.name}</SelectItem>)}</SelectContent>
+          <SelectTrigger>{priority ? <PriorityVisual name={priority} compact /> : <span className="text-muted-foreground">{t.jiraDefault}</span>}</SelectTrigger>
+          <SelectContent><SelectItem value="__none"><span className="text-muted-foreground">{t.jiraDefault}</span></SelectItem>{metadata.priorities.map((item) => <SelectItem key={item.id} value={item.name}><PriorityVisual name={item.name} compact /></SelectItem>)}</SelectContent>
         </Select>
       </PopupFieldShell>
-      {!isEpic ? <PopupFieldShell icon={Link2} label={t.epic} tone="planning" className="qm-field-span-2 qm-field-third">
+      {!isEpic ? <PopupFieldShell icon={Link2} label={t.epic} tone="planning">
         <Select value={epic || "__none"} onValueChange={(value) => props.onEpic(value === "__none" ? "" : value)}>
           <SelectTrigger><SelectValue placeholder={t.epic} /></SelectTrigger>
           <SelectContent><SelectItem value="__none">{t.none}</SelectItem>{epics.map((item) => <SelectItem key={item.key} value={item.key}>{item.key} - {item.summary ?? item.name ?? item.key}</SelectItem>)}</SelectContent>
         </Select>
       </PopupFieldShell> : null}
-    </PopupFieldSection>
-
-    <PopupFieldSection icon={UserRound} title={t.peopleFields} className="qm-section-half">
-      <PopupFieldShell icon={UserRound} label={t.assignee} tone="people" className="qm-field-span-2">
+      <PopupFieldShell icon={UserRound} label={t.assignee} tone="people">
         <Select value={assignee || "__default"} onValueChange={(value) => props.onAssignee(value === "__default" ? "" : value)}>
-          <SelectTrigger><SelectValue placeholder={t.assignee} /></SelectTrigger>
+          <SelectTrigger>
+            {selectedAssignee ? <span className="flex min-w-0 items-center gap-2"><PopupJiraAvatar user={selectedAssignee} className="size-6" /><span className="truncate font-medium">{selectedAssigneeLabel}</span></span>
+              : assignee === "__unassigned" ? <span className="flex items-center gap-2 text-muted-foreground"><UserRoundX className="size-4" />{t.unassigned}</span>
+                : <span className="flex items-center gap-2 text-muted-foreground"><UserRound className="size-4" />{t.jiraDefault}</span>}
+          </SelectTrigger>
           <SelectContent>
-            <SelectItem value="__default">{t.jiraDefault}</SelectItem>
-            <SelectItem value="__unassigned">{t.unassigned}</SelectItem>
-            {assignees.map((user, index) => { const value = user.name ?? user.key ?? ""; return value ? <SelectItem key={`${value}-${index}`} value={value}><span className="flex min-w-0 items-center gap-2"><PopupJiraAvatar user={user} /><span className="truncate">{user.displayName ?? value}</span></span></SelectItem> : null })}
+            <SelectItem value="__default"><span className="flex items-center gap-2 text-muted-foreground"><UserRound className="size-4" />{t.jiraDefault}</span></SelectItem>
+            <SelectItem value="__unassigned"><span className="flex items-center gap-2 text-muted-foreground"><UserRoundX className="size-4" />{t.unassigned}</span></SelectItem>
+            {assignees.map((user, index) => { const value = userIdentity(user); return value ? <SelectItem key={`${value}-${index}`} value={value}><span className="flex min-w-0 items-center gap-2"><PopupJiraAvatar user={user} /><span className="truncate">{user.displayName ?? value}</span></span></SelectItem> : null })}
           </SelectContent>
         </Select>
       </PopupFieldShell>
     </PopupFieldSection>
 
-    <PopupFieldSection icon={AlignLeft} title={t.detailsFields} className="qm-section-half">
+    <PopupFieldSection icon={AlignLeft} title={t.detailsFields}>
       <PopupFieldShell icon={AlignLeft} label={t.description} tone="details" className="qm-field-span-2">
         <RichTextEditor value={description} onChange={props.onDescription} minHeight={96} />
       </PopupFieldShell>

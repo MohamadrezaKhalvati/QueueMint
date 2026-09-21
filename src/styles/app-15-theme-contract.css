@@ -139,6 +139,21 @@ html[data-radius] .qm-upload-control { border-radius: var(--qm-control-radius) !
   background: var(--qm-primary-soft) !important;
   color: var(--foreground) !important;
 }
+.qm-upload-control:focus-visible {
+  border-color: var(--ring) !important;
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--ring) 18%, transparent) !important;
+}
+@media (max-width: 420px) {
+  .qm-upload-control {
+    grid-template-columns: 40px minmax(0, 1fr) !important;
+  }
+  .qm-upload-add {
+    display: none !important;
+  }
+  .qm-upload-hint {
+    overflow-wrap: anywhere;
+  }
+}
 
 /* V5.3 alignment and shape pass. Functional dots/avatars stay circular; containers follow the appearance radius. */
 html[data-radius] :where(

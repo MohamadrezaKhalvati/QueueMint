@@ -4,6 +4,7 @@ export {
   buildEpicOptions,
   BulkEpicCombobox,
   EpicCombobox,
+  IssueTypeSelect,
   JiraFieldCombobox,
   ProjectCombobox,
   SimpleSelect,
