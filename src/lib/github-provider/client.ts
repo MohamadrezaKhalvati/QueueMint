@@ -1,6 +1,6 @@
 import type {
-  GitHubConnection, GitHubCreateIssueInput, GitHubCreateIssueResult, GitHubPage, GitHubRepository, GitHubServiceErrorShape,
-  GitHubIssueSummary,
+  GitHubConnection, GitHubCreateIssueInput, GitHubCreateIssueResult, GitHubInstallation, GitHubPage, GitHubRepository,
+  GitHubServiceErrorShape, GitHubIssueSummary,
 } from "@/types"
 import { GitHubProviderError } from "@/types"
 import { mockGitHubProvider } from "./mock"
@@ -12,9 +12,9 @@ type ServiceEnvelope<T> = { data: T }
 type AuthStart = { authorizationUrl: string; transactionId: string }
 type AuthExchange = { session: string }
 
-const env = ((import.meta as ImportMeta & { env?: Record<string, string | undefined> }).env ?? {})
-const serviceBaseUrl = (env.VITE_GITHUB_SERVICE_BASE_URL ?? "").trim().replace(/\/+$/, "")
-const mockEnabled = env.DEV === "true" && env.VITE_GITHUB_PROVIDER_MOCK === "true"
+const env = ((import.meta as ImportMeta & { env?: Record<string, string | boolean | undefined> }).env ?? {})
+const serviceBaseUrl = String(env.VITE_GITHUB_SERVICE_BASE_URL ?? "").trim().replace(/\/+$/, "")
+const mockEnabled = env.DEV === true && env.VITE_GITHUB_PROVIDER_MOCK === "true"
 
 function requireServiceUrl() {
   if (!serviceBaseUrl) throw new Error("VITE_GITHUB_SERVICE_BASE_URL is required for the GitHub service provider.")
@@ -52,14 +52,13 @@ async function serviceRequest<T>(path: string, init: RequestInit = {}, authentic
   const controller = new AbortController()
   const timeout = window.setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS)
   try {
+    const headers = new Headers(init.headers)
+    headers.set("content-type", "application/json")
+    if (session) headers.set("authorization", `Bearer ${session}`)
     const response = await fetch(`${base.origin}${base.pathname.replace(/\/$/, "")}${path}`, {
       ...init,
       signal: controller.signal,
-      headers: {
-        "content-type": "application/json",
-        ...(session ? { authorization: `Bearer ${session}` } : {}),
-        ...init.headers,
-      },
+      headers,
     })
     const payload = await response.json().catch(() => null) as ServiceEnvelope<T> | { error?: GitHubServiceErrorShape } | null
     if (!response.ok) {
@@ -110,7 +109,19 @@ const serviceProvider = {
     finally { await setSession(undefined) }
   },
   connection: () => serviceRequest<GitHubConnection>("/v1/github/connection"),
-  repositories: () => serviceRequest<GitHubPage<GitHubRepository>>("/v1/github/repositories"),
+  async repositories() {
+    const installations = await serviceRequest<GitHubPage<GitHubInstallation>>("/v1/github/installations")
+    const repositories: GitHubRepository[] = []
+    for (const installation of installations.data) {
+      const page = await serviceRequest<GitHubPage<GitHubRepository>>(`/v1/github/installations/${installation.id}/repositories`)
+      repositories.push(...page.data.map((repository) => ({
+        ...repository,
+        installationId: repository.installationId ?? installation.id,
+        installationAccount: repository.installationAccount ?? installation.accountLogin,
+      })))
+    }
+    return { data: repositories } satisfies GitHubPage<GitHubRepository>
+  },
   issues: (repositoryId: number) => serviceRequest<GitHubPage<GitHubIssueSummary>>(`/v1/github/repositories/${repositoryId}/issues?state=open`),
   createIssue: (repositoryId: number, input: GitHubCreateIssueInput) => serviceRequest<GitHubCreateIssueResult>(
     `/v1/github/repositories/${repositoryId}/issues`,

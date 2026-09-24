@@ -13,6 +13,11 @@ export interface GitHubConnection {
   lastCheckedAt?: string
 }
 
+export interface GitHubInstallation {
+  id: number
+  accountLogin: string
+}
+
 export interface GitHubRepository {
   id: number
   name: string

@@ -17,8 +17,10 @@ test("GitHub service auth uses Chrome identity and session-only QueueMint creden
 
 test("GitHub mock mode is explicitly development gated", async () => {
   const client = await read("../src/lib/github-provider/client.ts")
-  assert.match(client, /env\.DEV === "true"/)
+  assert.match(client, /env\.DEV === true/)
   assert.match(client, /VITE_GITHUB_PROVIDER_MOCK === "true"/)
+  assert.match(client, /\/v1\/github\/installations/)
+  assert.doesNotMatch(client, /"\/v1\/github\/repositories"/)
 })
 
 test("GitHub issue creation is review-first and preserves unknown outcomes", async () => {
