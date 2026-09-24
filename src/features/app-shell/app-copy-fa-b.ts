@@ -1,4 +1,5 @@
 export const copyFAB = {
+    formatJson: "Format JSON",
     sprint: "اسپرینت",
     backlog: "بک‌لاگ",
     placement: "محل قرارگیری",

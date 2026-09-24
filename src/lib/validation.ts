@@ -15,6 +15,11 @@ export function parseBulkJson(text: string): { payload?: BulkPayload; error?: st
   }
 }
 
+export function formatValidBulkJson(text: string): string | undefined {
+  const parsed = parseBulkJson(text)
+  return parsed.payload ? JSON.stringify(parsed.payload, null, 2) : undefined
+}
+
 
 export function isValidJiraEstimate(value: string) {
   const trimmed = value.trim()
