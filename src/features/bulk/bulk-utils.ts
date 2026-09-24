@@ -23,7 +23,7 @@ export function accentForDarkMode(hex: string) {
   return `#${mixed.map((channel) => channel.toString(16).padStart(2, "0")).join("")}`
 }
 
-export type Mode = "dashboard" | "quick" | "bulk" | "review" | "manage" | "worklog" | "automation" | "customize"
+export type Mode = "dashboard" | "quick" | "bulk" | "review" | "manage" | "worklog" | "automation" | "github" | "customize"
 export type Placement = "sprint" | "backlog"
 export type DynamicFieldDraft = { mode: "set" | "clear"; value: unknown }
 export type BulkPlacementSnapshot = { key: string; placement: Placement; sprintId?: number }

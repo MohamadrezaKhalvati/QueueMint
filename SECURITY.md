@@ -90,3 +90,13 @@ QueueMint portable backups intentionally exclude the Smart Assistant API key, ac
 `npm run check:release` remains the policy gate for the permission set, static host permissions, selected high-risk permissions, manifest/version/description rules, obvious committed credential patterns, dynamic code execution, and required public security/release files.
 
 These automated gates are defense in depth. They do not replace manual review of Jira endpoints, browser permission prompts, Store privacy disclosures, or the clean-profile/upgrade smoke tests.
+
+## GitHub provider security boundary
+
+The GitHub provider does not ship a GitHub App private key, client secret, user access token, or refresh token in the browser extension. Real authorization uses `chrome.identity.launchWebAuthFlow` against a QueueMint integration service and stores only the returned opaque QueueMint session in `chrome.storage.session`.
+
+The integration service origin is requested as an optional runtime host permission after a user gesture. Non-local service configuration must use HTTPS. Browser requests use bounded timeouts, stable service error codes, and no automatic retry for issue creation.
+
+GitHub issue creation is review-first. If the service reports `WRITE_OUTCOME_UNKNOWN`, QueueMint preserves the draft and instructs the user to inspect the repository before retrying. This avoids blind duplicate writes when GitHub may have accepted the original request.
+
+Development mock mode is gated by both Vite development mode and `VITE_GITHUB_PROVIDER_MOCK=true`. It exists only to test source UX without production GitHub credentials.

@@ -112,3 +112,11 @@ Users can:
 Do not include credentials, private Jira data, or customer screenshots in a public bug report. See `SECURITY.md` and `SUPPORT.md` for reporting guidance.
 
 Project home: https://github.com/hamedtkd/QueueMint
+
+## GitHub provider test source
+
+The GitHub provider source adds an independent, user-initiated GitHub connection. In service mode, GitHub App authorization is completed through the QueueMint GitHub integration service. GitHub token material is not stored in persistent extension storage. The extension keeps only an opaque QueueMint service session in `chrome.storage.session`, which is cleared when the browser session ends.
+
+GitHub repository and issue data is requested only when the user opens the GitHub workspace or refreshes it. The current source slice stores the selected repository id and unsent issue title/body locally so a draft survives navigation. It does not persist GitHub authorization material in `chrome.storage.local` and portable backup code does not include the GitHub provider context key.
+
+For local development, an explicit Vite development flag can enable mock GitHub data. Mock mode does not contact GitHub or the QueueMint GitHub service and must not be enabled in production builds.
