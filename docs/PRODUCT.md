@@ -1,5 +1,9 @@
 # QueueMint product direction
 
+## Proposed multi-provider direction (not shipped)
+
+The current product and rules below describe the shipped Jira companion. A proposed next direction adds a GitHub provider while keeping each connected application's data in that application and preserving QueueMint's fast, review-first workflows. The [GitHub provider specification](github-provider/GITHUB-PROVIDER-SPEC.md) defines the customer journey, access model, security boundary, and first-release scope. The [implementation tasks](github-provider/GITHUB-PROVIDER-TASKS.md) define the work and release gates. GitHub support is not present in the current extension.
+
 ## One-sentence definition
 
 QueueMint is a fast, safe power layer on top of Jira for capture, repetitive issue operations, reusable shortcuts, and personal Jira productivity.

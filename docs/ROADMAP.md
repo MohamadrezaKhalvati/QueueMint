@@ -2,6 +2,10 @@
 
 This roadmap reflects the current product decision: QueueMint is a Jira companion, not a Jira replacement.
 
+## Proposed next direction: GitHub provider
+
+QueueMint may expand from a Jira companion to a multi-provider work companion. The first proposed GitHub release covers explicit GitHub App connection, accessible installations/repositories, repository issues, and a read-only organization Projects view. It retains Jira as an independent connection and does not imply Jira↔GitHub synchronization. See the [product and technical specification](github-provider/GITHUB-PROVIDER-SPEC.md) and [ordered task backlog](github-provider/GITHUB-PROVIDER-TASKS.md). This is planned work, not a shipped capability or version commitment.
+
 ## Completed foundation
 
 ### v0.10 through v0.16

@@ -1,11 +1,12 @@
 import { useRef } from "react"
-import { CheckCircle2, ChevronRight, Code2, Download, RefreshCw, Settings2, Upload, WandSparkles, XCircle } from "lucide-react"
+import { Braces, CheckCircle2, ChevronRight, Code2, Download, RefreshCw, Settings2, Upload, WandSparkles, XCircle } from "lucide-react"
 
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { copy } from "@/features/app-shell/app-copy"
 import { cn } from "@/lib/utils"
+import { formatValidBulkJson } from "@/lib/validation"
 
 export function BulkImportScreen({
   t,
@@ -20,6 +21,7 @@ export function BulkImportScreen({
   copiedAiPrompt,
   onBatchSettings,
   onReset,
+  onFormat,
   onReview,
 }: {
   t: typeof copy.en | typeof copy.fa
@@ -34,6 +36,7 @@ export function BulkImportScreen({
   copiedAiPrompt: boolean
   onBatchSettings: () => void
   onReset: () => void
+  onFormat: () => void
   onReview: () => void
 }) {
   return (
@@ -59,7 +62,10 @@ export function BulkImportScreen({
               <CardTitle className="text-base">{t.jsonEditor}</CardTitle>
               {issueCount ? <Badge variant="secondary" className="qm-issue-count-pill">{issueCount} {t.issues}</Badge> : null}
             </div>
-            <Button variant="ghost" size="sm" onClick={onReset}><RefreshCw className="size-3.5" />{t.resetSample}</Button>
+            <div className="flex items-center gap-1">
+              <Button variant="ghost" size="sm" onClick={onFormat} disabled={Boolean(parsedError)}><Braces className="size-3.5" />{t.formatJson}</Button>
+              <Button variant="ghost" size="sm" onClick={onReset}><RefreshCw className="size-3.5" />{t.resetSample}</Button>
+            </div>
           </div>
         </CardHeader>
         <CardContent className="p-4">
@@ -107,6 +113,20 @@ function JsonEditor({ value, onChange, label }: { value: string; onChange: (valu
       <textarea
         value={value}
         onChange={(event) => onChange(event.target.value)}
+        onPaste={(event) => {
+          const textarea = event.currentTarget
+          const pastedText = event.clipboardData.getData("text")
+          const nextValue = value.slice(0, textarea.selectionStart) + pastedText + value.slice(textarea.selectionEnd)
+          const formatted = formatValidBulkJson(nextValue)
+          if (formatted === undefined) return
+
+          event.preventDefault()
+          onChange(formatted)
+          requestAnimationFrame(() => {
+            textarea.focus()
+            textarea.setSelectionRange(formatted.length, formatted.length)
+          })
+        }}
         onScroll={(event) => { if (gutterRef.current) gutterRef.current.scrollTop = event.currentTarget.scrollTop }}
         className="json-editor qm-json-textarea"
         spellCheck={false}

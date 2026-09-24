@@ -19,6 +19,7 @@ import { ReviewScreen } from "@/features/review/ReviewScreen"
 import { WorkspaceDashboard } from "@/features/workspace/WorkspaceDashboard"
 import { openJira } from "@/lib/jira"
 import { cn, downloadJson, downloadText } from "@/lib/utils"
+import { formatValidBulkJson } from "@/lib/validation"
 import type { AppActionGroups, AppDerivedModel, AppStateModel } from "./app-view-model"
 
 const WorklogScreen = lazy(() => import("@/features/worklog/WorklogScreen").then((module) => ({ default: module.WorklogScreen })))
@@ -116,6 +117,7 @@ export function AppMainShell({ state: s, derived: d, actions: a }: Props) {
                 onDownloadAi={() => downloadText("jira-bulk-ai-prompt.txt", d.contextualAiPrompt)} copiedAiPrompt={s.copiedAiPrompt}
                 onBatchSettings={() => s.setBatchSettingsOpen(true)}
                 onReset={() => { s.setJsonText(JSON.stringify(d.contextualSamplePayload, null, 2)); s.setValidation(EMPTY_VALIDATION); s.setSelectedForCreate(new Set(d.contextualSamplePayload.issues.map((_, index) => index))) }}
+                onFormat={() => { const formatted = formatValidBulkJson(s.jsonText); if (formatted) { s.setJsonText(formatted); s.setValidation(EMPTY_VALIDATION); s.setRunResult(null) } }}
                 onReview={() => { if (payload?.issues?.length) { s.setSelectedForCreate(new Set(payload.issues.map((_, index) => index))); s.setMode("review") } }}
               />
             ) : s.mode === "review" ? (

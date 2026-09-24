@@ -28,6 +28,7 @@ export const copyENB = {
     dryRun: "Dry run",
     reviewIssues: "Review issues",
     jsonEditor: "JSON editor",
+    formatJson: "Format JSON",
     rawJson: "Raw JSON",
     jsonValid: "Valid JSON",
     jsonInvalid: "Invalid JSON",
