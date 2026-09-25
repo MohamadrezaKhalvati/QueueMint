@@ -12,6 +12,7 @@ import { EMPTY_VALIDATION } from "@/features/bulk/bulk-utils"
 import { looksLikeJiraCandidate } from "@/features/connection/jira-candidate"
 import { BulkImportScreen } from "@/features/import/BulkImportScreen"
 import { CustomizationScreen } from "@/features/customization/CustomizationScreen"
+import { GitHubWorkspace } from "@/features/github/GitHubWorkspace"
 import { ManageJiraScreen } from "@/features/jira-manager/ManageJiraScreen"
 import { QuickIssueScreen } from "@/features/quick-issue/QuickIssueScreen"
 import { ReviewActionBar } from "@/features/review/ReviewFooter"
@@ -139,6 +140,8 @@ export function AppMainShell({ state: s, derived: d, actions: a }: Props) {
                   onProjectChange={(key) => void a.project.chooseProject(key)} onBoardChange={(id) => void a.project.chooseBoard(id)} onMoveIssueStatus={a.live.transitionLiveIssue} recordActivity={a.live.recordActivity}
                 />
               </Suspense>
+            ) : s.mode === "github" ? (
+              <GitHubWorkspace locale={s.locale} />
             ) : s.mode === "customize" ? (
               <CustomizationScreen
                 locale={s.locale} theme={s.theme} setTheme={s.setTheme} accentColor={s.accentColor} setAccentColor={s.setAccentColor}

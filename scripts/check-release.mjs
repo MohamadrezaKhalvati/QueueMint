@@ -20,7 +20,7 @@ const packageBaseVersion = String(packageJson.version ?? "").split("-")[0]
 if (packageBaseVersion !== manifestVersion) fail(`package.json base version ${packageBaseVersion} does not match manifest version ${manifestVersion}.`)
 if (String(manifest.description ?? "").length > 132) fail("Manifest description exceeds the 132-character Chrome limit.")
 
-const allowedRequired = new Set(["storage", "activeTab", "scripting", "clipboardWrite"])
+const allowedRequired = new Set(["storage", "activeTab", "scripting", "clipboardWrite", "identity"])
 for (const permission of manifest.permissions ?? []) if (!allowedRequired.has(permission)) fail(`Unexpected required permission: ${permission}`)
 for (const required of allowedRequired) if (!(manifest.permissions ?? []).includes(required)) fail(`Expected required permission is missing: ${required}`)
 const forbidden = new Set(["debugger", "webRequest", "webRequestBlocking", "tabs", "history", "cookies", "downloads", "nativeMessaging"])

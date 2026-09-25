@@ -96,7 +96,7 @@ export interface StoredState {
   sidebarStyle?: SidebarStyle
   sidebarAccent?: SidebarAccentMode
   surfaceStyle?: SurfaceStyle
-  lastMode?: "dashboard" | "quick" | "bulk" | "review" | "manage" | "worklog" | "automation" | "customize"
+  lastMode?: "dashboard" | "quick" | "bulk" | "review" | "manage" | "worklog" | "automation" | "github" | "customize"
   lastCreatedKeys?: string[]
   onboardingComplete?: boolean
   savedActions?: SavedWorkspaceAction[]

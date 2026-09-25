@@ -45,3 +45,13 @@ QueueMint diagnostics remain lightweight and opt-in. Do not add Chrome `debugger
 ## Appearance font delivery
 
 Appearance Studio can load a selected font as an ordinary HTTPS stylesheet/font subresource from Google Fonts or a commit-pinned jsDelivr GitHub resource. This does not add a browser `host_permission`, and the extension CSP keeps executable scripts restricted to `self`. System/local fallbacks remain available when the network is unavailable.
+
+## GitHub provider permission
+
+| Permission | Why QueueMint needs it | User-visible boundary |
+| --- | --- | --- |
+| `identity` | Completes the user-initiated GitHub App authorization flow through `chrome.identity.launchWebAuthFlow`. | Used only after the user presses Connect GitHub. QueueMint does not use it for silent background sign-in. |
+
+The QueueMint GitHub integration service origin is requested at runtime from the existing optional HTTPS host permission pattern. The service base URL is build configuration, and the extension requests only that concrete origin when the user initiates GitHub connection.
+
+The extension stores only the short-lived QueueMint service session in `chrome.storage.session`. GitHub user/refresh tokens remain server-side and must not enter portable backups or persistent extension storage.
